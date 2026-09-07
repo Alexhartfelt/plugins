@@ -1,0 +1,60 @@
+name: Release
+
+# When a plugin's version changes on main, tag it `<plugin>-v<version>` and publish a
+# GitHub Release with generated notes. The tag is the durable pointer for "which commit
+# was 1.4.2"; installation itself needs nothing from this — Claude Code pulls main.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/*/.claude-plugin/plugin.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag changed plugin versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag and release each plugin whose version changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          # On workflow_dispatch (or a force-push) BEFORE may be empty/unknown: fall back to
+          # "every plugin", relying on the tag-exists check to make this idempotent.
+          if [ -n "${BEFORE:-}" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            manifests=$(git diff --name-only "$BEFORE" HEAD -- 'plugins/*/.claude-plugin/plugin.json' || true)
+          else
+            manifests=$(ls plugins/*/.claude-plugin/plugin.json 2>/dev/null || true)
+          fi
+          [ -n "$manifests" ] || { echo "No plugin manifests changed."; exit 0; }
+
+          for m in $manifests; do
+            [ -f "$m" ] || { echo "$m removed — skipping"; continue; }
+            name=$(jq -r .name "$m")
+            version=$(jq -r .version "$m")
+            [ "$version" != "null" ] && [ -n "$version" ] || { echo "$name has no version — skipping"; continue; }
+            tag="${name}-v${version}"
+            if git rev-parse -q --verify "refs/tags/$tag" >/dev/null || gh release view "$tag" >/dev/null 2>&1; then
+              echo "$tag already exists — skipping"
+              continue
+            fi
+            echo "Releasing $tag"
+            gh release create "$tag" \
+              --target "$GITHUB_SHA" \
+              --title "$tag" \
+              --generate-notes \
+              --notes "Plugin \`$name\` version \`$version\`. Install/update: \`/plugin marketplace update helloretail\` then \`/reload-plugins\`."
+          done

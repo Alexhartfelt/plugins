@@ -1,0 +1,12 @@
+{
+  "name": "helloretail",
+  "owner": {
+    "name": "Hello Retail D&TS",
+    "email": "pa@helloretail.com"
+  },
+  "metadata": {
+    "description": "Hello Retail Claude Code plugins — D&TS skills, the team wiki knowledge base, and supporting MCP server configs.",
+    "version": "1.0.0"
+  },
+  "plugins": []
+}

@@ -1,0 +1,5 @@
+# Reviews are requested automatically from every owner listed for a matching path.
+# Replace the individuals with a GitHub team (e.g. @helloretail/dts) once one exists for D&TS.
+*                         @taqimustafa @OrcAniCe
+/.github/                 @taqimustafa @OrcAniCe
+/.claude-plugin/          @taqimustafa @OrcAniCe
