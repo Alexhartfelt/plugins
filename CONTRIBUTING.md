@@ -73,7 +73,9 @@ description: >
 Organise by **job** (search, recom, feed, QA), never by platform. Platform nuance goes in
 `references/<platform>.md` inside the relevant skill.
 
-The full authoring playbook (`AUTHORING.md`) travels with the `dts-skills` plugin.
+The full authoring playbook is
+[plugins/hello-retail/AUTHORING.md](plugins/hello-retail/AUTHORING.md), which ships inside
+the plugin.
 
 ## Pull requests
 

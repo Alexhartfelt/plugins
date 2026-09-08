@@ -6,10 +6,6 @@ triggered-email designs as drafts, the feed-setup skills, the Hello Retail knowl
 the MCP server configs those skills depend on. Merging to `main` is publishing: Claude Code
 installs straight from this repository over git.
 
-> **Status: migrated from `helloretail/dts`, not yet public.** The content moved here on
-> 2026-09-07 with a redaction pass still to run before the repository can be made public — see
-> [Before going public](#before-going-public).
-
 ## Layout
 
 ```
@@ -78,49 +74,6 @@ Try a local checkout as a marketplace without pushing:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and
 [plugins/hello-retail/AUTHORING.md](plugins/hello-retail/AUTHORING.md) for the skill playbook.
-
-## What moved from helloretail/dts, and what did not
-
-The plan is `docs/superpowers/plans/2026-09-07-public-skills-repo-migration.md` in `dts`.
-
-| Moved here (renamed) | Was in `dts` as |
-|---|---|
-| `search-developer` | `search-ui-developer` |
-| `recom-developer` | `recom-ui-developer` |
-| `pages-developer` | `hr-pages-development` |
-| `newsletter-developer` | `newsletter-tile-developer` |
-| `triggered-email-developer` | `triggered-emails-ui-developer` |
-| `tile-extractor` | `hr-tile-extractor-and-converter` |
-| `feed-setup` · `feed-migration` | `hr-feed-setup` · `hr-feed-v1-migration` |
-| `search-qa` · `recom-qa` · `pages-qa` · `newsletter-qa` · `qa-checklists` | same names |
-| `hello-retail-knowledge` + `docs/wiki/` | `plugins/hello-retail-wiki` + `docs/wiki/` |
-
-Stays in `dts` (internal process or staff-only tooling): `support-debugger`, `card-autopilot`,
-`customer-analytics-report`, `hr-browser-setup`, `design-system`; wiki folders `codebase/`,
-`support-debugging/`, `overview/teams.md`. Deleted rather than moved: `search-self-qa`,
-`recom-self-qa`, `solutions/`, the onboarding test bundle.
-
-Still to do in `dts` (a separate PR, after this repo is validated): remove the migrated
-skills and wiki pages, `plugins/`, `bin/build-plugin`, `bin/install-dts-plugin` and both sync
-workflows; shrink the remaining internal skills into a `dts-internal` plugin; point
-`CLAUDE.md`, `.claude/settings.json` and the Support Inbox prompt at this plugin.
-
-## Before going public
-
-The 2026-09-07 audit found no secrets, but the content still carries material that must go
-before the visibility flips:
-
-- Customer storefronts, company IDs and ClickUp card IDs were replaced with anonymous handles
-  (`store-IT`, `store-SE-1`, …) and `example-shop.com` placeholders on 2026-09-07; colleagues named
-  as sources became their role. The public customer-logo lists in `overview/company.md` and the
-  glossary stay — they come from helloretail.com.
-- The 21 `explain.helloretail.com` share links were removed from this repo on 2026-09-07 (one
-  internal Google Sheets link too); they still need **revoking at the source** — publishing the
-  repo history would not expose them, but the links themselves stay live until revoked.
-- `search-developer/references/layout-options.md` is one customer's measured build → keep the
-  recipes, drop the measurements and verification log.
-- Eight skill descriptions over 1 024 characters; two are truncated in the live listing.
-- A second person reads the whole tree before Settings → General → change visibility.
 
 ## Rules that CI enforces
 
