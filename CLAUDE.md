@@ -35,7 +35,6 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 
 ## Current state
 
-Content migrated from `helloretail/dts` on 2026-09-07 (skills renamed — table in `README.md`).
-The repository is private until the redaction pass in `README.md` → "Before going public" is
-done. The `dts` side of the cut-over (deleting the old copies, pointing dts at this plugin) is
-still open.
+The repository is private, so the marketplace must be registered over SSH for background
+auto-update to work (see `README.md` → Installing). Merging to `main` publishes: the Release
+workflow bumps the version, tags and cuts a GitHub Release.
