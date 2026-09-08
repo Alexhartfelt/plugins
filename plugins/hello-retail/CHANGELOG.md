@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.0.2 — 2026-09-08
+
 ### Added
 
 - The plugin now ships a `CHANGELOG.md`, so you can see what changed in each version you
