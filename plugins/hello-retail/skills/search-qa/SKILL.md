@@ -129,7 +129,7 @@ which variants were ordered) and what *correct* means (ordered deviations from n
 declined requests, known-open items). Grade with it throughout: `PASS (by spec)` /
 `N/A (declined in ticket)` / `KNOWN — pending` all carry their comment citation, and the
 brief's extra checks join the coverage manifest. When the card names a reference site for the
-overlay ("similar to [othershop.com]"), judge **shell-design** items against that reference;
+overlay ("similar to [another-shop.com]"), judge **shell-design** items against that reference;
 **tile parity stays against the customer's own native tiles** unless the card says otherwise.
 
 **Delivery-mode detection first** (`../qa-checklists/SKILL.md` Step 2): if the search is
@@ -157,7 +157,7 @@ a Supervisor-hygiene finding).
 a key has an active REVIEW draft, the tool's single entry reflects the draft's state; the LIVE
 version the draft sits on top of (if one exists) is invisible to this call entirely — you'll
 only ever see `state: REVIEW`, never a second row for the same key. Concluding "there is no LIVE
-config" from this list alone is a real mistake (piume.it, 2026-08-10): the on-site widget showed
+config" from this list alone is a real mistake (store-IT, 2026-08-10): the on-site widget showed
 **four** rows (a Live row and a Review row per key), meaning real shoppers were being served a
 published design the whole time. Before stating a key has no LIVE version anywhere in a report,
 confirm it via the widget's actual row count (Step 3), not from `search_listConfigs` alone.
@@ -435,7 +435,7 @@ These are the most important checks — get these right.
     symbol, symbol position), not which filter produced it. The real failures are Shopify's
     `| money` (not an HR filter) and a hardcoded currency symbol (`kr`, `€`, `$`). If
     `priceWithCurrency` is used, it needs its `: product.currency` argument — the bare form was
-    pushed and had to be reverted in a real run (skinsecret 2026-09-01).
+    pushed and had to be reverted in a real run (store-NO-1 2026-09-01).
 - [ ] **Price accuracy** — cross-check 2–3 SKUs between overlay and native page; flag if prices
       differ (B2B/multi-tier pricing, wrong customer group in feed)
 - [ ] **VAT prices** — if native tiles show incl./excl. VAT prices, a VAT display switcher,
@@ -497,7 +497,7 @@ These are the most important checks — get these right.
     to cart without navigating. Variant CTAs ("Choose variant" / "SE VARIANTER"), view CTAs
     ("Se mer" / "View product"), and sold-out CTAs are navigation links — `fix_links` covers them
     via the `#aw_source=` fragment, so a "missing" `trackClick` there is **correct, never a bug**
-    (and conversions still attribute through the link click). Confirmed by the QA team (Malin).
+    (and conversions still attribute through the link click). Confirmed by the QA team.
 - [ ] **Buy button behaviour parity** — check what the customer's own buy button does first
       (adds to cart in place, opens the mini-cart, redirects to the cart page, or no redirect),
       then verify the HR tile's buy button does exactly the same — a cart-page redirect is
@@ -562,7 +562,7 @@ These are the most important checks — get these right.
       overlay, interact (type a query, apply a filter), close it, then **scroll the page**. A
       surviving scroll-lock is Blocker-grade and invisible to every static check — test after
       interacting, not just on a fresh open/close, on desktop AND mobile configs (real case:
-      bettyboo mobile, the severest manual find on that card)
+      store-G mobile, the severest manual find on that card)
 - [ ] **Back-navigation from a PDP leaves the page clean** (T7) — open a PDP from a result
       tile, press browser Back: no stray large-image popup, no oversized tile image on the
       restored page (bfcache restore re-runs lazy-load/slider JS badly; same bug hit two
@@ -595,7 +595,7 @@ These are the most important checks — get these right.
       must not clear, even if the underlying search/filter state stays correct underneath (a
       cleared-looking box reads as "my search was lost" to a shopper). Reproduce on 2 different
       filter controls before grading FAIL, and re-check on both desktop and mobile configs (real
-      case, piume.it 2026-08-10, desktop embedded).
+      case, store-IT 2026-08-10, desktop embedded).
 - [ ] **Overlay-opening characters survive into the query.** Two variants, both with real
       keystrokes: (a) type a full word in one continuous motion into the native search box —
       the overlay's input must end up containing every character typed; (b) type ONE
@@ -639,7 +639,7 @@ These are the most important checks — get these right.
 - **ACCEPTED — do not flag:** the price range slider showing bare numbers without a currency
   symbol (e.g. "40"–"250", no €). The shared `ui_utility.register_filter(…, {rangeSliderDecimals: 0})`
   component takes no currency parameter, so this is account-wide behaviour — confirmed
-  not-an-issue by the QA team (Malin). Never mark it FAIL/WARN. Only flag the price slider if
+  not-an-issue by the QA team. Never mark it FAIL/WARN. Only flag the price slider if
   it shows the **wrong** currency or broken values.
 - [ ] Filter order matches the native category-page filter order (if filters exist natively)
 - [ ] **Filter ordering rule — two separate checks, two separate fixes, always report both.**
@@ -657,7 +657,7 @@ These are the most important checks — get these right.
 - [ ] **Filter/sort order — desktop vs mobile consistency, not just vs native.** Open both
       configs' filter rows side by side (same query) — the two configs are separate designs and
       drift independently; a sort control that's first on mobile and last on desktop is a defect
-      even when each individually matches native's own filter set (real case, piume.it
+      even when each individually matches native's own filter set (real case, store-IT
       2026-08-10 — "Ordina per" led mobile's panel but trailed desktop's row).
 - [ ] Sort options work
   - **Sorting absent from EVERY config** is a dashboard-configuration question, not an
@@ -669,7 +669,7 @@ These are the most important checks — get these right.
     A misspelling can read as perfectly fine in isolation ("Prezzo descrescente" looks like valid
     Italian) and only surfaces as wrong next to native's own spelling ("Prezzo **decrescente**").
     Copy every sort/filter label string and compare character-for-character against the native
-    dropdown's equivalent (real case, piume.it 2026-08-07).
+    dropdown's equivalent (real case, store-IT 2026-08-07).
 
 ### Translations
 
@@ -739,7 +739,7 @@ These are the most important checks — get these right.
       composes the "no matches" sentence around the tab title (`"Nessun " + title + " trovato"`)
       breaks agreement whenever the title's gender/number doesn't fit the fixed prefix/suffix.
       Check this per tab (Category/Brand/Blog independently), not just the general product
-      0-results state (real case, piume.it 2026-08-07).
+      0-results state (real case, store-IT 2026-08-07).
 
 ### Dashboard — OPERATOR (manual)
 
@@ -760,14 +760,14 @@ browser to check them (off-limits to browser automation). They go on the operato
 
 Checks against `resultTemplate` / `resultStyles` / `initializationCode` that the rendered pass can't see.
 
-- [ ] **Click tracking** — product links/buttons preserve HR click tracking: real buy/ATC buttons carry `hrq.push(['trackClick', …])`, navigation links go through `fix_links`, and no custom handler `preventDefault`s the click in a way that bypasses tracking. Broken tracking means conversions never attribute — invisible in the UI. **ACCEPTED — do not flag:** `trackClick` missing on variant / view / sold-out CTAs — those are navigation links covered by `fix_links` (`#aw_source=`); `trackClick` is required on buy/ATC actions only (QA team, Malin). **Grade this per branch, and say which branch each verdict covers** — enumerate every CTA the template emits (ATC · navigation/"read more" · variant · sold-out) and give each its own line. "Navigation links are correctly covered by `fix_links`" is a verdict about the navigation branch **only**; recording it as the item's verdict is how a missing `trackClick` on the ATC button passed as ✅ on one config while two other runs graded the same code ❌ (2026-08-04). Also check both configs separately — desktop and mobile are separate designs and one commonly has an abandoned tracking attempt (e.g. a `{% assign trackingCode = product.url | split: 'aw_source=' | last %}` computed and never used) that reads as tracking present at a glance.
+- [ ] **Click tracking** — product links/buttons preserve HR click tracking: real buy/ATC buttons carry `hrq.push(['trackClick', …])`, navigation links go through `fix_links`, and no custom handler `preventDefault`s the click in a way that bypasses tracking. Broken tracking means conversions never attribute — invisible in the UI. **ACCEPTED — do not flag:** `trackClick` missing on variant / view / sold-out CTAs — those are navigation links covered by `fix_links` (`#aw_source=`); `trackClick` is required on buy/ATC actions only (QA team). **Grade this per branch, and say which branch each verdict covers** — enumerate every CTA the template emits (ATC · navigation/"read more" · variant · sold-out) and give each its own line. "Navigation links are correctly covered by `fix_links`" is a verdict about the navigation branch **only**; recording it as the item's verdict is how a missing `trackClick` on the ATC button passed as ✅ on one config while two other runs graded the same code ❌ (2026-08-04). Also check both configs separately — desktop and mobile are separate designs and one commonly has an abandoned tracking attempt (e.g. a `{% assign trackingCode = product.url | split: 'aw_source=' | last %}` computed and never used) that reads as tracking present at a glance.
 - [ ] **Interactivity re-binding** — `add_to_cart()` (and any swatch / review / wishlist binding) is called after **both** `fix_links` call-sites (initial render **and** `load_more_results`), not just the first. Otherwise appended/filtered tiles render dead.
 - [ ] **Binding hygiene** — interactivity selectors scoped to the overlay (`.hr-overlay-search`, or the embedded container) and idempotent (a `data-*` guard or platform re-init), so re-renders don't double-fire.
 - [ ] **Trigger / placement selectors** — `trigger_selector` is customer-specific, not the bare `input[type='search']` default; `placement_selector` set for the embedded variant.
-- [ ] **Filter option sorting is actually wired — read the VALUE of `sorting_selectors`, not the presence of `sortFilter()`.** Every base `search.js` ships `sortFilters()` / `sortFilter()` / `sortSizes()`, so the sorting *mechanism* is in every config whether or not it does anything; with `/* text */ var sorting_selectors = "";` it is a no-op for every filter. Never record "options are alphabetized client-side" because the function exists — that is a verdict about the mechanism, not the wiring, and it is exactly how a real code pass passed two configs whose `sorting_selectors` were both `""` (skinsecret 2026-09-01; the defect surfaced only when the operator pointed at the variable). When alphabetical options are expected (the rendered-pass ordering rule, or the card asked for it): (1) `sorting_selectors` must list **every** LIST filter that was agreed to be sorted — the card's or operator's list, cross-checked against `search_getFilters`; if no list was agreed, that is an operator question, not an assumption that all of them should be (Category and Size are the standard omissions); (2) each clause in the variant-correct wrapper form (desktop `.aw-filter__single-wrapper[data-filter="…"]` / mobile `.hr-search-overlay-filter-wrap[data-filter="…"]`) and well-formed — a malformed clause (e.g. `[extraDataList.ingredients]` with no `data-filter=`/quotes) throws a `SyntaxError` in `querySelectorAll` and silently disables sorting for **all** listed filters; (3) `size_selector` set only for size-aware ordering; (4) **both configs checked separately** — desktop and mobile are separate designs and one is routinely left at `""`. Report the finding as "filter **option** sorting" so it cannot be confused with filter-**group** order (a `search_updateFilters` concern). → `../search-developer/references/filter-sorting.md`
+- [ ] **Filter option sorting is actually wired — read the VALUE of `sorting_selectors`, not the presence of `sortFilter()`.** Every base `search.js` ships `sortFilters()` / `sortFilter()` / `sortSizes()`, so the sorting *mechanism* is in every config whether or not it does anything; with `/* text */ var sorting_selectors = "";` it is a no-op for every filter. Never record "options are alphabetized client-side" because the function exists — that is a verdict about the mechanism, not the wiring, and it is exactly how a real code pass passed two configs whose `sorting_selectors` were both `""` (store-NO-1 2026-09-01; the defect surfaced only when the operator pointed at the variable). When alphabetical options are expected (the rendered-pass ordering rule, or the card asked for it): (1) `sorting_selectors` must list **every** LIST filter that was agreed to be sorted — the card's or operator's list, cross-checked against `search_getFilters`; if no list was agreed, that is an operator question, not an assumption that all of them should be (Category and Size are the standard omissions); (2) each clause in the variant-correct wrapper form (desktop `.aw-filter__single-wrapper[data-filter="…"]` / mobile `.hr-search-overlay-filter-wrap[data-filter="…"]`) and well-formed — a malformed clause (e.g. `[extraDataList.ingredients]` with no `data-filter=`/quotes) throws a `SyntaxError` in `querySelectorAll` and silently disables sorting for **all** listed filters; (3) `size_selector` set only for size-aware ordering; (4) **both configs checked separately** — desktop and mobile are separate designs and one is routinely left at `""`. Report the finding as "filter **option** sorting" so it cannot be confused with filter-**group** order (a `search_updateFilters` concern). → `../search-developer/references/filter-sorting.md`
 - [ ] **No leftover placeholders** — `header_logo_url`, `webshop_name`, and the theme color are the customer's real values, not the base placeholders (`helloretailcdn.com/static/images/logo.png`, `"My shop"`, `#F13658`).
-- [ ] **Localization integrity** — every `{# text … #}` value is in the target locale; no `__Language` variant lines left over; interpolation tokens (`$query$`, `$totalResults$`, `$contentType$`, `<strong>…</strong>`) intact; no stray English in a non-English store (or vice-versa). **Run the latent sweep** (`../qa-checklists/SKILL.md` Step 3): every text-input default, every hardcoded string, and every `initializationCode` string literal (price-slider currency labels hide there) — including branches that never rendered this run (`{% if filters.size > 0 %}` etc.); grade unreachable leftovers LATENT with their trigger named, never skip them because the branch didn't render. **A "no stray strings found" verdict needs a targeted grep, not a paraphrase of the sweep.** Two independent 2026-08 code passes of the same piume.it config reached opposite conclusions on this exact item — one claimed a full sweep found zero non-Italian strings, the other found two (the recently-searched remove/re-search `aria-label`s, built as JS string concatenation around a feature-specific handler, not a declared `{# text #}` input). Before recording PASS, actually grep `initializationCode` for `"` string literals near event handlers for every dynamic-content feature (recently-searched, tooltips, ARIA labels set via JS) — these hide from a scan that only checks declared template inputs.
-- [ ] **Liquid gotchas** — price uses an HR price filter: `| price` + `| currencySymbol`, `| priceWithCurrencySymbol`, or `| priceWithCurrency: product.currency` — **any of these is fine when the rendered format matches the customer's; do not flag a working `price` + `currencySymbol` as "should be `priceWithCurrency`"** (the only real price failures are Shopify's `| money`, a hardcoded symbol, and a bare `| priceWithCurrency` missing its `: product.currency` argument — reverted as wrong in a real run, skinsecret 2026-09-01); no nonexistent `| raw`; never `| remove: '.'` (breaks thousands separators — use targeted `| replace: 'kr.', 'kr'`); banner branch untouched; TILE FILL rule present when the tile root isn't `.hr-search-overlay-product-link`.
+- [ ] **Localization integrity** — every `{# text … #}` value is in the target locale; no `__Language` variant lines left over; interpolation tokens (`$query$`, `$totalResults$`, `$contentType$`, `<strong>…</strong>`) intact; no stray English in a non-English store (or vice-versa). **Run the latent sweep** (`../qa-checklists/SKILL.md` Step 3): every text-input default, every hardcoded string, and every `initializationCode` string literal (price-slider currency labels hide there) — including branches that never rendered this run (`{% if filters.size > 0 %}` etc.); grade unreachable leftovers LATENT with their trigger named, never skip them because the branch didn't render. **A "no stray strings found" verdict needs a targeted grep, not a paraphrase of the sweep.** Two independent 2026-08 code passes of the same store-IT config reached opposite conclusions on this exact item — one claimed a full sweep found zero non-Italian strings, the other found two (the recently-searched remove/re-search `aria-label`s, built as JS string concatenation around a feature-specific handler, not a declared `{# text #}` input). Before recording PASS, actually grep `initializationCode` for `"` string literals near event handlers for every dynamic-content feature (recently-searched, tooltips, ARIA labels set via JS) — these hide from a scan that only checks declared template inputs.
+- [ ] **Liquid gotchas** — price uses an HR price filter: `| price` + `| currencySymbol`, `| priceWithCurrencySymbol`, or `| priceWithCurrency: product.currency` — **any of these is fine when the rendered format matches the customer's; do not flag a working `price` + `currencySymbol` as "should be `priceWithCurrency`"** (the only real price failures are Shopify's `| money`, a hardcoded symbol, and a bare `| priceWithCurrency` missing its `: product.currency` argument — reverted as wrong in a real run, store-NO-1 2026-09-01); no nonexistent `| raw`; never `| remove: '.'` (breaks thousands separators — use targeted `| replace: 'kr.', 'kr'`); banner branch untouched; TILE FILL rule present when the tile root isn't `.hr-search-overlay-product-link`.
 - [ ] **`| strip_html` — only when the field actually carries HTML.** Not a blanket rule; flagging it reflexively is a known false positive. A bare `{{ product.title }}` in element text is the **correct** build convention (see `../tile-extractor/SKILL.md`); `product.description` is the field that routinely contains real HTML. Verify first: check the **rendered** tile for tags leaking as visible text, escaped entities (`&amp;`, `&lt;`) or unexpected nested elements in the title, and cross-check the field in `productData_get`. Clean rendered text + plain-text feed → **PASS, no filter needed**. **Never ship "can't confirm from code alone" as a WARN** — the `productData_get` check IS the check (descriptions are normally already stripped in the feed; plain text is the expected case). Without a website-uuid it becomes an operator item, recorded OPERATOR — never a WARN implying a defect (retired hedge, 2026-08-19).
 - [ ] **Price format — compare against the customer's own output, not the locale.** A Swedish store rendering `1,180.00 SEK` (comma thousands, period decimals) may be exactly what its native tiles do; "correcting" it to `1 180,00 kr` then breaks parity. Always diff against a native tile on the same page before flagging a separator or currency-suffix difference. **But parity on your sample is not a clean bill of health for the code** — this rule justifies *not flagging a difference*, never *declaring the emit site correct*. Read how the suffix is emitted: unconditional (`{{ product.price | price }}<span>,-</span>`) breaks the moment a price carries decimals, and passes every whole-unit fixture on the way there. Check it on the `<ins>` and `<del>` branches separately, and against the decimals/øre fixture — a rendered PASS here plus an unconditional emit is a **FAIL**, not a code-hygiene note.
 - [ ] **CUSTOM_STYLING_BLOCK** — empty (the only emitted CSS is the TILE FILL rule, plus header-match overrides if applicable).
@@ -935,7 +935,7 @@ run with a chat summary listing the report files and a one-line verdict per doma
   (e.g. "Category | Category") are a Liquid template bug — the same field is being output twice.
 - **Two independent QA runs of the same domain find disjoint issue sets, not overlapping ones —
   cross-comparing them is worth doing, not just re-running the same skill twice.** Two sessions
-  QA'd piume.it's same two REVIEW configs three days apart (2026-08-07 and 2026-08-10): both
+  QA'd store-IT's same two REVIEW configs three days apart (2026-08-07 and 2026-08-10): both
   independently caught the same top defect (the `addToCartAnimation()` fetch-repatch bug) and
   the same content-feed/card-spec gap, but each also found 3-4 real issues the other completely
   missed (aria-label parity, sort-label typo, and recently-searched aria-labels on one side; OOS

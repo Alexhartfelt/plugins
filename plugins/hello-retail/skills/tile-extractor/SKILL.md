@@ -121,7 +121,7 @@ my.helloretail.com navigation is the login preflight's read-only root-URL probe)
 
     Without it, cart additions from HR-rendered tiles are not attributed to Hello Retail. This applies to every ATC pattern — plain `<form action>` submit buttons, AJAX ATC buttons, and quick-add/variant-picker buttons. If the native button already has an `onclick`, prepend the `hrq.push` call to the existing handler code rather than replacing it (e.g. `onclick="hrq.push(['trackClick','{{ product.trackingCode }}']); originalHandler()"`) — never drop the native handler (Output Rule #10).
 
-    **And ONLY on add-to-cart actions.** Never add `trackClick` to CTAs that navigate instead of adding to cart — variant CTAs ("SE VARIANTER" / "Choose variant" links to the PDP), view CTAs ("Se mer" / "View product"), sold-out CTAs, or the tile/image/title links themselves. Those are covered by `fix_links` via the `#aw_source=` fragment, which is what attributes their clicks and conversions; a duplicate `trackClick` there is wrong, not extra-safe. (Scope confirmed by the QA team — Malin, 2026-07.)
+    **And ONLY on add-to-cart actions.** Never add `trackClick` to CTAs that navigate instead of adding to cart — variant CTAs ("SE VARIANTER" / "Choose variant" links to the PDP), view CTAs ("Se mer" / "View product"), sold-out CTAs, or the tile/image/title links themselves. Those are covered by `fix_links` via the `#aw_source=` fragment, which is what attributes their clicks and conversions; a duplicate `trackClick` there is wrong, not extra-safe. (Scope confirmed by the QA team, 2026-07.)
 
 12. **Tile content alignment must match the native tile** — during the survey, read the native tile's computed `text-align` (title, price, description — see the TILE CONTENT ALIGNMENT section) and report it as an **ALIGNMENT** line for the calling shell skill. The HR Search/Recom shells set `text-align: center` at the overlay/cell level (`.hr-overlay-search`, `.hr-search-overlay-product`), and most native tiles rely on the *inherited default* (`start`) rather than setting their own — so a byte-perfect tile silently renders **centered** inside HR while the storefront shows it **left-aligned**. This skill never outputs CSS (Output Rule #2), so the compensation lives in the shell's tile-fill rule; your job is to detect and report the native value, never to assume it.
 
@@ -343,7 +343,7 @@ The HR shells are not alignment-neutral: the Search base CSS sets `text-align: c
 directly wraps the tile). `text-align` inherits — and most native tiles never set their own
 (every element computes to the inherited default `start`) — so a byte-perfect reproduced tile
 silently renders **centered** inside HR while the customer's category page shows it
-**left-aligned**. Field-confirmed on relatiegeschenken.nl (Magento/Alpine, 2026-07): all tile
+**left-aligned**. Field-confirmed on store-NL-1 (Magento/Alpine, 2026-07): all tile
 text computed `start` natively and centered in the overlay until compensated.
 
 **Survey it on every extraction** — read the computed `text-align` of the content elements:
@@ -465,7 +465,7 @@ When a description or title field may contain HTML, **always ask the operator** 
 - **NEVER** hardcode currency symbol (`kr`, `€`, `$`)
 - `| price` MUST be present in the first two forms — without it the dashboard's formatting is silently ignored
 - **All four are equivalent for QA purposes** — pick whichever reproduces the customer's rendered format (separators, symbol, symbol position). No form is mandatory over another, and `../search-qa/SKILL.md` grades on parity with the native tile, not on which filter was used.
-- If you use `priceWithCurrency`, **always pass `: product.currency`** — the bare `| priceWithCurrency` was pushed and had to be reverted in a real run (skinsecret 2026-09-01)
+- If you use `priceWithCurrency`, **always pass `: product.currency`** — the bare `| priceWithCurrency` was pushed and had to be reverted in a real run (store-NO-1 2026-09-01)
 
 ### Discount percentage — always dynamic
 

@@ -63,7 +63,7 @@ Every ATC button **must** carry the tracking call (the tile skill emits the butt
 onclick="hrq.push(['trackClick','{{ product.trackingCode }}'])"
 ```
 
-**Only buy/ATC actions get `trackClick`.** Variant CTAs ("SE VARIANTER" / "Choose variant"), view CTAs ("Se mer"), and sold-out CTAs navigate to the PDP — `fix_links` (`#aw_source=`) attributes those clicks; do not add `trackClick` to them (QA team, Malin).
+**Only buy/ATC actions get `trackClick`.** Variant CTAs ("SE VARIANTER" / "Choose variant"), view CTAs ("Se mer"), and sold-out CTAs navigate to the PDP — `fix_links` (`#aw_source=`) attributes those clicks; do not add `trackClick` to them (QA team).
 
 ## Platform not one of these four
 

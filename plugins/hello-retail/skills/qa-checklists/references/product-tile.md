@@ -76,7 +76,7 @@ functionality instead: click-through, PDP-price parity, CTA/ATC, translations
       arrivo" vs "Esaurito") with different labels on the SAME `inStock:false` flag; a template
       that hardcodes one label for every OOS product passes on whichever sub-state you happen to
       sample and fails the other. Test **at least 2 different OOS fixtures** before grading this
-      PASS — one confirmed OOS product is not enough (real case, piume.it 2026-08-10: one OOS
+      PASS — one confirmed OOS product is not enough (real case, store-IT 2026-08-10: one OOS
       fixture matched native, a second — same `extraData.availability` value — didn't, because
       native's distinction isn't carried by any feed field HR can branch on).
 
@@ -247,7 +247,7 @@ functionality instead: click-through, PDP-price parity, CTA/ATC, translations
 - [ ] Extra: amount-of-products option doesn't work properly
 - [ ] IF buy button: add tracking code *(buy/ATC actions only — variant / view / sold-out CTAs
       are navigation links covered by `fix_links` / `#aw_source=`; never flag a missing
-      `trackClick` on those — QA team, Malin)*
+      `trackClick` on those — QA team)*
 - [ ] Buy button behaviour doesn't match the customer's own buy button — **check the native
       button first** (adds to cart in place? opens the mini-cart? redirects to the cart page?
       no redirect at all?), then verify ours does exactly the same. If their button

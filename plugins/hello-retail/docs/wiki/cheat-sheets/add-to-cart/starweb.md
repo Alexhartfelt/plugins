@@ -24,4 +24,4 @@ If `quickShop` is undefined when called, the customer either isn't on Starweb or
 ---
 
 ## Timeline
-- 2026-05-21: Starweb quickShop init documented from Taqi's Starweb cheat sheet.
+- 2026-05-21: Starweb quickShop init documented from the team's Starweb cheat sheet.

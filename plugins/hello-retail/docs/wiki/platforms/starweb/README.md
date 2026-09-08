@@ -10,4 +10,4 @@ Starweb is a Nordic ecommerce platform. Hello Retail supports it via the [Starwe
 ---
 
 ## Timeline
-- 2026-05-21: Page seeded from Taqi's Starweb cheat sheet.
+- 2026-05-21: Page seeded from the team's Starweb cheat sheet.

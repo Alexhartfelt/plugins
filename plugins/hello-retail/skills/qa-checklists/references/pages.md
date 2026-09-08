@@ -8,7 +8,7 @@ HR-rendered category pages. For tile-level items use `product-tile.md`.
 > `hr-search-product-code="pa-<pagesKey>|…"` on the customer's own markup in the raw HTML).
 > The customer owns that UI and logic — record the feature as `SKIPPED — API-based`
 > (qa-checklists SKILL.md Step 2), keep the feed/data + operator items, and stop here.
-> What else D&TS should QA on API-based Pages is TBD with Malin/QA team (2026-07-20).
+> What else D&TS should QA on API-based Pages is TBD with the QA team (2026-07-20).
 
 > **No native reference:** Pages *replaces* the customer's category page. If toggling Pages
 > off (widget Show switch) reveals a blank page / empty container, there is no native design
@@ -88,7 +88,7 @@ HR-rendered category pages. For tile-level items use `product-tile.md`.
 - [ ] Price filter: when adding a price range it adds an 'x' in the corner
 - [ ] Price filter: change the currency *(ACCEPTED exception: bare numbers with no currency
   symbol on the range slider are not a defect — the shared `ui_utility.register_filter`
-  component has no currency parameter (QA team/Malin); flag only a **wrong** currency)*
+  component has no currency parameter (QA team); flag only a **wrong** currency)*
 - [ ] Price filter: highest price is shown in the middle instead of at the right end of the screen
 - [ ] Price slider: strange price range shown
 - [ ] BUG — price filter: when adding a range, it adds an x-button

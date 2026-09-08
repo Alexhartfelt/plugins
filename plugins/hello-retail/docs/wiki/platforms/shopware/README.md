@@ -10,4 +10,4 @@ Shopware is a major DE/EU ecommerce platform (Shopware 6 is current). Hello Reta
 ---
 
 ## Timeline
-- 2026-05-21: Page seeded from Taqi's Shopware cheat sheet.
+- 2026-05-21: Page seeded from the team's Shopware cheat sheet.

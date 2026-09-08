@@ -48,7 +48,7 @@ All of these sit on top of the **Product Intelligence** AI engine and the Hello 
 
 D&TS (Delivery & Technical Services) is the umbrella for the three customer-facing post-sales teams:
 
-- **Implementation** — get the store live (Andreas Pihl Jørgensen and team).
+- **Implementation** — get the store live (the Implementation team).
 - **Success** — drive long-term value, EBRs, optimization (Lasse Ingemann Lind, Anthony Derda Rizzuto, Stephanie Liekola Isla, Yaser Osman, and others).
 - **Support** — fast technical answers and bug triage.
 

@@ -29,4 +29,4 @@ If the Pages template renders products with HR's `.aw-buy-form`, you'll likely a
 ---
 
 ## Timeline
-- 2026-05-21: Magento-specific Pages snippet extracted from Taqi's Pages cheat sheet.
+- 2026-05-21: Magento-specific Pages snippet extracted from the team's Pages cheat sheet.

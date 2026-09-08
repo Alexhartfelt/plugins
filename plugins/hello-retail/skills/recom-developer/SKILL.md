@@ -44,7 +44,7 @@ A Recommendations design is a **product tile** sitting inside a **swiper-slider 
 |---|---|---|
 | `website-uuid` *(required for MCP)* | `8f3c…` | Unique per site/domain; drives every MCP call. If missing and you intend to use the MCP, **ask**. Without it, fall back to inline copy-paste (see Step 7). |
 | `design-key` *(required for MCP)* | `others-also-bought` | The recom **design** to read/edit. Unsure which? `recoms_listDesigns(website-uuid)` (company customs + shared standards) or `recoms_listBoxes(website-uuid)` (each box's `designKey`). **Never edit a standard/shared or archived design — those are read-only.** If missing, **ask.** → `references/mcp-flow.md` |
-| `category-url` *(required)* | `https://shop.com/collections/all` | The product grid to survey. You fetch it yourself — don't ask for pasted DOM. |
+| `category-url` *(required)* | `https://example-shop.com/collections/all` | The product grid to survey. You fetch it yourself — don't ask for pasted DOM. |
 | `banner-size-name` *(optional)* | `recom-banner-300` | Replaces `BANNER_SIZE_NAME_PLACEHOLDER`. If absent, leave the placeholder and note it in MISSING DATA. |
 | `locale` *(infer)* | `da`, `de`, `es` | Infer from `<html lang>` / visible copy; confirm via `website_getInfo`. Pass it to the tile skill — it localizes the tile copy. |
 | `customer-slug` *(optional)* | `acme` | For labelling; derive from domain if absent. |

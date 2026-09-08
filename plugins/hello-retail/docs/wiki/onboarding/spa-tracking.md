@@ -66,7 +66,7 @@ hrq.push([
 ```
 
 The documented use case is an SPA that serves **several regional storefronts from one app** — when
-the visitor moves from `domain.com/dk` to `domain.com/sv`, pass the new region's `websiteUuid` so the
+the visitor moves from `example-shop.com/dk` to `example-shop.com/sv`, pass the new region's `websiteUuid` so the
 right site configuration applies. Without it the visitor keeps generating traffic against the
 previous region's website: wrong currency, wrong catalog, polluted statistics on both sites.
 

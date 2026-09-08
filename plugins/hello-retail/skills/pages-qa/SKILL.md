@@ -103,7 +103,7 @@ page, open the widget (`#addwishPageAdd`) and read the **Pages tab's solution he
 of **"Pages (API)"** means the customer consumes the HR Category API from their own backend and
 renders category pages with their **own** template — there is no HR-rendered design, filter
 panel, sorting, or tile to QA, and the customer (not HR) owns that UI and logic. Corroborating
-signatures (field-verified on uropenn.se / Vendre, 2026-07-20): the customer's own
+signatures (field-verified on store-SE-3 / Vendre, 2026-07-20): the customer's own
 server-rendered tile markup carries `hr-search-product-code="pa-<pagesKey>|…"` attributes in
 the **raw pre-JS HTML** (curl it — the `pa-` prefix is the Pages attribution code), and no
 client-side `core.helloretail.com` call for the category content exists (backend integrations
@@ -115,7 +115,7 @@ that remain meaningful (analytics, API-log/config checks with HR support + the c
 team). The widget's Show toggle and a rendering page do NOT contradict this — the products
 render because the customer's backend put them there, not because HR painted them.
 > **Scope note (2026-07-20):** what D&TS *should* still QA on an API-based Pages solution
-> (beyond feed/data + operator items) is an open question — being checked with Malin/QA team;
+> (beyond feed/data + operator items) is an open question — being checked with the QA team;
 > update this section when the answer lands.
 
 On **every** page you visit, click `#addwishPageAdd` to open the on-site HR widget and switch
@@ -226,7 +226,7 @@ say which ones you exercised. On every fixture page, run and record the same set
   reference grid where one exists — the counted tiles-per-row must agree with what the measured
   widths say fits (container ÷ (tile + gap)). "Reflows cleanly" is not a verdict; "1/row at
   820px vs native 2/row (container 780px, tile 372px + 16px gap)" is (real case,
-  jespersplanteskole.dk: the prose version shipped a broken tablet grid that the next run's
+  store-DK-1: the prose version shipped a broken tablet grid that the next run's
   count caught immediately).
 
 **Facet lists legitimately differ between two categories.** Filter options are computed from the

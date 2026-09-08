@@ -11,8 +11,20 @@
   "plugins": [
     {
       "name": "hello-retail",
+      "displayName": "Hello Retail",
       "source": "./plugins/hello-retail",
-      "description": "Hello Retail for AI agents: build and QA Search, Recommendations, Pages, newsletter and triggered-email designs as drafts, set up product feeds, and answer Hello Retail questions from the bundled knowledge base."
+      "description": "Hello Retail for AI agents: build and QA Search, Recommendations, Pages, newsletter and triggered-email designs as drafts, set up product feeds, and answer Hello Retail questions from the bundled knowledge base.",
+      "category": "ecommerce",
+      "keywords": [
+        "hello-retail",
+        "ecommerce",
+        "site-search",
+        "product-recommendations",
+        "product-feeds",
+        "liquid",
+        "qa",
+        "knowledge-base"
+      ]
     }
   ]
 }

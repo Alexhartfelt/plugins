@@ -2,7 +2,7 @@
 
 Recurring layout bugs in HR Recommendation sliders and their verified CSS fixes. Everything is scoped to `#hello-retail-{{ key }}` and goes in the design's **Custom Styling (CSS)** block (never the HTML/Liquid slot — see the last gotcha).
 
-These all came out of debugging **getcamping.se** (DanDomain-style theme, multiple recom designs) on a live iPhone (430×932) + desktop, but the patterns are platform-agnostic: they bite whenever a recom box is dropped into a host theme whose containers/classes the HR slider inherits.
+These all came out of debugging **store-SE-7** (DanDomain-style theme, multiple recom designs) on a live iPhone (430×932) + desktop, but the patterns are platform-agnostic: they bite whenever a recom box is dropped into a host theme whose containers/classes the HR slider inherits.
 
 > **Root theme:** the box base CSS is usually `#hello-retail-{{ key }} { width: 100%; max-width: 100vw }`. `100vw` is the usual culprit — it ignores the host container's gutters and the box's own left offset.
 
@@ -40,7 +40,7 @@ Keep it inside the mobile media query so the desktop layout (box constrained ins
 
 **Cause.** Arrows are positioned in a **side gutter**, not over the tiles — typically `.swiper-button-prev { left: -45px }` / `.swiper-button-next { right: -45px }` (base) with a `@media (max-width: 1280px)` override around `-5px`. Those negative offsets need empty space beside the box. Full-bleed removes the gutter, so the arrows land off-screen.
 
-**Fix.** In the same mobile/tablet media query the theme already uses (mind the breakpoint — it was `1280px`, not `768px`, on GetCamping), flip the offsets to a small **positive** inset so they overlay just inside the slider, and set the opposite side to `auto`:
+**Fix.** In the same mobile/tablet media query the theme already uses (mind the breakpoint — it was `1280px`, not `768px`, on store-SE-7), flip the offsets to a small **positive** inset so they overlay just inside the slider, and set the opposite side to `auto`:
 
 ```css
 @media (max-width: 1280px) {
@@ -97,4 +97,4 @@ If the CSS shows up as **visible text** near the top of the page, it landed in t
 ---
 
 ## Timeline
-- 2026-06-03: Seeded from getcamping.se mobile/desktop recom debugging — full-bleed spacing, arrow placement, `100vh` wrapper-height inheritance, grid-injection breakout, CSS-in-wrong-slot.
+- 2026-06-03: Seeded from store-SE-7 mobile/desktop recom debugging — full-bleed spacing, arrow placement, `100vh` wrapper-height inheritance, grid-injection breakout, CSS-in-wrong-slot.

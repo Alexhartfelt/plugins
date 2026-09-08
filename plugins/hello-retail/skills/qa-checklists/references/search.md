@@ -11,7 +11,7 @@ for the accessibility-template generation.
       `{# text label_close_search #}` and desktop never does, so desktop's close button renders
       `aria-label=""`. Check every accessibility-relevant `{# text #}` input exists in BOTH the
       desktop and mobile configs, not just that it renders correctly wherever it happens to be
-      declared (real case, piume.it 2026-08-07: desktop close button, mobile fine).
+      declared (real case, store-IT 2026-08-07: desktop close button, mobile fine).
 - [ ] Mobile/tablet: not able to trigger search
 - [ ] Mobile: design is not set up
 - [ ] Mobile: triggers the desktop search
@@ -96,7 +96,7 @@ for the accessibility-template generation.
       resets to empty while the underlying search/filter state stays correct (results don't
       change), which reads to a shopper as "my search was lost" even though nothing actually
       broke. Type a real query, then click a filter control, and confirm the input still shows
-      the typed text (real case, piume.it 2026-08-10, desktop embedded — reproduced on 2 different
+      the typed text (real case, store-IT 2026-08-10, desktop embedded — reproduced on 2 different
       filter dropdowns, root cause unconfirmed but not the documented `close_overlay()` path).
 
 ## Logo
@@ -221,7 +221,7 @@ for the accessibility-template generation.
       the moment the title doesn't fit the prefix's assumed form (e.g. "Nessun" + "categorie"
       (plural feminine) + "trovato" = "Nessun categorie trovato", not grammatical Italian). Check
       this on EACH content-feed tab (Category/Brand/Blog), not just the general product 0-results
-      state — they're composed differently and can pass/fail independently (real case, piume.it
+      state — they're composed differently and can pass/fail independently (real case, store-IT
       2026-08-07, desktop config).
 
 ## Filters / sorting
@@ -286,7 +286,7 @@ for the accessibility-template generation.
       don't just read it and confirm it "looks like correct Italian/Danish/etc." ("Prezzo
       descrescente" reads as fine Italian in isolation; native's own dropdown spells it "Prezzo
       **decrescente**" — the typo only shows up in a side-by-side string diff, real case
-      piume.it 2026-08-07)
+      store-IT 2026-08-07)
 - [ ] When adding sorting, make sure the text fits within the box (and doesn't overwrite the dropdown arrow)
 
 ### Filter checkboxes
@@ -363,7 +363,7 @@ for the accessibility-template generation.
 
 > **ACCEPTED — do not flag:** the range slider showing bare numbers without a currency symbol
 > (e.g. "40"–"250", no €). The shared `ui_utility.register_filter` component takes no currency
-> parameter — account-wide behaviour, confirmed not-an-issue by the QA team (Malin). "Currency
+> parameter — account-wide behaviour, confirmed not-an-issue by the QA team. "Currency
 > incorrect" below means the **wrong** currency is shown, not a missing symbol.
 
 - [ ] Currency incorrect
@@ -455,7 +455,7 @@ for the accessibility-template generation.
       (e.g. `"Remove search '" + term + "'"`), not a `{# text #}` template declaration, so a
       localization sweep that only checks declared text inputs walks straight past them. Grep
       `initializationCode` for string literals built around the recently-searched remove/re-search
-      handlers specifically, in both configs (real case, piume.it 2026-08-07, mobile
+      handlers specifically, in both configs (real case, store-IT 2026-08-07, mobile
       `initializationCode`).
 - [ ] Tablet (grid design): placed on the left side and takes up the same space as a tile…
 

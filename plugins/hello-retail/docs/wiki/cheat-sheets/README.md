@@ -70,4 +70,4 @@ If a new platform shows up (e.g. WooCommerce, PrestaShop, Centra), just create `
 ---
 
 ## Timeline
-- 2026-05-19: Cheat-sheets section created from Taqi's Notion exports.
+- 2026-05-19: Cheat-sheets section created from the team's Notion exports.

@@ -2,7 +2,7 @@
 
 > **Provenance — read before grading.** Every other file in this folder is transcribed from the
 > QA Specialist's "Checklist Q2" workbook. That workbook has **no Newsletter or Triggered Email
-> sheet**, so this catalogue is **authored, not transcribed** (2026-09-07, Taqi Mustafa) from
+> sheet**, so this catalogue is **authored, not transcribed** (2026-09-07, D&TS) from
 > three sources: the renderer rulebook `newsletterContent_getRenderingInfo` returns per website,
 > the build rules in `newsletter-developer` / `triggered-email-developer`, and the
 > defects found when a LIVE newsletter design was read and rendered on 2026-09-07.

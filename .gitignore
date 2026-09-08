@@ -40,6 +40,7 @@ test-results/
 # Claude Code local state (per-machine settings, brainstorm mockups)
 .claude/settings.local.json
 .superpowers/
+CLAUDE.local.md
 
 # Scratch / temp
 tmp/

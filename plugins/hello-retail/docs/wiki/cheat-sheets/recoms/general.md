@@ -72,7 +72,7 @@ _.util.swiper_slider("11.2.10", "#slider-{{ key }}", {
 });
 ```
 
-- **`cssMode: true` is the preferred route** — the wrapper gets `overflow-x: auto` + `scroll-snap-type: x mandatory`, i.e. the *same mechanism* the theme's own carousels use, so trackpad/wheel/touch behaviour matches natively and vertical page scrolling is never hijacked. Field-verified on HR recoms at [moory.se](https://www.moory.se/) (front page) and all4cycling.com.
+- **`cssMode: true` is the preferred route** — the wrapper gets `overflow-x: auto` + `scroll-snap-type: x mandatory`, i.e. the *same mechanism* the theme's own carousels use, so trackpad/wheel/touch behaviour matches natively and vertical page scrolling is never hijacked. Field-verified on HR recoms at [store-SE-2](https://store-SE-2/) (front page) and store-D.
 - The alternative, Swiper's `mousewheel: true` module, also works but hijacks the wheel while the cursor is over the slider — vertical scrolling stalls there unless you also set `mousewheel: { forceToAxis: true }`. Prefer `cssMode` unless you specifically need mousewheel-module features.
 - `cssMode` requires **`loop: false`**. Upside: no slide clones, so the clone-related event-delegation and duplicate-`id` gotchas disappear. Downside: the slider stops at the last product instead of wrapping — with few products and a fractional `slidesPerView` the row can underfill, so make sure the box returns enough products (fallback strategy / product count in the dashboard).
 - `slidesPerView` accepts fractional values (`2.33`, `5.5`) — the standard way to show a partial "peek" tile matching the storefront's own carousel. Measure the native carousel (container width ÷ tile pitch) rather than guessing.
@@ -294,8 +294,8 @@ if (grandTotalNode !== null) {
 ---
 
 ## Timeline
-- 2026-05-19: Initial import from Taqi's Recoms cheat sheet (Notion export).
+- 2026-05-19: Initial import from the team's Recoms cheat sheet (Notion export).
 - 2026-05-21: Added Price-formatting conventions (Front #27465945156) and Free-Shipping-with-shipping-subtraction skeleton.
 - 2026-06-02: Documented Swiper version upgrade via `_.util.swiper_slider(version, selector, options)` — bump the first arg (e.g. `"6.5.6"` → `"11.2.10"`).
 - 2026-08-06: Added Free-Shipping re-run-on-cart-update MutationObserver (AJAX/drawer carts where the total changes without a page reload).
-- 2026-08-20: Added Mousewheel/touchpad-scroll section (all4cycling onboarding): `cssMode: true` (+ `loop: false`) as the preferred native-scroll route, `mousewheel: true` + `forceToAxis` as the alternative; fractional `slidesPerView` for the native "peek" look; arrow-hiding guidance; field references moory.se + all4cycling.com.
+- 2026-08-20: Added Mousewheel/touchpad-scroll section (store-D onboarding): `cssMode: true` (+ `loop: false`) as the preferred native-scroll route, `mousewheel: true` + `forceToAxis` as the alternative; fractional `slidesPerView` for the native "peek" look; arrow-hiding guidance; field references store-SE-2 + store-D.

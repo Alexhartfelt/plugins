@@ -86,4 +86,4 @@ Use in design:
 ---
 
 ## Timeline
-- 2026-05-21: Crawler helpers documented from Taqi's Crawler cheat sheet.
+- 2026-05-21: Crawler helpers documented from the team's Crawler cheat sheet.

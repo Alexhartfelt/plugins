@@ -4,9 +4,9 @@ These are **not intake questions**. The base layout ships on every build and is 
 
 Every value below is one of three things: a **design token** (`{{ … }}`), a **fixed default** (use it as written), or a **measured number** with the exact command to measure it. If a recipe needs something that is none of those, that is a MISSING DATA line for the operator — not a guess.
 
-**IDs.** `L1`–`L8` = Hamza's consolidated desktop list 1–8 (2026-09-07), `ML1`–`ML5` = his mobile list 1–5. Variable-only points just name the base toggle; code appears only where the base has nothing.
+**IDs.** `L1`–`L8` = the team's consolidated desktop list 1–8 (2026-09-07), `ML1`–`ML5` = the mobile list 1–5. Variable-only points just name the base toggle; code appears only where the base has nothing.
 
-**Verification status** per recipe: **verified live** = measured on sportkost.se (desktop-embedded, LIVE, 1440×900, 2026-09-04 and 2026-09-07) — sportkost's own rule, or a rule/function injected on that page and exercised with real clicks; **derived** = read from the base templates, not rendered yet.
+**Verification status** per recipe: **verified live** = measured on store-SE-1 (desktop-embedded, LIVE, 1440×900, 2026-09-04 and 2026-09-07) — store-SE-1's own rule, or a rule/function injected on that page and exercised with real clicks; **derived** = read from the base templates, not rendered yet.
 
 **Capture-back convention.** Anything in this file that is not fully certain carries a `<!-- capture-back: … -->` comment plus a 🧪 callout saying what to record. `grep -n "capture-back" references/layout-options.md` lists them. When a build applies a marked recipe and its Step 17b check passes, **you must propose the capture in the hand-off** (SKILL.md Step 18): the flag flip, the measured values, the site and date — as an edit to this file, made on the operator's approval and committed by them. Never leave the learning in private memory only (SKILL.md rule 11; `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/` gets the platform-generic patterns, this file gets the recipe status and the field log).
 
@@ -49,9 +49,9 @@ Both desktop variants mount the panel as a **fixed, viewport-high flex column** 
 - `position: sticky` inside `.hr-results` uses `top` relative to the **results panel's top edge** (= just below the overlay header on `desktop-overlay`, just below the site header on `desktop-embedded`). `top: 0` is correct in both variants — do not add a header offset.
 - A "separately scrolling" column needs a **bounded height in viewport units** — `100%` resolves against the 3000px-tall results row and does nothing; `100vh` is taller than the panel by the panel's offset, so the bottom of the column can never be reached.
 
-Measured on sportkost: panel top 138px (= the site header), `.hr-results` 762px tall with a 3343px scrollHeight. Base `.hr-results-container` margin: **`42px 20px` on desktop-overlay, `40px 20px` on desktop-embedded** — the numbers L3 subtracts (top + bottom).
+Measured on store-SE-1: panel top 138px (= the site header), `.hr-results` 762px tall with a 3343px scrollHeight. Base `.hr-results-container` margin: **`42px 20px` on desktop-overlay, `40px 20px` on desktop-embedded** — the numbers L3 subtracts (top + bottom).
 
-**The filter re-render model (L7, L8).** Every filter interaction calls `load_more_results(false)`, which **removes and rebuilds the whole `.hr-results`** — filter bar included. Anything you add to the filter DOM (buttons, inputs, classes, `dataset` flags) is gone after each click, and every open dropdown closes. So: (1) JS additions run from the **render hook** below on every render and must be idempotent; (2) expanded/collapsed state that must survive a click lives either in module scope or is re-derived from the DOM (the platform marks a chosen option with class `selected` on its element and `input:checked`); (3) the base binds the dropdown toggle to a click **anywhere on the filter `<li>`** (`this.classList.toggle("active")`, overlay `search.js:300` / embedded `:319`) — any control you place inside a dropdown must `stopPropagation()` on click or the dropdown closes under the visitor. Verified live on sportkost 2026-09-07.
+**The filter re-render model (L7, L8).** Every filter interaction calls `load_more_results(false)`, which **removes and rebuilds the whole `.hr-results`** — filter bar included. Anything you add to the filter DOM (buttons, inputs, classes, `dataset` flags) is gone after each click, and every open dropdown closes. So: (1) JS additions run from the **render hook** below on every render and must be idempotent; (2) expanded/collapsed state that must survive a click lives either in module scope or is re-derived from the DOM (the platform marks a chosen option with class `selected` on its element and `input:checked`); (3) the base binds the dropdown toggle to a click **anywhere on the filter `<li>`** (`this.classList.toggle("active")`, overlay `search.js:300` / embedded `:319`) — any control you place inside a dropdown must `stopPropagation()` on click or the dropdown closes under the visitor. Verified live on store-SE-1 2026-09-07.
 
 **The render hook.** Both L7 and L8 are called from one place: immediately **after the existing `sortFilters();` call at the end of the `yield_template` callback** inside `load_more_results` (`desktop-overlay/search.js:334`, `desktop-embedded/search.js:355` — grep `sortFilters();` in `initializationCode`, it occurs once as a call). The module-level `overlay` variable is in scope there. Calling after `sortFilters()` means your `nth-of-type` counts the **sorted** order.
 
@@ -151,7 +151,7 @@ Which form depends on L1:
 <!-- capture-back: L2-sidebar status=derived -->
 > 🧪 **Capture-back L2-sidebar:** same mechanics as the verified L2-column form, but never rendered on an `aside`. First build: confirm at `.hr-results.scrollTop` 900 / 2200 that the aside's top stays at the panel top, then flip to *verified live* and log it.
 
-**L2-bar (filters stay horizontal)** · **verified live** (sportkost's own rule). The bar renders inside `.hr-products`:
+**L2-bar (filters stay horizontal)** · **verified live** (store-SE-1's own rule). The bar renders inside `.hr-products`:
 
 ```css
 .hr-overlay-search .hr-results .hr-products .hr-filters {
@@ -163,13 +163,13 @@ Which form depends on L1:
 }
 ```
 
-**`<opaque panel background>`** — with the search open at ≥1200px: `getComputedStyle(document.querySelector('.hr-overlay-search .hr-filters').closest('.hr-overlay-search')).backgroundColor`. Alpha 1 → use it. Translucent (`rgba(…, a<1)` — the base ships 0.8, Step 10 sets ≈0.97) → use the **page background** measured in Step 10 (`getComputedStyle(document.body).backgroundColor`) as an opaque value instead. Sportkost: `#fff`. Verified: at `.hr-results.scrollTop` 900 and 2200 the bar's top stayed at the panel top (138px); dropdowns still open over the tiles.
+**`<opaque panel background>`** — with the search open at ≥1200px: `getComputedStyle(document.querySelector('.hr-overlay-search .hr-filters').closest('.hr-overlay-search')).backgroundColor`. Alpha 1 → use it. Translucent (`rgba(…, a<1)` — the base ships 0.8, Step 10 sets ≈0.97) → use the **page background** measured in Step 10 (`getComputedStyle(document.body).backgroundColor`) as an opaque value instead. store-SE-1: `#fff`. Verified: at `.hr-results.scrollTop` 900 and 2200 the bar's top stayed at the panel top (138px); dropdowns still open over the tiles.
 
-`.hr-filters-selected` (the selected-tags row) stays in flow — the default and what sportkost shipped. Only if the operator explicitly says the tags must stick too, add the same five lines for `.hr-overlay-search .hr-results .hr-products .hr-filters-selected` with `top: <rendered height of .hr-filters in px>` measured via `getBoundingClientRect().height`.
+`.hr-filters-selected` (the selected-tags row) stays in flow — the default and what store-SE-1 shipped. Only if the operator explicitly says the tags must stick too, add the same five lines for `.hr-overlay-search .hr-results .hr-products .hr-filters-selected` with `top: <rendered height of .hr-filters in px>` measured via `getBoundingClientRect().height`.
 <!-- capture-back: L2-tags status=derived -->
 > 🧪 **Capture-back L2-tags:** the sticky selected-tags variant has never been rendered. First build that ships it: confirm the two rows don't overlap when a filter is selected/cleared, then flip to *verified live* with site, date and the `top` value.
 
-**L2-column (filters horizontal, content column sticky)** · **verified live** (override injected on sportkost):
+**L2-column (filters horizontal, content column sticky)** · **verified live** (override injected on store-SE-1):
 
 ```css
 .hr-overlay-search .hr-results .hr-content {
@@ -179,7 +179,7 @@ Which form depends on L1:
 }
 ```
 
-Combine with L3-column below when the column must scroll on its own. What sportkost shipped instead, for the record: `position: fixed; left: 0; top: 180px !important; height: calc(100vh - 200px) !important; width: 325px; overflow-y: auto` plus `.hr-products.hr-moved { padding-left: 345px }` — works, but hard-codes the offset, needs the padding hack and breaks the ≤825px stacked breakpoint. The sticky form was injected on the same page and behaved identically (column stuck at the panel top; internal scroll at scrollTop 900 and 2200). Use the sticky form.
+Combine with L3-column below when the column must scroll on its own. What store-SE-1 shipped instead, for the record: `position: fixed; left: 0; top: 180px !important; height: calc(100vh - 200px) !important; width: 325px; overflow-y: auto` plus `.hr-products.hr-moved { padding-left: 345px }` — works, but hard-codes the offset, needs the padding hack and breaks the ≤825px stacked breakpoint. The sticky form was injected on the same page and behaved identically (column stuck at the panel top; internal scroll at scrollTop 900 and 2200). Use the sticky form.
 
 <!-- capture-back: L2-column status=verified-by-injection -->
 > 🧪 **Capture-back L2-column:** verified by an injected override, not yet by a shipped design, and only on `desktop-embedded`. First shipped build (either variant): flip to *verified live (shipped)*, log site/date/variant, and on `desktop-overlay` confirm the `{{ header_height_px }}` formula in L3 (no live overlay measurement exists yet).
@@ -214,7 +214,7 @@ Requires L2. Append to the same element L2 made sticky (`.hr-sidebar` when L1 is
 Math.round(document.querySelector('.hr-overlay-search .hr-filters').closest('.hr-overlay-search').getBoundingClientRect().top)
 ```
 
-Sportkost: 138 → `calc(100vh - 138px - 80px)`. Take the ≥1200px value; the desktop JS exits at ≤992px, so no narrower breakpoint matters. If the site header changes height on scroll or between desktop widths, write the value used into the report — do not average or guess. Do **not** use `max-height: 100vh` or `100%` (see the scroll model). `overflow-y: auto` shows the scrollbar only when the column overflows, which is the "only when it overflows" behaviour asked for.
+store-SE-1: 138 → `calc(100vh - 138px - 80px)`. Take the ≥1200px value; the desktop JS exits at ≤992px, so no narrower breakpoint matters. If the site header changes height on scroll or between desktop widths, write the value used into the report — do not average or guess. Do **not** use `max-height: 100vh` or `100%` (see the scroll model). `overflow-y: auto` shows the scrollbar only when the column overflows, which is the "only when it overflows" behaviour asked for.
 
 <!-- capture-back: L3-panel-top status=per-site-number -->
 > 🧪 **Capture-back L3-panel-top:** the panel top is a per-site number. Every build that uses it adds a field-log row (site, variant, value, whether the header height varied). If a build meets a header whose height changes with scroll, capture the solution you used (e.g. a JS-set custom property) as recipe **L3b** here — with the operator's approval, same session.
@@ -240,7 +240,7 @@ Only applies when L1 is **not** applied.
 Add `.hr-overlay-search .aw-filter__single-wrapper { min-width: 0; }` **only if `product_tile_width` < 200** — the base `min-width: 200px` otherwise forces the cells wider than the tiles.
 
 <!-- capture-back: L4a status=derived -->
-> 🧪 **Capture-back L4 (a):** derived from the base rule and the shell-structure override, never rendered (sportkost shipped (b)). First build that ships (a): measure chip vs tile widths at the override's breakpoints, then flip to *verified live* with site, date, column count and gap.
+> 🧪 **Capture-back L4 (a):** derived from the base rule and the shell-structure override, never rendered (store-SE-1 shipped (b)). First build that ships (a): measure chip vs tile widths at the override's breakpoints, then flip to *verified live* with site, date, column count and gap.
 
 **(b) Fit to content — chips** · **verified live**. Copy as-is, no values to fill:
 
@@ -260,7 +260,7 @@ Add `.hr-overlay-search .aw-filter__single-wrapper { min-width: 0; }` **only if 
 }
 ```
 
-Sportkost ships the same mechanism with `min-width: unset` / dropdown `250px` (chips 94–143px next to 214px tiles) — the values above are the team's consolidated ones; use them, not sportkost's, unless the operator hands you numbers.
+store-SE-1 ships the same mechanism with `min-width: unset` / dropdown `250px` (chips 94–143px next to 214px tiles) — the values above are the team's consolidated ones; use them, not store-SE-1's, unless the operator hands you numbers.
 
 ## L5 — Results title with the count · toggle is base; the headline form is **verified live**
 
@@ -268,7 +268,7 @@ Two different requests — apply the one the operator named:
 
 **Toggle — show / hide the count line.** `{# boolean show_products_results_text = true #}` in **`resultStyles`** (`desktop-overlay/search.css:61`, `desktop-embedded/search.css:55`) gates `.hr-products-text { display: none }`. `true` (base) shows the dynamic line, `false` hides it. Value edit only. The line is `result_subtitle` (`$query$` / `$totalResults$` / `$contentType$`), localized in Step 12 — "dynamic results title = yes" is the base default and needs nothing.
 
-**Headline — the "Products" title becomes the result sentence** (sportkost). Three steps, both desktop variants the same:
+**Headline — the "Products" title becomes the result sentence** (store-SE-1). Three steps, both desktop variants the same:
 
 1. In `resultTemplate`, find the two non-initial headings with `grep -n "<h2 class='hr-products-header'>{{ text_product"` — exactly two hits (`desktop-overlay/search.liquid:414, 427` → `{{ text_products_title }}`; `desktop-embedded/search.liquid:367, 380` → `{{ text_product_title }}`). Never touch `hr-initial-content-header`.
 2. Replace the title token in both with the subtitle expression (`text_products` exists in both variants, `overlay:55` / `embedded:37`):
@@ -279,7 +279,7 @@ Two different requests — apply the one the operator named:
 
 3. Set `{# boolean show_products_results_text = false #}` in `resultStyles` so the sentence isn't shown twice.
 
-Rendered on sportkost: `Söket <strong>"protein"</strong> matchar <strong>1557</strong>` as the h2. Use this sentence form for "count in the title/headline". Only when the operator literally asks for the title with the number in brackets use `{{ text_products_title }} ({{ products.totalResults }})` (embedded: `text_product_title`) and leave the toggle as the operator wants it — never decide the form yourself.
+Rendered on store-SE-1: `Söket <strong>"protein"</strong> matchar <strong>1557</strong>` as the h2. Use this sentence form for "count in the title/headline". Only when the operator literally asks for the title with the number in brackets use `{{ text_products_title }} ({{ products.totalResults }})` (embedded: `text_product_title`) and leave the toggle as the operator wants it — never decide the form yourself.
 
 ## L6 — Category hierarchy in the content feed · base toggle
 
@@ -287,15 +287,15 @@ Rendered on sportkost: `Söket <strong>"protein"</strong> matchar <strong>1557</
 
 ## L7 — "Show more" for filter groups · **field-proven recipe in the cheat-sheet**
 
-When the config has more than **6** filter groups: show **5**, hide the rest behind a toggle, **sorting always visible**. Use the recipe *Collapse a long filter row behind a "More filters" toggle* in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/search/general.md` **verbatim** — it is field-proven (desktop-embedded onboarding, 2026-08-12) and it is the version that survives the re-render model above. Set its two numbers to Hamza's: `visible_filter_count = 5` in `initializationCode` and `:nth-child(n+6)` in both CSS rules; call `limit_filters()` from the render hook. Labels are `{# text label_more_filters #}` / `{# text label_fewer_filters #}` design fields in `resultTemplate`, translated in Step 12.
+When the config has more than **6** filter groups: show **5**, hide the rest behind a toggle, **sorting always visible**. Use the recipe *Collapse a long filter row behind a "More filters" toggle* in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/search/general.md` **verbatim** — it is field-proven (desktop-embedded onboarding, 2026-08-12) and it is the version that survives the re-render model above. Set its two numbers to the team's: `visible_filter_count = 5` in `initializationCode` and `:nth-child(n+6)` in both CSS rules; call `limit_filters()` from the render hook. Labels are `{# text label_more_filters #}` / `{# text label_fewer_filters #}` design fields in `resultTemplate`, translated in Step 12.
 
 Do **not** write the shorter JS-only version that creates the button in JS and stores `hr-collapsed` on the wrapper: the wrapper is rebuilt on every filter click, so the row snaps shut under the visitor after each selection, the button text is hard-coded English, and a filter hidden behind the toggle stays hidden when it is the active one. The cheat-sheet version keeps `filters_expanded` in module scope, authors the button in the template with `data-label-*` attributes, auto-expands when a hidden group carries `.hr-selected-filter-count`, and excludes `.aw-filter__sorting-wrapper` in both CSS and JS.
 
-## L8 — "Show more" inside a filter + inline option search · **verified live** (function injected on sportkost, real clicks)
+## L8 — "Show more" inside a filter + inline option search · **verified live** (function injected on store-SE-1, real clicks)
 
-Applies to **flat LIST filters only** — they render as `div.aw-filter-tag-list > label` (one `<label><input type="checkbox" …><span class="aw-filter-tag-title">…</span> <span class="aw-filter-tag-count">(n)</span><span class="checkbox-span"></span></label>` per option; sportkost brand: 99 labels). Not to the category tree (`ul.aw-filter-list > li` with nested `ul` — collapsing a tree by top-level items hides whole branches) and not to BOOLEAN filters (`aw-filter-tag-list aw-filter-exclusive`, two options). The draft this came from targeted `.aw-filter-list > li`, which matches nothing on a flat list — the selectors below are the live ones.
+Applies to **flat LIST filters only** — they render as `div.aw-filter-tag-list > label` (one `<label><input type="checkbox" …><span class="aw-filter-tag-title">…</span> <span class="aw-filter-tag-count">(n)</span><span class="checkbox-span"></span></label>` per option; store-SE-1 brand: 99 labels). Not to the category tree (`ul.aw-filter-list > li` with nested `ul` — collapsing a tree by top-level items hides whole branches) and not to BOOLEAN filters (`aw-filter-tag-list aw-filter-exclusive`, two options). The draft this came from targeted `.aw-filter-list > li`, which matches nothing on a flat list — the selectors below are the live ones.
 
-Behaviour: show **6** options, then a *Show more (N)* button; from **15** options also an inline search box above the list. After the visitor picks an option the platform re-renders and closes the dropdown; on reopen the list is auto-expanded when a hidden option is selected (the platform marks it with class `selected` on the label and `input:checked` — verified). All of this was exercised with real clicks on sportkost 2026-09-07: collapse 99 → 6, expand, search "bar" → 1 match with the dropdown still open, select the 8th option → re-render, reopen → auto-expanded.
+Behaviour: show **6** options, then a *Show more (N)* button; from **15** options also an inline search box above the list. After the visitor picks an option the platform re-renders and closes the dropdown; on reopen the list is auto-expanded when a hidden option is selected (the platform marks it with class `selected` on the label and `input:checked` — verified). All of this was exercised with real clicks on store-SE-1 2026-09-07: collapse 99 → 6, expand, search "bar" → 1 match with the dropdown still open, select the 8th option → re-render, reopen → auto-expanded.
 
 **1. `resultTemplate`** — labels as design fields (translate in Step 12; `$count$` is replaced by the JS), carried to the JS on the bar's wrapper because JS can't read `{# text #}` tokens:
 
@@ -470,7 +470,7 @@ JS: no change — the mobile base binds by class anywhere in the overlay (`overl
 <!-- capture-back: ML5b status=derived -->
 > 🧪 **Capture-back ML5b:** never rendered. First build that ships it: verify on a real mobile viewport that the field, filters and close sit in one row in that order, the count bubble renders on the inline filters button, the keyboard doesn't cover the row, and the header row is not an empty band; then flip to *verified live*, log site/date and the `hide_header` / logo choice that went with it.
 
-## Team-recommended answers (Hamza, 2026-09-07) — for when the operator asks "what do you recommend?"
+## Team-recommended answers (2026-09-07) — for when the operator asks "what do you recommend?"
 
 These are **not defaults and are never applied unasked**; the *Applied defaults* stay the base. Quote them only when an operator asks for a recommendation on one of these points, and record the answer they choose.
 
@@ -504,11 +504,11 @@ One row per build that applied a recipe. Site names and layout numbers only — 
 
 | Date | Site | Variant | Recipe | Values | Outcome |
 |---|---|---|---|---|---|
-| 2026-09-04 | sportkost.se | desktop-embedded | L2-bar | `top: 0; z-index: 11; background: #fff; padding: 10px 1px` | verified live (sportkost's own rule) |
-| 2026-09-04 | sportkost.se | desktop-embedded | L2-column + L3 | panel top 138; `max-height: calc(100vh - 138px - 80px)` | verified by injected override; sportkost itself ships `position: fixed; top: 180px; height: calc(100vh - 200px)` + `padding-left: 345px` |
-| 2026-09-04 | sportkost.se | desktop-embedded | L4 (b) | chips 94–143px, tiles 214px; sportkost's values `min-width: unset`, dropdown `250px` | verified live |
-| 2026-09-04 | sportkost.se | desktop-embedded | L5 headline | h2 = `result_subtitle`; 1557 results for "protein" | verified live |
-| 2026-09-07 | sportkost.se | desktop-embedded | L8 | brand filter 99 labels → 6 + toggle + search; select 8th option → re-render, `label.selected`, reopen auto-expanded | verified live (function injected, real clicks) |
+| 2026-09-04 | store-SE-1 | desktop-embedded | L2-bar | `top: 0; z-index: 11; background: #fff; padding: 10px 1px` | verified live (store-SE-1's own rule) |
+| 2026-09-04 | store-SE-1 | desktop-embedded | L2-column + L3 | panel top 138; `max-height: calc(100vh - 138px - 80px)` | verified by injected override; store-SE-1 itself ships `position: fixed; top: 180px; height: calc(100vh - 200px)` + `padding-left: 345px` |
+| 2026-09-04 | store-SE-1 | desktop-embedded | L4 (b) | chips 94–143px, tiles 214px; store-SE-1's values `min-width: unset`, dropdown `250px` | verified live |
+| 2026-09-04 | store-SE-1 | desktop-embedded | L5 headline | h2 = `result_subtitle`; 1557 results for "protein" | verified live |
+| 2026-09-07 | store-SE-1 | desktop-embedded | L8 | brand filter 99 labels → 6 + toggle + search; select 8th option → re-render, `label.selected`, reopen auto-expanded | verified live (function injected, real clicks) |
 
 ## Self-check
 

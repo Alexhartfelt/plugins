@@ -3,7 +3,7 @@
 Template-level defects that recur across customers and platforms because they live in the
 **shared base templates**, not in any one onboarding. Every QA run walks this file so that
 recurrence never depends on rediscovery — the cross-card manual-vs-Claude comparison
-(2026-08-24, Shanza) found the typed-price-filter bug manually on five domains across five
+(2026-08-24, QA team) found the typed-price-filter bug manually on five domains across five
 platforms and by the skills on zero, and the thousands-separator bug root-caused on four
 domains yet missed on two others in the same period.
 
@@ -81,7 +81,7 @@ domains yet missed on two others in the same period.
 
 - **Features:** Search (desktop AND mobile configs).
 - **Verify:** open the overlay, interact (type, filter), close it — then **scroll the page**.
-  A page that no longer scrolls is Blocker-grade (real case: bettyboo mobile — the severest
+  A page that no longer scrolls is Blocker-grade (real case: store-G mobile — the severest
   manual find on that card, absent from every comment thread; only the rendered check sees it).
 
 ### T7 · Stray popup / oversized image on back-navigation from a PDP
@@ -89,7 +89,7 @@ domains yet missed on two others in the same period.
 - **Features:** Recoms, Search.
 - **Verify:** open a PDP from an HR tile, press browser Back — the restored page must show no
   stray large-image popup and no oversized tile image (bfcache restore re-runs lazy-load/slider
-  JS badly). Same bug hit two unrelated shops (luksushund, werchzueglade).
+  JS badly). Same bug hit two unrelated shops (store-F, store-CH).
 
 ### T8 · OOS products served inside recoms with a clickable ATC
 

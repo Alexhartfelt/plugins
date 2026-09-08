@@ -36,4 +36,4 @@ Adapt the collection paths to whatever the customer uses (e.g. `/collections/new
 ---
 
 ## Timeline
-- 2026-05-21: Shopify-specific Pages snippets extracted from Taqi's Pages cheat sheet.
+- 2026-05-21: Shopify-specific Pages snippets extracted from the team's Pages cheat sheet.

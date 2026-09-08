@@ -669,7 +669,7 @@ Strip specific sort options (e.g. "Price ascending") from the sort dropdown.
 > Important: the label to be removed should literally match `THISSHOULDBEREMOVED` (replace with the actual label text).
 
 ```javascript
-// Example - Line 135 JavaScript Estella.nl
+// Example
 
 document.querySelectorAll(".aw-sorting-tag-list label").forEach(function(item){
     if(item.textContent == "THISSHOULDBEREMOVED"){
@@ -888,14 +888,14 @@ Every line it prints is a property to set back to the native value (scoped to `.
 
 **Fix:** if the ask is "Category (or any content-feed type) needs to be its own separate tab," set `{# boolean show_vertical_link_content = true #}` in `resultTemplate` — no other template/JS change needed. Note this also changes how the content **links themselves** render inside the tab (vertical mode = full-width list rows with a hierarchy breadcrumb + chevron icon; horizontal mode = a horizontal-scrolling row of pill-shaped chips) — that's a visual trade-off to flag to the operator, not just a tab-visibility toggle.
 
-**Seen on:** kalaskungen.com, 2026-08-25 (Overlay search mobile — EAA accessibility).
+**Seen on:** store-B, 2026-08-25 (Overlay search mobile — EAA accessibility).
 
 ---
 
 ## Timeline
-- 2026-05-19: Initial import from Taqi's Search cheat sheet (Notion export).
-- 2026-05-21: Added Offset Top and Highlight-search-term-in-categories from Taqi's separate snippets.
+- 2026-05-19: Initial import from the team's Search cheat sheet (Notion export).
+- 2026-05-21: Added Offset Top and Highlight-search-term-in-categories from separate snippets.
 - 2026-06-04: Added _Tile CSS parity_ — why an empty CUSTOM_STYLING_BLOCK isn't safe, the native-vs-overlay computed-style diff method, and a pre-ship QA checklist (from a Lightspeed onboarding).
 - 2026-08-12: Added _Collapse a long filter row behind a "More filters" toggle_ — CSS-driven collapse + template-authored button, sorting-wrapper exclusion, state-across-rerender and specificity gotchas (source: desktop-embedded search onboarding).
 - 2026-08-20: Added _Mobile Grid Search_ Variant B — strict 2-column CSS grid on the product tab with the tab header lifted out of grid flow; legacy templates only, use the native grid option where the design offers one (field-proven list→grid conversion of a live mobile overlay search).
-- 2026-08-25: Added _`show_vertical_link_content` — required for a content-feed tab to actually behave as a separate tab_ (source: kalaskungen.com EAA accessibility onboarding).
+- 2026-08-25: Added _`show_vertical_link_content` — required for a content-feed tab to actually behave as a separate tab_ (source: store-B EAA accessibility onboarding).

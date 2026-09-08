@@ -297,7 +297,7 @@ to insert dedicated divs.
 > text** on the pages where each one fires. Matching "a box with this headline rendered here" to
 > a specific box key is a guess unless you also read the inner element's `id` attribute — two
 > independent checks on the same account attributed the same rendered heading to two different
-> boxes this way (real case, piume.it recom-qa, 2026-08: one check read the box `selector` fields
+> boxes this way (real case, store-IT recom-qa, 2026-08: one check read the box `selector` fields
 > from `recoms_listBoxes`, concluded box A fires on template type 1 / box B on type 2, and
 > attributed a live page's rendering to whichever box matched by headline text alone rather than
 > checking the inner id; a separate check that read the inner id got the opposite attribution).
@@ -478,7 +478,7 @@ ordered: confirm they work, products actually load in, and the arrows copy the c
 arrow design where one exists. Every buy button must fire
 `hrq.push(['trackClick','{{ product.trackingCode }}'])` — **buy/ATC buttons only**: variant,
 view, and sold-out CTAs are navigation links tracked via `fix_links` (`#aw_source=`), so never
-expect (or flag a missing) `trackClick` on them (QA team, Malin).
+expect (or flag a missing) `trackClick` on them (QA team).
 
 ### 6. Run the per-recom-type checks and the catalogue walk
 
@@ -585,7 +585,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       passes — and so are **duplicates**: two same-name/same-purpose boxes on one page type
       (attribute by inner `.addwish-recom` id, then confirm in `recoms_listBoxes` whether
       they're genuinely two boxes or one box double-mounted; real case: duplicate same-name
-      PDP boxes, skinsecret)
+      PDP boxes, store-NO-1)
 - [ ] **All published boxes render** — `visible: true` and slide count > 0 on every placement of
       every LIVE box
 - [ ] **Unique placement divs** — each box mounts on a dedicated unique-ID div
@@ -717,7 +717,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       so a box that matches native at 1440 and 375 can still be badly wrong in between (real case,
       2026-08-04: HR 6 tiles/row at 692px container vs native 4 at 670px — found by one of three
       runs, and only because it measured; the other two tested desktop + mobile only and reported
-      breakpoints PASS). This recurs even when tablet *is* tested: a piume.it recom-qa run
+      breakpoints PASS). This recurs even when tablet *is* tested: a store-IT recom-qa run
       (2026-08-10) measured HR showing 3 tiles/view at 820px, confirmed that matched the box's
       own `--prod-per-view-tablet: 3` CSS variable, and graded it PASS — without ever checking
       native's own grid at 820px, which a separately-supplied report measured at 2/row for the
@@ -751,7 +751,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       sampled box for `inStock: false` products (cross-check suspicious tiles via
       `productData_get`): "never show OOS in recoms" is a standing HR rule, not a judgment
       call, and any OOS tile that does appear must carry the sold-out state with its ATC
-      disabled (real case: OOS products in recoms with clickable ATC, werchzueglade ×2). The
+      disabled (real case: OOS products in recoms with clickable ATC, store-CH ×2). The
       dashboard OOS-filter/boost setting itself stays on the OPERATOR list — this item checks
       the rendered symptom.
 
@@ -764,7 +764,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
     "Choose variant"), view CTAs, or sold-out CTAs. `trackClick` belongs on buy/ATC actions
     only (elements that add to cart without navigating); navigation CTAs are covered by
     `fix_links` via the `#aw_source=` fragment, and conversions still attribute through the
-    link click. Confirmed by the QA team (Malin).
+    link click. Confirmed by the QA team.
 - [ ] **Tracking fires** — confirm via the **three-layer protocol** (`../qa-checklists/SKILL.md`
       Step 3): code (`hrq.push` in the design source) + DOM (handler on the rendered button) +
       network (a click-attribution request for the clicked product's tracking code). A
@@ -855,7 +855,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       retired finding, 2026-08-19: "Purchased together renders above Alternatives" was graded a
       load-order contradiction; the visual order was the customer's own Figma spec). It's a
       per-box Supervisor/dashboard field, not a template setting — field-verified twice
-      (piume.it, 2026-07-29 and 2026-08-10): nothing resembling an order/priority field in
+      (store-IT, 2026-07-29 and 2026-08-10): nothing resembling an order/priority field in
       `templateCode`/`templateStyles`, and `recoms_listBoxes` doesn't expose one either —
       so the check itself is **OPERATOR** (dashboard: Alternatives carries the lowest
       load-order value).
@@ -877,7 +877,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       sits above/below so the operator can rule on intent. **"Above the product grid" is not
       the same claim as "below the filter/sort row" — measure both separately with
       `getBoundingClientRect().top` on the H1, the filter/sort row, and the recom box, don't
-      eyeball just the grid.** A piume.it recom-qa run (2026-08-10) graded this PASS from
+      eyeball just the grid.** A store-IT recom-qa run (2026-08-10) graded this PASS from
       "renders above the product grid" alone; a separately-supplied report actually measured
       all three positions (H1 593 < recom 853 < sort/grid row 1440) and correctly flagged it
       WARN — the box sits above the grid **and** above the filter/sort row, which is the
@@ -917,7 +917,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       `"1.234.56"`, and `parseFloat` silently truncates at the second `.` to `1.234`, showing the
       wrong shipping tier on large carts. Reading the code is enough to catch this (no live
       ≥1,000 cart is needed) — trace the exact `.replace()` chain against a real formatted large
-      total by hand before passing it. (Real case, piume.it recom-qa: the identical 8-line
+      total by hand before passing it. (Real case, store-IT recom-qa: the identical 8-line
       `freeDelivery()` function was read in full on three separate occasions — twice this bug was
       missed, once it was caught — purely a reading-carefully issue, not a hard-to-find one.)
       Fix pattern: strip everything except digits and the decimal separator before the decimal
@@ -941,7 +941,7 @@ drawer → *then* enable Show). Judge it against the drawer, not the category gr
 - [ ] **Page usable after the upsell closes** — after closing the upsell popup/dropdown, verify
       the page is fully restored: no lingering dimmed/black overlay, no surviving scroll-lock,
       controls clickable. Check at every viewport — the real case was **tablet-only** (black
-      screen after closing the upsell popup, werchzueglade): a close path that works at desktop
+      screen after closing the upsell popup, store-CH): a close path that works at desktop
       can still strand the backdrop at another width.
 - [ ] **Narrow-container breakpoints** — judged against the **measured** drawer/panel width
       (350–550px in practice — measure it, don't assume), not the viewport. A design with **no
@@ -991,7 +991,7 @@ Checks against `templateCode` / `templateStyles` that the rendered pass can't se
       you saw. Broken tracking means conversions never attribute — invisible in the UI.
       **ACCEPTED — do not flag:** no `trackClick` on variant / view / sold-out CTA branches —
       those are navigation links covered by `fix_links` (`#aw_source=`); only buy/ATC actions
-      need it (QA team, Malin).
+      need it (QA team).
 - [ ] **ATC re-binding is clone-safe** — the add-to-cart hook runs from the swiper
       `on: { afterInit }` (or uses delegated handlers), so loop-mode clone slides and re-renders
       don't produce dead or double-firing buttons.
@@ -1001,7 +1001,7 @@ Checks against `templateCode` / `templateStyles` that the rendered pass can't se
       (which box's `top` is smaller) is evidence about placement, never about load order (see
       the PDP item above; a rendered-order "load order" finding was retired 2026-08-19).
       Confirmed absent from `templateCode`/`templateStyles` and `recoms_listBoxes`
-      (piume.it, 2026-07-29 and 2026-08-10) — the whole item goes to the operator list.
+      (store-IT, 2026-07-29 and 2026-08-10) — the whole item goes to the operator list.
 - [ ] **Category visibility logic** — the <12-products rule is implemented **without** the nested
       `:has(eq:)` selector; the filters-active rule is present if the site has filters.
 - [ ] **Hierarchies / urls / productNumber selectors** — present in the relevant category/cart/
@@ -1171,7 +1171,7 @@ Close the run with a chat summary listing the report files and a one-line verdic
 ## Tips from past QAs
 
 - **A 2026-08-10 cross-check between two independent recom-qa reports on the same account
-  (piume.it, three days apart) found six real gaps in the earlier-shipped report — worth
+  (store-IT, three days apart) found six real gaps in the earlier-shipped report — worth
   internalising as a set, because each one is a distinct failure mode, not a single mistake
   repeated:**
   1. *Read the exact same 8-line cart-parser function three times, missed a real bug twice.*

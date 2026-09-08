@@ -45,4 +45,4 @@ If a product's tile doesn't have a stable per-render anchor element to attach `w
 
 **Related:** ATC Step 0 (custom-element auto-upgrade) — `references/tile-interactivity-js.md` in the `search-developer` skill.
 
-**Source:** captured from all4cycling.com onboarding, 2026-08.
+**Source:** captured from store-D onboarding, 2026-08.

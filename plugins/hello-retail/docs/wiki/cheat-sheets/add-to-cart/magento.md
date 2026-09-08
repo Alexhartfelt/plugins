@@ -29,7 +29,7 @@ typeof window.jQuery    // 'object'   on Luma, 'undefined' on Hyvä
 
 On Hyvä, Steps 1 and 3 do not apply. Populate `uenc` + `form_key` (Step 2) and let the form submit as a normal POST — that is core Magento and is enough to make add-to-cart work. Use the theme-agnostic `form_key` lookup below in every case; there is no reason to prefer the `#maincontent` version.
 
-**Seen on:** tecentralen.se (Hyvä, company 717747) — the `#maincontent` selector returned `null` there and add-to-cart silently posted without a CSRF token.
+**Seen on:** store-SE-5 (Hyvä) — the `#maincontent` selector returned `null` there and add-to-cart silently posted without a CSRF token.
 
 ---
 
@@ -412,7 +412,7 @@ The HR feed stores JSON with `"` replaced by `|` to avoid attribute quoting issu
 ```
 
 **Placeholders to fill per customer:**
-- `CUSTOMER_DOMAIN` — e.g. `loberen.dk`
+- `CUSTOMER_DOMAIN` — e.g. `example-shop.dk`
 - `ATTR_ID` — Magento configurable attribute ID for size/color (e.g. `417`). Find it in Magento admin → Stores → Attributes → Product, or read it from `super_attribute[X]` in the live tile's ATC form.
 - Button text / CSS classes — match the customer's tile verbatim.
 - For mobile overlay: change `desktop-initial-search` → `mobile-initial-search` in both the `data-role` attribute and the script selector key.
@@ -653,6 +653,6 @@ This is **page scraping, not a product API** — there is no JSON endpoint invol
 
 ## Timeline
 - 2026-05-21: Magento add-to-cart, x-magento-init, uenc encoding, and swatch-renderer patterns documented from Magento 2 (Luma) onboardings.
-- 2026-08-06: Added Step 0 — Luma vs Hyvä frontend check. Made the `form_key` lookup theme-agnostic in Steps 2 and 4 (`#maincontent` returns `null` on Hyvä; Step 4 read `.value` off it unguarded and threw, aborting `add_to_cart()`). Marked Steps 1 and 3 Luma-only. Added an idempotent `awuenc` rebuild for Search's per-keystroke re-renders. From tecentralen.se (717747).
+- 2026-08-06: Added Step 0 — Luma vs Hyvä frontend check. Made the `form_key` lookup theme-agnostic in Steps 2 and 4 (`#maincontent` returns `null` on Hyvä; Step 4 read `.value` off it unguarded and threw, aborting `add_to_cart()`). Marked Steps 1 and 3 Luma-only. Added an idempotent `awuenc` rebuild for Search's per-keystroke re-renders. From store-SE-5.
 - 2026-06-09: Added Step 6 — Search overlay full swatch + ATC Liquid block (desktop/mobile, `jsonConfig` decoding, `allSizes`, `data-role` suffix pattern).
 - 2026-06-30: Added Step 7 — PDP-scrape **last-resort** fallback for swatches + star rating when the feed has no swatch/rating data AND the feed cannot be changed. Always ask for the data in the feed first (Steps 5–6); only scrape once that's confirmed impossible. Scrapes `jsonSwatchConfig` + JSON-LD `aggregateRating` from each product page; lazy/cached/deduped; native review classes for rating. Pure Magento 2.

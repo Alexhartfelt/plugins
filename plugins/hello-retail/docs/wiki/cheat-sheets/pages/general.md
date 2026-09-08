@@ -211,4 +211,4 @@ fetch('https://core.helloretail.com/serve/collect/click', {
 ---
 
 ## Timeline
-- 2026-05-21: Initial import from Taqi's Pages cheat sheet (Notion export).
+- 2026-05-21: Initial import from the team's Pages cheat sheet (Notion export).

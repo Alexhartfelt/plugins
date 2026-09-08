@@ -130,4 +130,4 @@ Any element that relies on `padding-left` (e.g. badges, icon buttons) will lose 
 ---
 
 ## Timeline
-- 2026-06-22: Page created from getcamping.se (WGO) Search onboarding. ATC AJAX endpoint confirmed by XHR interception.
+- 2026-06-22: Page created from store-SE-7 (WGO) Search onboarding. ATC AJAX endpoint confirmed by XHR interception.

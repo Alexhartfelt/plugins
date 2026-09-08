@@ -61,7 +61,7 @@ Read only the matching reference files.
 The checklists say what a *generic* implementation must do; the ClickUp card and its comment
 thread say what **this customer ordered** — and intent is what separates a defect from a
 decision. A ticket-blind run mis-grades in both directions: it FAILs deliberate deviations as
-parity defects and walks past ordered items no catalogue mentions. (Real case, skinsecret.no
+parity defects and walks past ordered items no catalogue mentions. (Real case, store-NO-1
 2026-08-04: the card put the QA surface on a password-gated Shopify staging site, named a
 *different* shop as the search-design reference, ordered mobile tiles *smaller* than native
 (1.2rem vs 1.6), ordered mobile recoms as a 2×2 grid with **no** sliders, recorded the mobile
@@ -88,7 +88,7 @@ ladder and record which rung you landed on:
    treat silence as tier 3 — ask.
 
 If no URL was given and a ClickUp MCP is connected, **auto-discover**: search ClickUp for the
-registrable domain (e.g. `skinsecret`), show the operator the matching card title(s) **with
+registrable domain (e.g. `example-shop`), show the operator the matching card title(s) **with
 each card's list name**, and use the one they confirm. Never adopt an unconfirmed match —
 customers accumulate cards across lists, and grading against the wrong card is worse than
 grading blind.
@@ -120,7 +120,7 @@ combined** — a combined include blew past the response limit on a real 36-cust
    the staging URL and login credentials the rendered pass needs to run at all.
 3. **`include: ["checklists"]` alone** — see the checklist rule below. On a full onboarding
    checklist set this **exceeds the tool's token limit** and is written to a file instead;
-   extract it with `jq` rather than re-fetching (real case: 105KB / 22 checklists, piume.it
+   extract it with `jq` rather than re-fetching (real case: 105KB / 22 checklists, store-IT
    2026-08-10).
 4. **`include: ["attachments", "linked_tasks"]`** — attachments routinely include **prior QA
    reports for this same domain**. Read them before re-QAing, and treat their findings as
@@ -148,7 +148,7 @@ not ClickUp auth, so Chrome is the right backend here). Then:
    *"<name> created this task"*. Stopping when the dates "look old enough" is how a run misses
    the founding requirements.
 4. **Expand every "Show more" group and every reply thread** (`N replies`). Decisions usually
-   live in the reply threads, not the top-level comments — on the piume.it card the feed-shape
+   live in the reply threads, not the top-level comments — on the store-IT card the feed-shape
    defect, the price-group failure and the missing MOQ/stock data were all inside threads of
    10–17 replies.
 5. Capture with `get_page_text` where the panel renders it; fall back to screenshots only for
@@ -157,7 +157,7 @@ not ClickUp auth, so Chrome is the right backend here). Then:
 **Why oldest-first, not most-recent-first.** The requirement is established in the *first* weeks
 of a card and amended later; the tail of a long thread is the QA-and-fix phase. A run that reads
 only recent comments inherits the bug list without the requirement, then grades ordered
-behaviour as a defect. Real case (piume.it 86c8tpqz9, comments 30 Apr → 10 Aug 2026): the recom
+behaviour as a defect. Real case (store-IT, comments 30 Apr → 10 Aug 2026): the recom
 placement priority order (1 special brand pages … 7 404 page), the add-to-cart animation spec,
 and the request to lift desktop search above the menu bar all sit in the first three weeks —
 everything after mid-July is QA follow-up. That same card's description still reads "INSERT
@@ -175,7 +175,7 @@ kind of thing a rendered pass checks — "DIV placed ✅", "script installed ✅
 **not** covered by the comment-endpoint failure below, so when comments are blocked, checklists
 may still be readable. Treat a checklist "done" tick as a claim to verify empirically, never as
 a substitute for testing it, and if the rendered pass contradicts it, that contradiction *is*
-the finding — don't quietly grade the absence as "expected" (real case, piume.it recom-qa: one
+the finding — don't quietly grade the absence as "expected" (real case, store-IT recom-qa: one
 session that skipped the card's checklists graded "0 homepage recom anchors" as an unsurprising
 consequence of the boxes being DRAFT; a second session that read the checklist found the card
 claimed the placement divs were already inserted, turning the same 0-anchors observation into a
@@ -192,7 +192,7 @@ tier 1 by itself:
   id: on HR cards usually **ClickBot (from Front)** posting Front-conversation links, sometimes
   a deleted account. The connector rejects the **entire** page over one bad row, so retries and
   pagination fail identically — the bot comments are in the data itself (verified live on card
-  86c9kt1he 2026-08-06, and again on 86c8tpqz9 2026-08-10, where it severed the history at
+  one card 2026-08-06, and again on another 2026-08-10, where it severed the history at
   30 Apr; only the browser read could establish that what lay beyond was system events and not
   requirements). This is exactly why comments are a browser lane: the endpoint's failure mode is
   a short answer that looks like a complete one. Don't burn calls retrying it.
@@ -226,7 +226,7 @@ open" entry would normally cover — to **"verify against card comments"** inste
 Blocker/High severity. (The 2026-08-24 cross-card comparison found comment threads holding the
 answer to findings the runs graded fresh: a guest-wishlist "Blocker" documented since February,
 a preview-theme "Blocker" stated four times, a price-group defect known three weeks pre-QA.)
-(Real case, piume.it: prices were identical across all five price groups because the *customer's*
+(Real case, store-IT: prices were identical across all five price groups because the *customer's*
 price feed was wrong — a diagnosis that exists only in the comment threads. A comments-blind run
 would have filed it as an HR pricing bug.)
 
@@ -241,33 +241,33 @@ domain on multi-domain runs) with these sections, every entry citing author + da
   comment moving the work to/from staging wins over the description), and when the two
   disagree or the answer is ambiguous, **ask the operator** — an entire QA run has been
   dispositioned because it ran on the live site while the description named the staging site
-  (skinsecret.no, 2026-08), and the same ambiguity recurred on werchzueglade
-  ("werchzueglade.ch or ps8?"). The report Summary carries the resolution as its own line:
+  (store-NO-1, 2026-08), and the same ambiguity recurred on store-CH
+  ("store-CH or ps8?"). The report Summary carries the resolution as its own line:
   `QA surface: <url> (source: description dd/mm | comment by <author> dd/mm | operator
   confirmed)` — every report, even when the answer was obvious. **List every purchased feature for this domain from the card's own feature list**
   (Search/Recommendations/Retail Media/Other), even the ones outside this run's scope — the
   report should account for each one explicitly (in scope / out of scope / SKIPPED with a
   reason), never omit a sold feature silently. A feature that's purchased but has no live
-  campaign/design yet is still worth one line saying so (real case, piume.it recom-qa
+  campaign/design yet is still worth one line saying so (real case, store-IT recom-qa
   2026-08-07: Retail Media was in the card's feature list and had no live banner campaign to
   test — one report logged it as SKIPPED with a reason, a parallel report on the same account
   didn't mention it at all).
 - **Decisions** — explicit customer/CSM choices, especially deviations from native that are
   by design ("mobile font 1.2rem, smaller than native — Anthony, Jul 7").
 - **Declined** — requested, investigated, turned down ("mobile filter dropdown — not possible
-  with this overlay type — Hamza, Jul 7").
+  with this overlay type — team member, Jul 7").
 - **Known open** — items the ticket already tracks as pending, with owner and ETA ("placement
   divs — customer's developer, back Aug 10").
 - **Copy lineage** — whether the card says this build was copied from another domain or
-  customer ("copy of brewshop.no", "copy from Naturegrass", "literal copy of the danish
+  customer ("copy of store-NO-3", "copy from store-E", "literal copy of the danish
   domain"). When it does, record the source and add two checks to the manifest: **(a) were the
   source domain's own fixes actually published** before the copy was taken (an unpublished-fix
   source clones its whole open bug list into the copy), and **(b) do source-domain leftovers
   survive in the copy** — selectors, hardcoded labels, currencies, locale strings, and dead
   code belonging to the source. Grade leftovers as findings of this onboarding, citing the
   lineage. Copies are a concentrated defect source: in the 2026-08-24 cross-card comparison,
-  three of the four worst-scoring cards were copies (brewshop SE ← NO with unpublished fixes,
-  bettyboo SE ← DK config drift, DSV ← Naturegrass dead code).
+  three of the four worst-scoring cards were copies (store-NO-3 SE ← NO with unpublished fixes,
+  store-G SE ← DK config drift, store-H ← store-E dead code).
 - **Extra checks** — customer-specific requirements no catalogue covers. Append each to the
   Step 3 coverage manifest as `- [ ] [ticket] …` — they get explicit verdicts like any other
   item.
@@ -298,7 +298,7 @@ domain on multi-domain runs) with these sections, every entry citing author + da
   is for the **operator** to unlock once in the headed browser window (same pattern as the HR
   login preflight — never type credentials yourself). **Live credentials sitting in a card are
   themselves worth an operator item suggesting rotation — this is easy to read past while
-  scanning for QA-relevant content and skip in practice** (real case, piume.it recom-qa
+  scanning for QA-relevant content and skip in practice** (real case, store-IT recom-qa
   2026-08-10: the same card handover section with five plaintext dashboard passwords and a
   bearer-token reference was read in full and not flagged; a separate report on the same card
   caught it). Add it to the operator list every time a card is read, not only when something
@@ -335,7 +335,7 @@ API-based — that's why Signal 1 is the strongest:
      via the storefront source (Signal 2): API-based Pages embeds
      `hr-search-product-code="pa-<pagesKey>|…"` attribution attributes on the **customer's own
      server-rendered tile markup** in the raw pre-JS HTML (`pa-` = Pages attribution), with no
-     HR-injected tile/template anywhere. Field-verified on uropenn.se (Vendre platform),
+     HR-injected tile/template anywhere. Field-verified on store-SE-3 (Vendre platform),
      2026-07-20. Note the trap: the page full of products with the widget's Show toggle ON
      looks exactly like working script-rendered Pages — the label, not the rendering, is the
      tell, because the customer's backend fetched and painted those products itself.
@@ -417,7 +417,7 @@ does, and the multi-regional `websiteUuid` variant: `${CLAUDE_PLUGIN_ROOT}/docs/
 pins *what* to check; for many items it doesn't pin *which input* to check it with, and an
 unpinned input is chosen fresh every run. That single gap — not the code, not the browser
 backend — is what makes two runs of this skill reach opposite verdicts on unchanged code.
-(Real case, skinsecret.no 2026-08-04: three runs, same LIVE designs, both operators on
+(Real case, store-NO-1 2026-08-04: three runs, same LIVE designs, both operators on
 Playwright. Every item whose input the skill pins — the ≤992px keystroke drop, missing
 `trackClick`, the 0-results state, the hardcoded `aria-label`, PDP load order — produced the
 **same** verdict in every run. Every item it left open — price format, the sold-out badge,
@@ -569,7 +569,7 @@ in a single CSM review, 2026-08-19).
    **numbers** — element offsets, container widths, tiles-per-row, natural-vs-CSS pixels. Prose
    ("sits below the sort dropdown", "tiles look wide") is not a verdict: two runs produced
    opposite prose for one unchanged category layout, and only the run that recorded `box top
-   325px vs sort top 779px` could be checked. (Real case, jespersplanteskole.dk: a Pages
+   325px vs sort top 779px` could be checked. (Real case, store-DK-1: a Pages
    tablet-grid item shipped as "reflows cleanly" with no tile count; the next run counted and
    found 1 tile per row instead of 2.) **If the evidence genuinely can't be captured, the
    verdict is SKIPPED with the reason — never a PASS on impression.**
@@ -588,7 +588,7 @@ in a single CSM review, 2026-08-19).
    attributing a console error (or any defect) to a specific interaction, reproduce that
    interaction **alone**: fresh page load, console cleared, nothing else happening, and confirm
    the error fires then and only then. An error that appears "right after" an interaction can
-   belong to an unrelated handler firing on the same tick. (Real case, jespersplanteskole.dk:
+   belong to an unrelated handler firing on the same tick. (Real case, store-DK-1:
    a `TypeError` was attributed to load-more because it appeared right after scrolling; an
    isolated retest showed load-more was clean — the error came from an unrelated
    wishlist-button crash.) Until the isolated repro exists, write the attribution as a
@@ -1287,7 +1287,7 @@ after both the customer and the domain, so a same-domain report can sit in a sib
 stay invisible. Before Step 1, run both:
 
 ```bash
-ls -d QA/*<domain-token>*                          # e.g. QA/*skinsecret*
+ls -d QA/*<domain-token>*                          # e.g. QA/*example-shop*
 grep -rl "<domain>" QA/ --include='*.md'           # catches any folder name
 ```
 
@@ -1296,8 +1296,8 @@ Quote `'*.md'` — unquoted, zsh expands it before grep sees it and the command 
 logs, not reports).
 
 State the result in the Summary — **including "none found"** — so a reader can tell the search
-happened. (Real case, 2026-08-04: the deepest report on a domain sat in `QA/skinsecret/` while
-three later runs wrote to `QA/skinsecret.no/`; one of them declared "no prior report exists"
+happened. (Real case, 2026-08-04: the deepest report on a domain sat in `QA/example-shop/` while
+three later runs wrote to `QA/example-shop.com/`; one of them declared "no prior report exists"
 with the file one directory away, and nobody reconciled against it. Two of its findings were
 independently re-discovered, and one was wrongly retired.)
 
@@ -1321,7 +1321,7 @@ retest). New findings follow separately. Name the prior report and its date in t
 **A checklist item a prior report marked N/A or untested is not "confirmed N/A" just because
 the template is unchanged** — code parity rules out a *code* regression, it says nothing about
 a rendered check the prior session never actually ran. Re-run it yourself before repeating the
-conclusion (real case, piume.it recom-qa 2026-08-10: a report carried forward "no hover-image
+conclusion (real case, store-IT recom-qa 2026-08-10: a report carried forward "no hover-image
 swap — native doesn't have one either" from a prior session's confirmation without re-testing
 it, and a separately-supplied report that actually inspected a different category page found
 native tiles do swap on hover — the carried-forward N/A was simply never re-checked).
@@ -1373,14 +1373,14 @@ tested, or whether a fix plan had already been applied). An unexplained mid-run 
 is itself a finding for the operator list.
 
 **Everything for one customer lives in one folder:** `QA/[customer]/` — where `[customer]` is
-**the registrable domain of the primary domain under QA** (e.g. `pellepetterson.com`). Reports
+**the registrable domain of the primary domain under QA** (e.g. `example-shop.com`). Reports
 sit directly in it; screenshots in its `screenshots/` subfolder. All domains/locales of one
 customer share the same folder.
 
 Two rules keep this from forking, which is the failure that hid a whole report for two weeks:
 
 - **An existing folder wins.** If the prior-report search above found a folder for this customer
-  under any name — including the legacy kebab-case customer-name form (`QA/skinsecret/`) — write
+  under any name — including the legacy kebab-case customer-name form (`QA/example-shop/`) — write
   into **that** folder. Never create a domain-named twin beside a customer-named one.
 - **One folder per customer, not per domain.** For a multi-domain customer, everything goes in the
   folder of whichever domain came first; don't open `QA/example.se/` next to `QA/example.no/`.
@@ -1418,7 +1418,7 @@ and misalign the whole row. When generating the HTML twin:
   `pages-qa` — all share this Step 4.
 
 **Screenshot references must be clickable links, not inert text.** The `.md` cites evidence as a
-relative path in a code span (e.g. `` `screenshots/brewshop-se--search--fail-price.png` ``) —
+relative path in a code span (e.g. `` `screenshots/example-shop-se--search--fail-price.png` ``) —
 when converting to HTML, turn every such reference into `<a href="screenshots/<file>.png"
 target="_blank" rel="noopener">...</a>` so a reader can click straight through to the image
 instead of copying a path. Match on the `screenshots/…\.(png|jpe?g|gif|webp)` pattern (case

@@ -34,4 +34,4 @@ For add-to-cart wiring across all platforms see **[../add-to-cart/](../add-to-ca
 
 ## Timeline
 - 2026-05-19: Index seeded.
-- 2026-06-03: Added [layout-troubleshooting.md](./layout-troubleshooting.md) (mobile full-bleed, arrows, `100vh` height, grid breakout) from getcamping.se debugging.
+- 2026-06-03: Added [layout-troubleshooting.md](./layout-troubleshooting.md) (mobile full-bleed, arrows, `100vh` height, grid breakout) from store-SE-7 debugging.

@@ -215,7 +215,7 @@ Mobile (`mobile-overlay`):
 - **Never** touch the tile, the filter chrome (`.aw-*`, `.hr-filter*`), the range slider or the sorting dropdown — they keep base sizes. The search input has its own tokens (`search_bar_font_size`, `search_bar_font_weight`): value edits, and only when the operator explicitly includes the input.
 - **Never load a font.** The overlay renders inside the customer's page, so the site's `@font-face` is already present. If the heading font is loaded only on some templates (compare the category page with the homepage), flag it — the overlay will fall back on pages that don't load it.
 - Write `font-family` as the **full measured stack**, fallbacks included, quoted where the computed value is quoted.
-- **Never `font-family: inherit` on the headings.** The overlay is mounted at `<body>` level, so `inherit` resolves to the body font — which is what the base already does and exactly the case Q4 exists to change. Write the measured heading stack (coverage review, Hamza, 2026-09-04).
+- **Never `font-family: inherit` on the headings.** The overlay is mounted at `<body>` level, so `inherit` resolves to the body font — which is what the base already does and exactly the case Q4 exists to change. Write the measured heading stack (coverage review, 2026-09-04).
 - Rendered check (Step 17b): `pick()` a heading and a paragraph inside the open overlay/panel — computed values equal the measured site values (size ±1px). Mobile on a real mobile viewport.
 
 ### Self-check for typography
