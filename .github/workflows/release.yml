@@ -4,9 +4,13 @@ name: Release
 #   1. bumps the version of each plugin whose files changed, unless the PR already bumped
 #      it by hand (scripts/bump-version.mjs — level from the squash-merge title:
 #      "feat:" → minor, "feat!:" / "BREAKING CHANGE" → major, anything else → patch);
-#   2. commits that bump back to main with [skip ci] so it does not trigger itself;
-#   3. tags every plugin whose version is new as <plugin>-v<version> and publishes a
-#      GitHub Release with generated notes.
+#   2. rolls each plugin's CHANGELOG.md "## Unreleased" section into a "## <version>" one
+#      (scripts/changelog.mjs) — the notes themselves are written in the PR, see CLAUDE.md
+#      → "Release notes";
+#   3. commits the bump and the rolled changelog back to main with [skip ci] so it does not
+#      trigger itself;
+#   4. tags every plugin whose version is new as <plugin>-v<version> and publishes a
+#      GitHub Release whose body is that version's changelog section.
 #
 # Pushing to a protected main needs a token that may bypass the protection. Add a
 # fine-grained PAT (contents: write) or GitHub App token as the RELEASE_TOKEN secret;
@@ -48,14 +52,33 @@ jobs:
           BASE: ${{ github.event.before }}
         run: node scripts/bump-version.mjs
 
-      - name: Commit the bump
-        if: steps.bump.outputs.bumped == 'true'
+      # Moves "## Unreleased" to "## <version> — <date>" in each plugin's CHANGELOG.md. Safe to
+      # re-run: a changelog that already has a section for the version is left alone.
+      - name: Roll changelogs to the released version
         run: |
           set -euo pipefail
+          for m in plugins/*/.claude-plugin/plugin.json; do
+            [ -f "$m" ] || continue
+            name=$(jq -r .name "$m")
+            version=$(jq -r '.version // empty' "$m")
+            [ -n "$version" ] || continue
+            node scripts/changelog.mjs roll "$name" "$version"
+          done
+
+      # Not gated on the bump: a PR that set the version by hand still needs its changelog rolled.
+      - name: Commit the bump and the rolled changelog
+        env:
+          SUMMARY: ${{ steps.bump.outputs.summary }}
+        run: |
+          set -euo pipefail
+          git add -A plugins/
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add plugins/*/.claude-plugin/plugin.json
-          git commit -m "chore(release): ${{ steps.bump.outputs.summary }} [skip ci]"
+          git commit -m "chore(release): ${SUMMARY:-roll changelog} [skip ci]"
           git push origin HEAD:main
 
       - name: Tag and release plugins with a new version
@@ -76,9 +99,18 @@ jobs:
               continue
             fi
             echo "Releasing $tag at $sha"
+            # Body = that version's changelog section, then the install reminder. --generate-notes
+            # appends GitHub's own "Full Changelog" compare link underneath.
+            notes=$(mktemp)
+            {
+              node scripts/changelog.mjs extract "$name" "$version"
+              echo
+              echo "---"
+              echo "Plugin \`$name\` version \`$version\`. Update: \`/plugin marketplace update helloretail\` then \`/reload-plugins\`."
+            } > "$notes"
             gh release create "$tag" \
               --target "$sha" \
               --title "$tag" \
               --generate-notes \
-              --notes "Plugin \`$name\` version \`$version\`. Update: \`/plugin marketplace update helloretail\` then \`/reload-plugins\`."
+              --notes-file "$notes"
           done

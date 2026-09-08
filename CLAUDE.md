@@ -9,8 +9,11 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 - `.claude-plugin/marketplace.json` — lists every plugin (`source` = `./plugins/<name>`).
 - `plugins/hello-retail/` — the one plugin. `.claude-plugin/plugin.json` (name == directory,
   semver `version`), `skills/<skill>/SKILL.md`, `docs/wiki/` (the knowledge base — source of
-  truth, not a copy), `docs/browser-login.md`, `.mcp.json`, `hooks/hooks.json`, `AUTHORING.md`.
+  truth, not a copy), `docs/browser-login.md`, `.mcp.json`, `hooks/hooks.json`, `AUTHORING.md`,
+  `CHANGELOG.md` (the release notes — see below).
 - `scripts/validate.mjs` — the checks CI runs. Run `npm run check` before proposing a PR.
+- `scripts/changelog.mjs` — rolls and reads `CHANGELOG.md` for the Release workflow. Never
+  edit a released section by hand.
 
 ## Rules to apply when editing
 
@@ -33,8 +36,73 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 - Do not commit or push unless asked. Do not add a plugin to the marketplace that is not
   yet in `plugins/`.
 
+## Release notes
+
+Every PR that changes anything under `plugins/<plugin>/` also adds its entry to
+`plugins/<plugin>/CHANGELOG.md`, under `## Unreleased`. That section becomes the GitHub
+Release body verbatim: the Release workflow renames it to `## <version> — <date>` and passes it
+to `gh release create`. A PR that touches only root files (README, CI, scripts) needs no entry.
+
+Write the entry in the same session as the change, while the reason for it is still in context.
+
+**Structure.** Only these four `###` headings, in this order, and only the ones that apply:
+
+```markdown
+## Unreleased
+
+### Added      — a skill, reference file, or capability that did not exist before
+### Changed    — different behaviour or output from something that already worked
+### Fixed      — it was wrong or broken and now is not
+### Removed    — a skill or capability that is gone, and what to use instead
+```
+
+**One bullet per user-visible change.** Lead with the skill name in backticks, then what is
+different for the person using it. Two sentences at most; add a second only when the reader has
+to do something differently.
+
+**Write for whoever installs the plugin** — a Hello Retail colleague who runs the skills, not a
+reviewer reading the diff. So:
+
+- Name the skill, never the file path: `search-qa`, not
+  `skills/search-qa/references/pages.md`.
+- Say what changes in *behaviour*. "Now checks X" beats "updated the checklist".
+- No commit SHAs, PR numbers, issue links, or internal process. The compare link is appended
+  automatically.
+- No customer-identifiable data — the same rule as everywhere else in the repo. Placeholders
+  only (`store-IT`, `example-shop.com`).
+- Skip pure refactors, typo fixes and lint changes. If nothing is different for the user,
+  add nothing; an empty section releases as "Maintenance release — no user-visible changes."
+
+Good:
+
+```markdown
+### Fixed
+
+- `search-qa` no longer reports a false FAIL on price parity for shops that lazy-load prices.
+- `feed-setup` handles feeds whose variants share one parent SKU; these previously collapsed
+  into a single product.
+
+### Changed
+
+- `recom-developer` writes new designs as REVIEW drafts instead of leaving them unassigned,
+  so they show up in the dashboard's draft list.
+```
+
+Bad — reviewer-facing, path-shaped, or no behaviour stated:
+
+```markdown
+- Updated search-qa SKILL.md and references (#42)
+- Refactored the price-parity section for clarity
+- Fixed bug in feed-setup
+- Added handling for store-actualcustomer.com
+```
+
+**Never write the `## <version>` heading or the date by hand**, and never edit a released
+section — the workflow owns both. Leave `## Unreleased` in place with nothing under it.
+
 ## Current state
 
 The repository is private, so the marketplace must be registered over SSH for background
 auto-update to work (see `README.md` → Installing). Merging to `main` publishes: the Release
-workflow bumps the version, tags and cuts a GitHub Release.
+workflow bumps the version, rolls the changelog, tags and cuts a GitHub Release carrying that
+version's notes.

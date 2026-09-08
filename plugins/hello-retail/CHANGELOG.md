@@ -1,0 +1,38 @@
+# Changelog — hello-retail
+
+What changed in each released version of the plugin, written for the person who installs it.
+Update with `/plugin marketplace update helloretail`, then `/reload-plugins`.
+
+Entries are added under **Unreleased** in the PR that makes the change; the Release workflow
+renames that section to the version it publishes. See `CLAUDE.md` → "Release notes" for the
+structure to follow.
+
+## Unreleased
+
+### Added
+
+- The plugin now ships a `CHANGELOG.md`, so you can see what changed in each version you
+  install. The GitHub Release for each version carries the same notes.
+
+## 1.0.1 — 2026-09-08
+
+### Changed
+
+- Customer storefronts, company IDs and card IDs across the `search-developer` references,
+  `search-qa` and `tile-extractor` are now anonymous handles (`store-IT`, `example-shop.com`)
+  instead of real names. The recipes and selectors are unchanged — only the examples read
+  differently.
+
+## 1.0.0 — 2026-09-08
+
+### Added
+
+- First release. Fourteen skills covering the Hello Retail build-and-QA workflow:
+  - **Build** — `search-developer`, `recom-developer`, `pages-developer`,
+    `newsletter-developer`, `triggered-email-developer`, `tile-extractor`. All of them write
+    designs as REVIEW drafts; publishing to LIVE stays a dashboard step.
+  - **QA** — `search-qa`, `recom-qa`, `pages-qa`, `newsletter-qa`, `qa-checklists`.
+  - **Feeds** — `feed-setup`, `feed-migration`.
+  - **Knowledge** — `hello-retail-knowledge`, answering from the bundled wiki.
+- The `hello-retail` MCP server and a Playwright browser config, so the skills can read and
+  write designs and open a customer's storefront without extra setup.

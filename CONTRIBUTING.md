@@ -81,6 +81,9 @@ the plugin.
 
 - Branch from `main`, one plugin per PR where practical.
 - `npm run check` locally before pushing.
+- Changed something under `plugins/<plugin>/`? Add the entry to that plugin's `CHANGELOG.md`
+  under `## Unreleased`. It becomes the GitHub Release body, so write it for whoever installs
+  the plugin — the structure is in `CLAUDE.md` → "Release notes".
 - Fill the PR template; CODEOWNERS get requested automatically.
 - CI must be green: validate, markdown lint, shellcheck, secret scan. The version preview is
   informational.
