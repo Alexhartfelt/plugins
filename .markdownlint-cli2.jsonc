@@ -4,6 +4,11 @@
   "config": {
     "default": true,
     "MD013": false, // line length — descriptions and tables are long on purpose
+    "MD010": { "code_blocks": false }, // tabs inside fenced Liquid/JS/CSS snippets are content
+    "MD025": false, // a SKILL.md may carry more than one top-level heading (frontmatter title + body)
+    "MD028": false, // blank lines inside blockquotes separate procedure steps
+    "MD029": false, // step numbers continue across interleaved prose on purpose
+    "MD001": false, // reference files use heading levels as visual weight
     "MD024": { "siblings_only": true }, // duplicate headings OK in different sections
     "MD033": false, // inline HTML is used for <details> blocks and tables
     "MD034": false, // bare URLs are fine in reference material

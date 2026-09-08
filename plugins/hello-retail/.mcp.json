@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "hello-retail": {
+      "type": "http",
+      "url": "https://core.helloretail.com/mcp"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--viewport-size=1440,900",
+        "--user-data-dir",
+        "${HOME:-}${USERPROFILE:-}/.hello-retail-browser",
+        "--output-dir",
+        "QA/screenshots"
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "currency": "DKK",
+  "cart_url": "https://example.invalid/cart",
+  "cart_total": 1299.5,
+  "products": [
+    {
+      "title": "Short title",
+      "brand": "Example Brand",
+      "url": "https://example.invalid/p/short",
+      "imgUrl": "https://placehold.co/600x600/png",
+      "price": 199,
+      "oldPrice": 299,
+      "isOnSale": true,
+      "inStock": true,
+      "currency": "DKK",
+      "productNumber": "SKU-1",
+      "extraData": {}
+    },
+    {
+      "title": "A deliberately very long product title that wraps onto several lines to test the grid cell",
+      "brand": "Example Brand",
+      "url": "https://example.invalid/p/long",
+      "imgUrl": "https://placehold.co/600x800/png",
+      "price": 1249.5,
+      "oldPrice": null,
+      "isOnSale": false,
+      "inStock": true,
+      "currency": "DKK",
+      "productNumber": "SKU-2",
+      "extraData": {}
+    },
+    {
+      "title": "Third product forces the odd trailing cell",
+      "brand": "Example Brand",
+      "url": "https://example.invalid/p/third",
+      "imgUrl": "https://placehold.co/800x600/png",
+      "price": 49.95,
+      "oldPrice": null,
+      "isOnSale": false,
+      "inStock": false,
+      "currency": "DKK",
+      "productNumber": "SKU-3",
+      "extraData": {}
+    }
+  ],
+  "relatedProducts": [
+    {
+      "title": "Related one",
+      "brand": "Example Brand",
+      "url": "https://example.invalid/p/rel1",
+      "imgUrl": "https://placehold.co/600x600/png",
+      "price": 89,
+      "oldPrice": null,
+      "isOnSale": false,
+      "inStock": true,
+      "currency": "DKK",
+      "productNumber": "SKU-R1",
+      "extraData": {}
+    },
+    {
+      "title": "Related two",
+      "brand": "Example Brand",
+      "url": "https://example.invalid/p/rel2",
+      "imgUrl": "https://placehold.co/600x600/png",
+      "price": 159,
+      "oldPrice": 199,
+      "isOnSale": true,
+      "inStock": true,
+      "currency": "DKK",
+      "productNumber": "SKU-R2",
+      "extraData": {}
+    }
+  ]
+}

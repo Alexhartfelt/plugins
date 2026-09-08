@@ -7,19 +7,23 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 ## Where things are
 
 - `.claude-plugin/marketplace.json` — lists every plugin (`source` = `./plugins/<name>`).
-- `plugins/<name>/` — one self-contained plugin. `.claude-plugin/plugin.json` (name ==
-  directory, semver `version`), `skills/<skill>/SKILL.md`, optional `docs/`, `.mcp.json`.
+- `plugins/hello-retail/` — the one plugin. `.claude-plugin/plugin.json` (name == directory,
+  semver `version`), `skills/<skill>/SKILL.md`, `docs/wiki/` (the knowledge base — source of
+  truth, not a copy), `docs/browser-login.md`, `.mcp.json`, `hooks/hooks.json`, `AUTHORING.md`.
 - `scripts/validate.mjs` — the checks CI runs. Run `npm run check` before proposing a PR.
 
 ## Rules to apply when editing
 
-- Edit `plugins/<name>/…` directly; nothing here is a generated mirror.
-- Any change under `plugins/<name>/` needs a semver bump in that plugin's `plugin.json`
-  (CI fails the PR otherwise). Patch for wording, minor for a new skill or reference,
-  major for renames/removals.
-- Skills are self-contained: a skill may only read files inside its own plugin directory.
+- Edit `plugins/hello-retail/…` directly; nothing here is a generated mirror.
+- Any change under `plugins/hello-retail/` needs a semver bump in its `plugin.json` (CI fails
+  the PR otherwise). Patch for wording, minor for a new skill or reference, major for
+  renames/removals.
+- Skills are self-contained: a skill reads only files inside the plugin. Paths into the wiki
+  are written `${CLAUDE_PLUGIN_ROOT}/docs/wiki/…`; cross-skill paths are `../<skill>/…` from a
+  `SKILL.md` and `../../<skill>/…` from a file in `references/`.
 - SKILL.md frontmatter `name` must equal the skill directory; `description` is the trigger
-  text the model matches on — write it as "when to fire", quoting phrases users say.
+  text the model matches on — write it as "when to fire", quoting phrases users say, and keep it
+  under 1 024 characters.
 - Never write customer-identifiable data (names, domains, UUIDs, screenshots, QA reports) or
   secrets into the repo. Use placeholders. `QA/` and `output/` are gitignored and rejected
   by validation if tracked.
@@ -30,5 +34,7 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 
 ## Current state
 
-Scaffold only. The plugins still live in `helloretail/dts` (`plugins/dts-skills`,
-`plugins/hello-retail-wiki`); the migration plan is in `README.md`.
+Content migrated from `helloretail/dts` on 2026-09-07 (skills renamed — table in `README.md`).
+The repository is private until the redaction pass in `README.md` → "Before going public" is
+done. The `dts` side of the cut-over (deleting the old copies, pointing dts at this plugin) is
+still open.

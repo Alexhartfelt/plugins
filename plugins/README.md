@@ -18,5 +18,8 @@ plugins/<plugin-name>/
 Every plugin here must also be listed in [`../.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
 `npm run validate` enforces all of the above.
 
-Nothing has been migrated yet — the current plugins still live in `helloretail/dts`
-under `plugins/`. See the root [README](../README.md#migration-from-helloretaildts).
+Plugins here:
+
+| Plugin | What it holds |
+|---|---|
+| [`hello-retail/`](./hello-retail/) | The skills that build and QA Hello Retail designs and feeds, the knowledge skill, the wiki they read (`docs/wiki/`), the `hello-retail` + `playwright` MCP servers, and the dashboard-guard hook. |

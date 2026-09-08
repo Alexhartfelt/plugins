@@ -23,7 +23,5 @@
 *.gif       binary
 *.pdf       binary
 
-# Generated / vendored content shouldn't dominate GitHub language stats or diffs
-plugins/*/docs/wiki/**                         linguist-generated
-plugins/*/skills/*/references/wiki/**          linguist-generated
+# Vendored content should not dominate GitHub language stats or diffs
 package-lock.json                              linguist-generated
