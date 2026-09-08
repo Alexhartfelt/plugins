@@ -1,0 +1,75 @@
+{# text title = "Main title" #}
+{# text subtitle = "Secondary title" #}
+{# multiline preheader = "" #}
+{# multiline opening_paragraph = "Lorum ipsum" #}
+{# multiline closing_paragraph = "dolor sit" #}
+{# text text_for_product_button = "View product" #}
+{# boolean include_voucher = false #}
+{# text voucher_headline = "Voucher" #}
+{# multiline voucher_text = "To show you our appreciation for your recent order, feel free to use the following voucher-code for your next purchase:" #}
+{# text voucher_code = "VOUCHER01" #}
+{% block preheader %}
+	{{ preheader }}
+{% endblock %}
+{% block content %}
+	<h1>{{ title }}</h1>
+	<h2>{{ subtitle }}</h2>
+	<p>{{ opening_paragraph }}</p>
+	<hr>
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tbody>
+			{% for product in products %}
+				<tr>
+					<td class="productimage" width="200" height="200" align="center">
+						<!--[if mso]>
+						<table width="100%">
+							<tr>
+								<td>
+									<img width="200" alt="{{ product.title }}" src="{{product.imgUrl}}">
+								</td>
+							</tr>
+						</table>
+						<![endif]-->
+						<!--[if !mso]><!-- -->
+						<img src="{{product.imgUrl}}" alt="{{ product.title }}">
+						<![endif]-->
+					</td>
+					<td>
+						<h2>{{ product.title }}</h2>
+						<h3>{{ product.price|price }} {{ product.currency }}</h3>
+						{% if product.isOnSale %}
+							<span class="previousprice">{{ product.oldPrice|price }} {{ product.currency }}</span>
+						{% endif %}
+						<br>
+						<br>
+						<table border="0" cellpadding="0" cellspacing="0" class="btn">
+							<tbody>
+							<tr>
+								<td align="left">
+									<table border="0" cellpadding="0" cellspacing="0">
+										<tbody>
+										<tr>
+											<td>
+												<a href="{{ product.url }}" target="_blank">{{ text_for_product_button }}</a>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% if include_voucher %}
+		<hr>
+		<h1>{{ voucher_headline }}</h1>
+		<p>{{ voucher_text }}</p>
+		<h2>{{ voucher_code }}</h2>
+	{% endif %}
+	<hr>
+	<p>{{ closing_paragraph }}</p>
+{% endblock %}

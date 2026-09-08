@@ -1,0 +1,195 @@
+{# font font = "Arial" #}
+{# number margin = "10" #}
+{# number font_size = "15" #}
+{# number lines_of_text = "2" #}
+{# color background_color = "#ffffff" #}
+{# color title_font_color = "#818181" #}
+{# color offer_background_color = "#d7ff00" #}
+{# color offer_font_color = "#121212" #}
+{# color button_background_color = "#564242" #}
+{# color button_font_color = "#daff00" #}
+{# color button_border_color = "#000000" #}
+{# number button_border_thickness = "0" #}
+{# text button_text = "Buy now!" #}
+{# boolean button_round_corner = false #}
+{# boolean button_full_width = false #}
+{# boolean show_previous_price = true #}
+{# boolean show_currency = false #}
+{# boolean show_saving_percentage_in_badge = true #}
+{# number badge_size_px = "55" #}
+{# color badge_background_color = "#000000" #}
+{# color badge_saving_font_color = "#fbfb0b" #}
+{# text custom_badge_img_url = "" #}
+{# boolean only_show_custom_badge_on_sale = true #}
+{% assign font_offset_factor = font_size | times: 0.6 %}
+{% assign saving_percentage_top_offset = badge_size_px | divided_by: 2 | minus: font_offset_factor %}
+{% assign linespace = lines_of_text | plus: 5 %}
+{% assign space = font_size | times: linespace %}
+{% assign button_display = "inline-block" %}
+{% if button_full_width %}
+{% assign button_display = "block" %}
+{% endif %}
+{% assign border_radius = "0" %}
+{% if button_round_corner %}
+{% assign border_radius = "0.3" %}
+{% endif %}
+{% assign title_box_height = lines_of_text | times: 1.2 %}
+{% assign image_height = height | minus: margin | minus: margin | minus: space | minus: title_box_height | minus: title_box_height %}
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #fff;
+				color: #000;
+			}
+			* {
+				font-family: '{{font}}', sans-serif;
+				text-align: center;
+				font-size: {{font_size}}px;
+				margin: 0;
+				padding: 0;
+			}
+			#container {
+				width: {{width}}px;
+				height: {{height}}px;
+				background-color: {{background_color}};
+			}
+			#inner {
+				padding: {{margin}}px;
+			}
+			div.title-container {
+				height: {{title_box_height}}em;
+				margin: 0.4em 0;
+				overflow: hidden;
+			}
+			p.title {
+				font-size: 1em;
+				line-height: 1.2em;
+				font-weight: normal;
+				color: {{title_font_color}};
+			}
+			div.price-container {
+				margin-top: 0.4em;
+			}
+			span.price {
+				font-size: 1em;
+				line-height: 1.2em;
+			}
+			span.offer {
+				background-color: {{offer_background_color}};
+				padding: 0.2em;
+				color: {{offer_font_color}};
+			}
+			span.previous {
+				text-decoration: line-through;
+				margin-left: 0.2em;
+			}
+			.productImageContainer {
+				position: relative;
+				height: {{image_height}}px;
+				width: auto;
+			}
+			.productImage {
+				background-image: url("{{product.imgUrl}}");
+				background-size: contain;
+				position: absolute;
+				background-position: center;
+				background-repeat: no-repeat;
+				height: 100%;
+				width: 100%;
+			}
+			.badge {
+				color: {{badge_saving_font_color}};
+				font-weight: bold;
+				position: absolute;
+				height: {{badge_size_px}}px;
+				width: {{badge_size_px}}px;
+			}
+			.badgeWithImg {
+				background-image: url("{{custom_badge_img_url}}");
+				background-size: contain;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			.badgeNoImg {
+				border-radius: 50%;
+				background-color: {{badge_background_color}};
+			}
+			.savingPercentage {
+				text-align: center;
+				height: {{badge_size_px | minus: saving_percentage_top_offset}}px;
+				width: {{badge_size_px}}px;
+				padding-top: {{saving_percentage_top_offset}}px;
+			}
+			.button {
+				background-color: {{button_background_color}};
+				border: {{button_border_thickness}}px solid {{button_border_color}};
+				display: {{button_display}};
+				padding: 0.5em 1.4em;
+				margin-top: 0.6em;
+				color: {{ button_font_color }};
+				font-size: 1em;
+				border-radius: {{border_radius}}em;
+			}
+			#container .hrBImage {
+				width: 100%;
+				height: 100%;
+				background-position: center;
+				background-size: cover;
+				background-repeat: no-repeat;
+			}
+		</style>
+	</head>
+	<body>
+		{% comment %} Replace "BANNER_SIZE_NAME_PLACEHOLDER" with the size created for this design {% endcomment %}
+		{% assign banner_size_newsletter = product.bannerImages.BANNER_SIZE_NAME_PLACEHOLDER.url %}
+		<div id='container'>
+		{% if product.isBanner %}
+			{% if banner_size_newsletter != blank and banner_size_newsletter != "" %}
+				<div class="hrBImage" style="background-image:url({{ banner_size_newsletter }})"></div>
+			{% endif %}
+		{% else %}
+			<div id='inner'>
+				<div class='productImageContainer'>
+					<div class='productImage'></div>
+					{% if only_show_custom_badge_on_sale and product.isOnSale %}
+					<div class='{% if custom_badge_img_url and custom_badge_img_url != "" %} badgeWithImg {% elsif show_saving_percentage_in_badge %} badgeNoImg {% endif %} badge'>
+						{% if show_saving_percentage_in_badge %}
+						<div class='savingPercentage'>
+							{{ product.oldPrice | minus: product.price | times: 100.0 | divided_by: product.oldPrice | round }}%
+						</div>
+						{% endif %}
+					</div>
+					{% elsif only_show_custom_badge_on_sale == false %}
+					<div class='{% if custom_badge_img_url and custom_badge_img_url != "" %} badgeWithImg {% elsif show_saving_percentage_in_badge and product.isOnSale %} badgeNoImg {% endif %} badge'>
+						{% if show_saving_percentage_in_badge and product.isOnSale %}
+						<div class='savingPercentage'>
+							{{ product.oldPrice | minus: product.price | times: 100.0 | divided_by: product.oldPrice | round }}%
+						</div>
+						{% endif %}
+					</div>
+					{% endif %}
+				</div>
+				<div class='title-container'>
+					<p class='title'>{{ product.title }}</p>
+				</div>
+				<div class='price-container'>
+					{% if product.isOnSale %}
+					<span class='price offer'>{{ product.price | price }} {% if show_currency %}{{ product.currency }}{% endif %}</span>
+					{% if show_previous_price %}
+					<span class='price previous'>{{ product.oldPrice | price }} {% if show_currency %}{{ product.currency }}{% endif %}</span>
+					{% endif %}
+					{% else %}
+					<span class='price'>{{ product.price | price }} {% if show_currency %}{{ product.currency }}{% endif %}</span>
+					{% endif %}
+				</div>
+				<div class="button">
+					{{ button_text }}
+				</div>
+			</div>
+		{% endif %}
+		</div>
+	</body>
+</html>

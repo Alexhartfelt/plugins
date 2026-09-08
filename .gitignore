@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# helloretail/plugins — what must never enter git
+# ---------------------------------------------------------------------------
+
+# Node tooling (validation + lint only; nothing here ships in a plugin)
+node_modules/
+npm-debug.log*
+*.tsbuildinfo
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+.obsidian/
+
+# Secrets and local environment — never commit, no exceptions
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.hr-auth.json
+hr-auth.json
+
+# Customer-identifiable output. QA skills write reports and screenshots to QA/;
+# generated per-customer artifacts land in output/. Neither may be committed.
+/QA/
+/output/
+**/QA/screenshots/
+**/screenshots/
+
+# Browser automation state (Playwright MCP sessions, profiles, traces)
+.playwright-mcp/
+.hr-playwright-profile/
+playwright-report/
+test-results/
+
+# Claude Code local state (per-machine settings, brainstorm mockups)
+.claude/settings.local.json
+.superpowers/
+
+# Scratch / temp
+tmp/
+*.tmp
+*.log

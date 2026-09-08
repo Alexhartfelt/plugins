@@ -1,0 +1,95 @@
+name: CI
+
+# Every PR and every push to main. Merging to main IS the publish step — Claude Code
+# installs plugins from this repo over git — so nothing may land on main that fails here.
+# Version bumps and tags are handled after merge by release.yml.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate marketplace & plugins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Structural checks + `claude plugin validate --strict` (pulled via npx, see scripts/validate.mjs)
+      - name: Validate
+        run: npm run validate
+
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:md
+
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck on plugin and repo scripts
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: .
+          ignore_paths: node_modules
+          severity: warning
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Plugins carry MCP configs and customer-facing templates; a leaked key or
+      # customer credential here ships to every machine that installs the plugin.
+      - name: TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  version-preview:
+    name: Version bump preview
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      # Informational only: shows which plugin versions the Release workflow will bump
+      # once this PR merges, and at which level (from the PR title / commit messages).
+      # Bump the version by hand in the PR to choose a different one.
+      - name: Preview
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: node scripts/bump-version.mjs --dry-run | tee -a "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,18 @@
+{
+  "description": "Blocks browser automation against the my.helloretail.com Supervisor and dashboard pages. Dashboard reads and writes go through the hello-retail MCP; the only sanctioned my.helloretail.com navigation is the login preflight's read-only probe of the root URL.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__playwright.*__browser_(navigate|evaluate|run_code_unsafe)|mcp__claude-in-chrome__(navigate|javascript_tool|browser_batch)|mcp__Claude_Browser__(navigate|javascript_tool|preview_start)|mcp__Control_Chrome__(open_url|execute_javascript)|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "IN=$(cat); if printf \"%s\" \"$IN\" | grep -qiE \"my\\.helloretail\\.com[^\\\"]*(supervisor|company)\"; then echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"permissionDecision\\\":\\\"deny\\\",\\\"permissionDecisionReason\\\":\\\"BLOCKED: my.helloretail.com Supervisor/dashboard pages are off-limits to browser automation. Use the hello-retail MCP for all dashboard reads/writes. The only sanctioned my.helloretail.com navigation is the login-preflight probe of the root URL.\\\"}}\"; fi",
+            "timeout": 10,
+            "statusMessage": "Hello Retail dashboard guard"
+          }
+        ]
+      }
+    ]
+  }
+}

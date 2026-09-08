@@ -1,0 +1,84 @@
+name: Release
+
+# Merging to main is the release. On every push to main this workflow:
+#   1. bumps the version of each plugin whose files changed, unless the PR already bumped
+#      it by hand (scripts/bump-version.mjs — level from the squash-merge title:
+#      "feat:" → minor, "feat!:" / "BREAKING CHANGE" → major, anything else → patch);
+#   2. commits that bump back to main with [skip ci] so it does not trigger itself;
+#   3. tags every plugin whose version is new as <plugin>-v<version> and publishes a
+#      GitHub Release with generated notes.
+#
+# Pushing to a protected main needs a token that may bypass the protection. Add a
+# fine-grained PAT (contents: write) or GitHub App token as the RELEASE_TOKEN secret;
+# without it the workflow falls back to GITHUB_TOKEN, which works only while main is
+# unprotected.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Bump, tag, release
+    runs-on: ubuntu-latest
+    # The bump commit itself carries [skip ci]; this guard covers manual re-runs of it.
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Bump versions of changed plugins
+        id: bump
+        env:
+          # github.event.before is the previous tip of main for a normal push. On a
+          # force-push or manual dispatch it may be unusable; the script falls back to HEAD~1.
+          BASE: ${{ github.event.before }}
+        run: node scripts/bump-version.mjs
+
+      - name: Commit the bump
+        if: steps.bump.outputs.bumped == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add plugins/*/.claude-plugin/plugin.json
+          git commit -m "chore(release): ${{ steps.bump.outputs.summary }} [skip ci]"
+          git push origin HEAD:main
+
+      - name: Tag and release plugins with a new version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha=$(git rev-parse HEAD)
+          for m in plugins/*/.claude-plugin/plugin.json; do
+            [ -f "$m" ] || continue
+            name=$(jq -r .name "$m")
+            version=$(jq -r '.version // empty' "$m")
+            [ -n "$version" ] || { echo "$name has no version — skipping"; continue; }
+            tag="${name}-v${version}"
+            if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1 \
+               || gh release view "$tag" >/dev/null 2>&1; then
+              echo "$tag already released — skipping"
+              continue
+            fi
+            echo "Releasing $tag at $sha"
+            gh release create "$tag" \
+              --target "$sha" \
+              --title "$tag" \
+              --generate-notes \
+              --notes "Plugin \`$name\` version \`$version\`. Update: \`/plugin marketplace update helloretail\` then \`/reload-plugins\`."
+          done

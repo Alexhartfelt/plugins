@@ -1,0 +1,18 @@
+{
+  "name": "helloretail",
+  "owner": {
+    "name": "Hello Retail D&TS",
+    "email": "pa@helloretail.com"
+  },
+  "metadata": {
+    "description": "Hello Retail Claude Code plugins — skills that build and QA Hello Retail designs and feeds, and the Hello Retail knowledge base.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "hello-retail",
+      "source": "./plugins/hello-retail",
+      "description": "Hello Retail for AI agents: build and QA Search, Recommendations, Pages, newsletter and triggered-email designs as drafts, set up product feeds, and answer Hello Retail questions from the bundled knowledge base."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+# Normalise line endings: store LF, check out LF everywhere. Skills are read
+# by Claude Code on macOS, Linux and WSL; CRLF drift produces whole-file diffs.
+* text=auto eol=lf
+
+# Text formats the plugins carry
+*.md        text
+*.json      text
+*.jsonc     text
+*.yml       text
+*.yaml      text
+*.liquid    text
+*.css       text
+*.js        text
+*.mjs       text
+*.sh        text
+*.ps1       text
+
+# Binary fixtures (QA workbooks, images)
+*.xlsx      binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.pdf       binary
+
+# Vendored content should not dominate GitHub language stats or diffs
+package-lock.json                              linguist-generated

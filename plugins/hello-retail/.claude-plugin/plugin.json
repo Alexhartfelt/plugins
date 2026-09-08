@@ -1,0 +1,22 @@
+{
+  "name": "hello-retail",
+  "version": "1.0.0",
+  "description": "Hello Retail for AI agents: skills that build and QA Search, Recommendations, Pages, newsletter and triggered-email designs as REVIEW drafts and set up product feeds via the hello-retail MCP, plus the Hello Retail knowledge base and the browser/MCP configuration the skills need.",
+  "author": {
+    "name": "Hello Retail D&TS",
+    "email": "pa@helloretail.com"
+  },
+  "homepage": "https://github.com/helloretail/plugins",
+  "repository": "https://github.com/helloretail/plugins",
+  "license": "MIT",
+  "keywords": [
+    "hello-retail",
+    "ecommerce",
+    "site-search",
+    "product-recommendations",
+    "product-feeds",
+    "liquid",
+    "qa",
+    "knowledge-base"
+  ]
+}

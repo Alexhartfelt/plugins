@@ -1,0 +1,93 @@
+{% comment %}
+  Hello Retail Recommendations — base slider template.
+  Canonical starting point for a recom design. Per-customer work happens in ONE place:
+  the {{ TILE_BODY }} slot inside the {% else %} (non-banner) branch.
+
+  DO NOT modify in per-customer work:
+    - the {% if product.isBanner %} branch (Retail Media — handled by the scaffold)
+    - the swiper-wrapper / swiper-slide / swiper-button-* structure
+    - the swiper init <script> (tune breakpoints / version only)
+
+  Operator must replace BANNER_SIZE_NAME_PLACEHOLDER with the banner size name
+  created for this design.
+{% endcomment %}
+<div id="hello-retail-{{ key }}">
+	<h2>{% input headline %}</h2>
+	<div id="slider-{{ key }}" class="swiper-container">
+		<div class="swiper-wrapper">
+		{% for product in products %}
+			{% comment %} Replace "BANNER_SIZE_NAME_PLACEHOLDER" with the size created for this design {% endcomment %}
+			{% assign banner_size_recom = product.bannerImages.BANNER_SIZE_NAME_PLACEHOLDER.url %}
+			{%- if product.isBanner -%}
+				{%- unless banner_size_recom != blank and product.url != blank -%}{% continue %}{%- endunless -%}
+			{%- else -%}
+				{%- unless product.url != blank -%}{% continue %}{%- endunless -%}
+			{%- endif -%}
+			<div class="swiper-slide">
+				{% if product.isBanner == true %}
+					{% comment %} === BANNER BRANCH — never modified in per-customer work === {% endcomment %}
+					<div class="hr-product">
+						<a href="{{ product.url }}" class="hr-b-container">
+							<img class="hr-b-image" src="{{ banner_size_recom }}" alt="{{ product.title }}">
+						</a>
+					</div>
+				{% else %}
+					{% comment %} === NON-BANNER BRANCH — per-customer tile goes here === {% endcomment %}
+					<div class="hr-product">
+						{{ TILE_BODY }}
+					</div>
+				{% endif %}
+			</div>
+		{% endfor %}
+		</div>
+		<div class="swiper-button-prev"></div>
+		<div class="swiper-button-next"></div>
+	</div>
+</div>
+<script>
+	(function(_) {
+		_.util.swiper_slider("11.2.10", "#slider-{{ key }}", {
+			loop: true,
+			slidesPerView: 1,
+			slidesPerGroup: 1,
+			navigation: {
+				nextEl: "#hello-retail-{{ key }} .swiper-button-next",
+				prevEl: "#hello-retail-{{ key }} .swiper-button-prev",
+			},
+			breakpoints: {
+				300: {
+					slidesPerView: 2,
+					slidesPerGroup: 2
+				},
+				550: {
+					slidesPerView: 3,
+					slidesPerGroup: 3
+				},
+				800: {
+					slidesPerView: 4,
+					slidesPerGroup: 4
+				}
+			}
+		});
+	})(ADDWISH_PARTNER_NS);
+</script>
+
+{% comment %}
+  ──────────────────────────────────────────────────────────────────────────
+  DEFAULT TILE (reference) — what {{ TILE_BODY }} resolves to with no
+  customisation. The recom-developer skill replaces this with a tile that
+  mirrors the customer's category-page product card (sale logic, badges,
+  swatches, add-to-cart). Kept here as the minimal fallback.
+
+	<a href="{{ product.url }}">
+		<div class="hr-image" style="background-image: url('{{ product.imgUrl }}')"></div>
+		<p class="hr-title">{{ product.title }}</p>
+		<p>
+			{% if product.isOnSale %}
+				<span class="hr-old-price">{{ product.oldPrice | price }}</span>
+			{% endif %}
+			<span class="hr-price">{{ product.price | price }}</span>
+		</p>
+	</a>
+  ──────────────────────────────────────────────────────────────────────────
+{% endcomment %}
