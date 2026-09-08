@@ -67,12 +67,12 @@ jobs:
           fetch-depth: 0
       # Plugins carry MCP configs and customer-facing templates; a leaked key or
       # customer credential here ships to every machine that installs the plugin.
+      # No base/head: the action derives the commit range from the event itself
+      # (before..after on push, base..head on pull_request). Passing them explicitly
+      # makes a direct push to main fail with "BASE and HEAD commits are the same".
       - name: TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
           extra_args: --only-verified
 
   version-preview:
