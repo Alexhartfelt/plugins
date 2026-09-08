@@ -2,7 +2,7 @@
   "name": "@helloretail/plugins",
   "version": "0.0.0",
   "private": true,
-  "description": "Hello Retail Claude Code plugin marketplace — validation and lint tooling only; the plugins themselves are plain Markdown/JSON.",
+  "description": "Hello Retail Claude Code plugin marketplace \u2014 validation and lint tooling only; the plugins themselves are plain Markdown/JSON.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -18,7 +18,8 @@
     "lint:md:fix": "markdownlint-cli2 --fix",
     "lint": "npm run lint:md",
     "check": "npm run validate && npm run lint",
-    "check:version-bump": "node scripts/check-version-bump.mjs"
+    "version:preview": "node scripts/bump-version.mjs --dry-run",
+    "version:bump": "node scripts/bump-version.mjs"
   },
   "devDependencies": {
     "markdownlint-cli2": "^0.18.1"

@@ -15,9 +15,10 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 ## Rules to apply when editing
 
 - Edit `plugins/hello-retail/…` directly; nothing here is a generated mirror.
-- Any change under `plugins/hello-retail/` needs a semver bump in its `plugin.json` (CI fails
-  the PR otherwise). Patch for wording, minor for a new skill or reference, major for
-  renames/removals.
+- Do not bump `plugin.json` → `version` by hand unless a specific version is wanted: the
+  Release workflow bumps it after merge, with the level taken from the squash-merge title
+  (`fix:` patch, `feat:` minor, `feat!:` / `BREAKING CHANGE` major). Write PR titles and commit
+  subjects in that Conventional Commits form.
 - Skills are self-contained: a skill reads only files inside the plugin. Paths into the wiki
   are written `${CLAUDE_PLUGIN_ROOT}/docs/wiki/…`; cross-skill paths are `../<skill>/…` from a
   `SKILL.md` and `../../<skill>/…` from a file in `references/`.

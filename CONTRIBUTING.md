@@ -13,10 +13,13 @@
    state (`.hr-auth.json`), tokens and `.env` files never enter the repo.
 4. **One source of truth.** Edit `plugins/<plugin>/…` directly. There are no generated mirrors
    in this repo. If a job copies content in from elsewhere, its header must say so.
-5. **Every shipped change bumps the plugin version.** `plugin.json` → `version`, semver:
-   - patch: wording, reference fixes, small template tweaks
-   - minor: a new skill, a new reference file, new MCP server
-   - major: a skill renamed/removed, or a behaviour change users must re-learn
+5. **Every shipped change gets a new plugin version — CI does the bump.** After a squash-merge
+   the Release workflow raises `plugin.json` → `version` for each plugin the PR touched and tags
+   it. The level comes from the PR title (Conventional Commits):
+   - `fix:`, `docs:`, `chore:`, … → patch: wording, reference fixes, small template tweaks
+   - `feat:` → minor: a new skill, a new reference file, new MCP server
+   - `feat!:` / `BREAKING CHANGE` → major: a skill renamed/removed, behaviour users must re-learn
+   Bump the version by hand in the PR if you want a specific one; CI keeps it.
 
 ## Adding a plugin
 
@@ -77,8 +80,10 @@ The full authoring playbook (`AUTHORING.md`) travels with the `dts-skills` plugi
 - Branch from `main`, one plugin per PR where practical.
 - `npm run check` locally before pushing.
 - Fill the PR template; CODEOWNERS get requested automatically.
-- CI must be green: validate, markdown lint, shellcheck, secret scan, version bump.
-- Squash-merge. The merge commit is what ships; write the title as the release note line.
+- CI must be green: validate, markdown lint, shellcheck, secret scan. The version preview is
+  informational.
+- Squash-merge. The merge commit is what ships: its title is the release-note line **and** decides
+  the version bump (`fix:` patch · `feat:` minor · `feat!:` major).
 
 ## Testing a change before it ships
 

@@ -2,6 +2,7 @@ name: CI
 
 # Every PR and every push to main. Merging to main IS the publish step — Claude Code
 # installs plugins from this repo over git — so nothing may land on main that fails here.
+# Version bumps and tags are handled after merge by release.yml.
 on:
   pull_request:
   push:
@@ -74,8 +75,8 @@ jobs:
           head: HEAD
           extra_args: --only-verified
 
-  version-bump:
-    name: Plugin version bumped
+  version-preview:
+    name: Version bump preview
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -85,8 +86,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - name: Check changed plugins bumped plugin.json version
+      # Informational only: shows which plugin versions the Release workflow will bump
+      # once this PR merges, and at which level (from the PR title / commit messages).
+      # Bump the version by hand in the PR to choose a different one.
+      - name: Preview
         env:
-          BASE_REF: origin/${{ github.base_ref }}
-          SKIP_VERSION_CHECK: ${{ contains(github.event.pull_request.labels.*.name, 'no-version-bump') }}
-        run: node scripts/check-version-bump.mjs
+          BASE: origin/${{ github.base_ref }}
+        run: node scripts/bump-version.mjs --dry-run | tee -a "$GITHUB_STEP_SUMMARY"

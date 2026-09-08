@@ -16,9 +16,9 @@ installs straight from this repository over git.
 .claude-plugin/marketplace.json   # the marketplace: name + list of plugins (source paths)
 plugins/hello-retail/             # the plugin (see plugins/hello-retail/README.md)
 scripts/validate.mjs              # structural checks + `claude plugin validate --strict`
-scripts/check-version-bump.mjs    # PR guard: changed plugin ⇒ bumped version
-.github/workflows/ci.yml          # validate · markdown lint · shellcheck · secret scan · version bump
-.github/workflows/release.yml     # tags <plugin>-v<version> when a version lands on main
+scripts/bump-version.mjs          # bumps changed plugins' versions (level from the merge commit title)
+.github/workflows/ci.yml          # validate · markdown lint · shellcheck · secret scan · version preview
+.github/workflows/release.yml     # on main: auto-bump → commit → tag <plugin>-v<version> → GitHub Release
 ```
 
 The only language in the repo is the plugins' own content: Markdown, JSON, Liquid, a few
@@ -61,11 +61,14 @@ npm run check      # validate + lint — the same checks CI runs
 1. Edit under `plugins/hello-retail/`. The plugin is self-contained: the wiki the skills read
    lives at `plugins/hello-retail/docs/wiki/` and skills reference it as
    `${CLAUDE_PLUGIN_ROOT}/docs/wiki/…`. Nothing here is a generated mirror.
-2. Bump `plugins/hello-retail/.claude-plugin/plugin.json` → `version` (semver). CI fails a PR
-   that changes the plugin without a bump; label the PR `no-version-bump` for typo-level fixes.
-3. Open a PR. CI must be green. Merge → it is live for everyone on their next marketplace update.
-4. When the version lands on `main`, the Release workflow tags it `hello-retail-v<version>` and
-   creates a GitHub Release with generated notes.
+2. Open a PR with a [Conventional Commits](https://www.conventionalcommits.org) title —
+   `fix: …` (patch), `feat: …` (minor), `feat!: …` or a `BREAKING CHANGE` footer (major). The
+   "Version bump preview" check shows what will be released.
+3. Squash-merge when CI is green. The Release workflow bumps `plugin.json` → `version` for every
+   plugin the PR touched, commits it to `main`, tags `hello-retail-v<version>` and publishes a
+   GitHub Release with generated notes. It is live for everyone on their next marketplace update.
+4. To choose the version yourself, bump `plugin.json` in the PR; a version that already changed
+   is left alone. `[bump minor]` / `[bump major]` in the title also override the level.
 
 Try a local checkout as a marketplace without pushing:
 
@@ -107,8 +110,10 @@ workflows; shrink the remaining internal skills into a `dts-internal` plugin; po
 The 2026-09-07 audit found no secrets, but the content still carries material that must go
 before the visibility flips:
 
-- ~35 named customer storefronts across ~30 files, two Hello Retail company IDs, two ClickUp
-  card IDs → generic placeholders.
+- Customer storefronts, company IDs and ClickUp card IDs were replaced with anonymous handles
+  (`store-IT`, `store-SE-1`, …) and `example-shop.com` placeholders on 2026-09-07; colleagues named
+  as sources became their role. The public customer-logo lists in `overview/company.md` and the
+  glossary stay — they come from helloretail.com.
 - The 21 `explain.helloretail.com` share links were removed from this repo on 2026-09-07 (one
   internal Google Sheets link too); they still need **revoking at the source** — publishing the
   repo history would not expose them, but the links themselves stay live until revoked.
