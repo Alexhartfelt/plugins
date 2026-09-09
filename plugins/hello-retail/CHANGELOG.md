@@ -9,6 +9,13 @@ structure to follow.
 
 ## Unreleased
 
+### Fixed
+
+- `search-developer`, `tile-extractor`, `pages-developer` and `newsletter-qa` now reach the
+  cross-skill rules they point at — parent-hook application, the CSS-in-JS tile block and the
+  triggered-email render rules. Those pointers previously resolved to a file that does not
+  exist, so a build could skip the rules without saying so.
+
 ## 1.1.0 — 2026-09-09
 
 ### Changed

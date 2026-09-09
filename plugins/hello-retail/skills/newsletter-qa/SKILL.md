@@ -317,8 +317,8 @@ triggered-email-developer
 - Catalogue: `../qa-checklists/references/newsletter.md`
 - Shared procedure: `../qa-checklists/SKILL.md`
 - Build rules the code pass enforces: `../newsletter-developer/SKILL.md`,
-  `../triggered-email-developer/SKILL.md` + `references/rendering-rules.md`,
-  `references/two-up-grid.md`
+  `../triggered-email-developer/SKILL.md` + `../triggered-email-developer/references/rendering-rules.md`,
+  `../triggered-email-developer/references/two-up-grid.md`
 - Defaults for the foundation diff: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/newsletters/`,
   `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/triggered-emails/`, `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/foundation-rules.md`
 - Local render harness (lane T): `references/render_te.rb`, `references/samples.example.json`
