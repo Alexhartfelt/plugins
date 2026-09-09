@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.2.0 — 2026-09-09
+
 ### Added
 
 - `browser-login` — a skill that gets the Playwright browsers logged in to Hello Retail. It
