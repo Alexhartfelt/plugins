@@ -75,6 +75,14 @@ that's useful groundwork on its own.
 Identical to feed-setup Step 1: fetch the URL (with auth headers if given), look at 2–3
 real products, note the repeating element path for `itemsPath`.
 
+Check the wiki for the platform's feed parameters and auth before fetching —
+`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/feeds.md` for Viskan (which
+feed version the customer is on decides the parameters, and **v3 pagination starts on page 1
+while v1/v2 start on page 0**) and
+`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/README.md` for Magento (the
+`/rest/V1/product-feed` endpoint, its Feeds Bearer token, and the `extraAttributes` query
+parameter that decides which fields the feed contains at all).
+
 ### Step 2 — Parse the V1 crawlSpec, property by property
 
 For each top-level key in the crawlSpec:
@@ -107,6 +115,15 @@ For each V1 property:
 - **If you can't find any plausible counterpart** for a V1 property in the new feed, do
   not invent one. Add it to a running "couldn't map" list and ask the user — don't guess
   silently on business logic that might affect pricing, stock, or search ranking.
+
+**On Magento, a field missing from the feed is often a feed-URL gap, not a missing
+attribute.** `/rest/V1/product-feed` returns the standard fields plus only what the feed URL
+lists in `extraAttributes`, and it **does not error on an attribute code that doesn't
+exist** — it silently omits it. So a V1 property with no visible counterpart may just need
+its attribute added to `extraAttributes`; `/rest/V1/awext/info` lists every attribute the
+shop actually has, which is the real source for that check. See
+`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/README.md` before writing anything off as
+unmapped.
 
 **One HR field is renamed between generations.** The strikethrough price is a single
 underlying data field with a different name on each dashboard:
@@ -203,5 +220,14 @@ there's a clear record of what changed and what still needs a human decision.
   percentage calculations. Check this whenever a property's logic looks needlessly
   convoluted for what it's apparently computing — it probably is one of these idioms.
 - For the new feed's platform-specific field names/quirks, reuse feed-setup's own
-  `references/` files (`prestashop.md`, `woocommerce.md`, …) — this skill doesn't
-  duplicate those.
+  references — `../feed-setup/references/shopify.md`,
+  `../feed-setup/references/prestashop.md`, `../feed-setup/references/woocommerce.md` — this
+  skill doesn't duplicate those.
+- Platform feed nuance the wiki covers and those references don't:
+  `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/feeds.md` (product feed
+  versions and their pagination offset),
+  `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/README.md` (feed endpoint, Bearer token,
+  `extraAttributes`, and how to list the shop's real attribute codes), and
+  `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/wikinggruppen/README.md` (the combination ID the
+  tile needs lives in `extraData.kombinationsID`, so it has to be mapped in the feed). Start
+  from `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/platforms.md` for any other platform.

@@ -9,6 +9,14 @@ structure to follow.
 
 ## Unreleased
 
+### Changed
+
+- `feed-migration` now reads the bundled wiki for platform feed nuance, so a migration onto a
+  Viskan, Magento or Wikinggruppen feed starts from the right parameters, pagination offset and
+  field names. On Magento it also tells you when a field that looks absent from the new feed is
+  really an `extraAttributes` gap in the feed URL, instead of sending you to the customer to ask
+  for an attribute they already have.
+
 ## 1.0.2 — 2026-09-08
 
 ### Added
