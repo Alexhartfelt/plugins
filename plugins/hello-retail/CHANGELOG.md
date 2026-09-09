@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.2.2 — 2026-09-09
+
 ### Changed
 
 - `search-developer` says where its verification screenshots go: the gitignored `QA/screenshots/`
