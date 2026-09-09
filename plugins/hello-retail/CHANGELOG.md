@@ -9,6 +9,11 @@ structure to follow.
 
 ## Unreleased
 
+### Changed
+
+- `search-developer` says where its verification screenshots go: the gitignored `QA/screenshots/`
+  folder, never the repo root. Captures that land elsewhere are moved there before being linked.
+
 ## 1.2.1 — 2026-09-09
 
 ### Changed
