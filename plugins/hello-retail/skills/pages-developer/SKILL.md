@@ -97,7 +97,7 @@ settings from memory or from this file.
    (survey-verified PARENT HOOKS), mirror them onto the design's products-container
    element — scope classes only, **layout classes are excluded** (`row`, `col-*`,
    `container`, `grid`; the mirrored-`row` −15px clip incident applies here verbatim).
-   Rules: search-developer `references/shell-structure.md` → "Parent / ancestor scope".
+   Rules: `../search-developer/references/shell-structure.md` → "Parent / ancestor scope".
 4b. **Device grid parity — the products-per-row TOKENS are the source of truth**
    (operator decision 2026-08-19: they are the CSM-tunable knobs; never freeze
    literal widths into the css; modify the liquid variable declarations only).

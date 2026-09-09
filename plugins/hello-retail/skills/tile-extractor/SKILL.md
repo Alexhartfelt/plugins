@@ -289,8 +289,8 @@ inside the HR container** — the immediate grid parent (`.products-grid .card`)
 wrappers (`.catalog-category-view … .card`). Copied verbatim, the tile renders unstyled in the
 overlay even though the markup is byte-perfect. Detect this during every survey and report the
 missing ancestors as **PARENT HOOKS** — the calling shell skill mirrors them onto its products
-container (`hr-products-container` for Search; see `search-developer`'s
-`references/shell-structure.md` for the application rules and the `body.`/`#id` limits).
+container (`hr-products-container` for Search; see
+`../search-developer/references/shell-structure.md` for the application rules and the `body.`/`#id` limits).
 
 Candidate scan — list ancestor tokens required by rules that target the tile's own classes:
 
