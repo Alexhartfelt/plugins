@@ -9,6 +9,33 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `browser-login` — a skill that gets the Playwright browsers logged in to Hello Retail. It
+  diagnoses the machine, refreshes the saved login from the shared browser profile without
+  opening a window, or has you log in once in a window you can see; the window closes by itself
+  once the login is detected. On a new machine it also installs Node.js and Playwright under
+  `~/.hr-*` with no admin rights. Windows has a PowerShell twin.
+- Ten parallel browser workers, `playwright-01` … `playwright-10`, each with its own
+  `QA/screenshots/NN/` folder, for fanning subagents out over several customers at once.
+
+### Changed
+
+- The `playwright` server now runs an isolated session seeded from one saved login
+  (`~/.hr-auth.json`) instead of a shared persistent profile. Every Claude Code session gets
+  its own logged-in browser, so QA runs no longer collide on a profile lock, and a login done
+  once serves every session. Run the `browser-login` setup once per machine; until then the
+  `playwright*` servers show as failed.
+- The Playwright servers launch from the Node and Playwright the setup installs, not from
+  `npx`, so they start without a network round-trip and independently of your `PATH`.
+
+### Fixed
+
+- Storefront QA no longer fails with "Browser is already in use" when a second Claude Code
+  session opens a browser — that lock was the shared profile, which also never kept the login.
+- The dashboard guard now blocks `my.helloretail.com` Supervisor and dashboard navigation on
+  the plugin's own Playwright servers; it previously matched only servers registered by hand.
+
 ## 1.1.1 — 2026-09-09
 
 ### Fixed

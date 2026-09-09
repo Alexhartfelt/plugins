@@ -632,13 +632,14 @@ you record a verdict:
 | Personalised box content | anonymous cold-start differs per isolated session — not a defect |
 
 **Browser backend order — Playwright first, Claude in Chrome second, in-app Browser pane
-last.** If the `playwright` server from this plugin's `.mcp.json` is connected, drive the
-rendered pass with it: a **headed (visible)** Chrome with a persistent profile at
-`~/.hello-retail-browser`, so a Hello Retail login done once survives restarts, and screenshot
-files are written straight to disk. One QA run at a time — the profile is locked while a
-browser is open. When Playwright is unavailable (no Node.js, server not started, first action
-fails), fall back to **Claude in Chrome**: the operator's real Chrome, HR login usually already
-present. The **Claude Code in-app Browser pane** (`mcp__Claude_Browser__*`) is strictly the
+last.** If a `playwright*` server from this plugin's `.mcp.json` exposes tools, drive the
+rendered pass with it: a **headed (visible)**, isolated Chrome seeded from the saved Hello
+Retail login in `~/.hr-auth.json`, so every Claude Code session gets its own logged-in browser
+and QA runs go in parallel; screenshot files are written straight to disk. Use `playwright` by
+default and `playwright-01` … `playwright-10` when fanning out subagents. One dark worker is
+not "Playwright unavailable" — try a sibling. Only when no `playwright*` worker exposes tools
+(never set up: the `browser-login` skill fixes that) fall back to **Claude in Chrome**: the
+operator's real Chrome, HR login usually already present. The **Claude Code in-app Browser pane** (`mcp__Claude_Browser__*`) is strictly the
 last resort — it has NO Hello Retail login, so DRAFT/REVIEW solutions won't render and every
 widget-gated check is invalid there unless the operator logs in inside the pane first; never
 pick it over the other two just because its tools are already loaded, and record the downgrade
@@ -735,10 +736,11 @@ browser tool), and before any widget interaction:
    up front.
 
 On Claude in Chrome the session is the operator's own Chrome profile, so they're usually
-already logged in and the check just passes. On the Playwright backend the login lives in the
-persistent `~/.hello-retail-browser` profile: the first run opens a logged-out window, the
-operator logs in once there, and later runs on the same machine reuse it. If the check fails,
-ask for the login again — the procedure is `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`.
+already logged in and the check just passes. On the Playwright backend every isolated session
+loads the saved login from `~/.hr-auth.json`; if the check fails there, run the
+`browser-login` skill (it refreshes the saved login from the shared profile or has the operator
+log in once in a visible window), `browser_close` the worker's already-open browser, and re-run
+the probe — the procedure is `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`.
 
 **First-load popup sweep — clear every blocking overlay on the first storefront page, before
 any check.** This is the canonical procedure; the per-feature QA skills and the tile/UI skills
@@ -1518,8 +1520,9 @@ If the user only asked to *see* a checklist, print it inline instead — no file
 This skill is **self-contained** — every checklist lives in `references/` next to this file and
 the supporting docs are bundled under `${CLAUDE_PLUGIN_ROOT}/docs/`. Two things to know:
 
-- **MCPs** — the plugin registers `hello-retail` (HTTP, OAuth on first use) and `playwright`
-  (see `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`). A missing hello-retail MCP doesn't block
+- **MCPs** — the plugin registers `hello-retail` (HTTP, OAuth on first use) and the
+  `playwright*` browser servers, which need the one-time `browser-login` setup (see
+  `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`). A missing hello-retail MCP doesn't block
   the skill — MCP-verifiable items simply fall back to the operator's manual list. With no
   browser backend at all there is no rendered pass; with Claude in Chrome but no Playwright the
   pass runs and evidence files come from the GIF-export recipe (Evidence screenshots section).

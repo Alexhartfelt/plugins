@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Report the state of the Playwright login system on this machine — nothing is installed,
+# opened, or changed. Claude runs this first to pick the right fix.
+#
+#   exit 0  installed and ~/.hr-auth.json holds a live Hello Retail session
+#   exit 2  something is missing; the output names the script to run
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=hr-browser-lib.sh
+. "$SCRIPT_DIR/hr-browser-lib.sh"
+
+status=0
+
+if node_ok "$HR_NODE/bin/node"; then
+  echo "Node:        $("$HR_NODE/bin/node" -v) at $HR_NODE/bin/node"
+else
+  echo "Node:        MISSING at $HR_NODE/bin/node — the playwright servers launch from this path. Run setup-hr-browsers."
+  status=2
+fi
+
+if [ -f "$HR_PW/node_modules/@playwright/mcp/cli.js" ]; then
+  echo "MCP server:  @playwright/mcp present at $HR_PW"
+else
+  echo "MCP server:  MISSING at $HR_PW/node_modules/@playwright/mcp — run setup-hr-browsers."
+  status=2
+fi
+
+if [ -f "$HR_PW/hr-mcp-config.json" ]; then
+  echo "Config:      $HR_PW/hr-mcp-config.json (headed, 1440x900)"
+else
+  echo "Config:      MISSING $HR_PW/hr-mcp-config.json — run setup-hr-browsers (or refresh-hr-auth, which recreates it)."
+  status=2
+fi
+
+if [ -d "$HOME/.hr-playwright-profile" ]; then
+  echo "Profile:     ~/.hr-playwright-profile present (the login lives here; refresh-hr-auth copies it out)"
+else
+  echo "Profile:     ~/.hr-playwright-profile absent — nobody has logged in on this machine yet. Run setup-hr-browsers."
+  status=2
+fi
+
+if have_node; then
+  printf 'Auth file:   '
+  node "$SCRIPT_DIR/hr-auth.cjs" check || status=2
+else
+  echo "Auth file:   cannot inspect ~/.hr-auth.json without Node — run setup-hr-browsers."
+  status=2
+fi
+
+exit "$status"

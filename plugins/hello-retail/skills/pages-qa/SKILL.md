@@ -93,8 +93,9 @@ navigate to
 `https://my.helloretail.com` — if it redirects to a login screen, **pause and ask the operator
 to log in themselves** in that browser window (never enter credentials yourself), then re-check
 and continue. On Claude in Chrome the login is the operator's own Chrome profile (usually
-already there); on the Playwright backend the login lives in the
-persistent `~/.hello-retail-browser` profile (log in once; see `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`). If the
+already there); on the Playwright backend each isolated session loads the saved login from
+`~/.hr-auth.json` (the `browser-login` skill produces or refreshes it; see
+`${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`). If the
 operator can't log in, run the pass anyway but record every widget-gated check as
 **SKIPPED — not logged in to Hello Retail** (details in `../qa-checklists/SKILL.md` Step 3).
 

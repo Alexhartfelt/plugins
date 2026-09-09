@@ -42,7 +42,8 @@ All live-site inspection in this skill **MUST** go through the **Claude in Chrom
 Retail login already lives, needs no setup, and multiple Claude sessions can work logged-in
 at once. The **Playwright MCP** (`mcp__playwright__browser_*`) is the **fallback** for when
 Claude in Chrome isn't connected (it's macOS-only and needs the Chrome extension); Playwright
-runs a pinned persistent profile and `browser_resize` gives real mobile viewports.
+runs an isolated session seeded from the saved Hello Retail login (`browser-login` skill) and
+`browser_resize` gives real mobile viewports.
 
 | Task | Claude in Chrome (default) | Playwright (fallback) |
 |---|---|---|
@@ -59,8 +60,9 @@ only the real browser sees the final DOM, so a static fetch returns an incomplet
 If no browser MCP is **connected / enabled**, do not fetch the page yourself. Ask the
 operator to either:
 
-1. **Enable a browser MCP** (Playwright: the `playwright` server ships in this plugin's
-   `.mcp.json` — see `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`; or the Claude in Chrome
+1. **Enable a browser MCP** (Playwright: the `playwright*` servers ship in this plugin's
+   `.mcp.json` and need the one-time `browser-login` setup — see
+   `${CLAUDE_PLUGIN_ROOT}/docs/browser-login.md`; or the Claude in Chrome
    fallback: install the extension and run `/chrome` — macOS only) —
    preferred, so the skill can survey every tile state itself; or
 2. **Paste the raw tile HTML** from a category page (one full product card; ideally a couple of
