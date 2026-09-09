@@ -45,19 +45,20 @@ Viskan initialises elements with class `CMS-Component` on page load by adding a 
 
 ---
 
-## Favourite / wishlist in the HR overlay
+## Favourite / wishlist — NOT supported in the HR overlay
 
-### Why it doesn't work out of the box
+**Hello Retail does not support wishlist / favourite buttons on Viskan.** Every native `ListArticle` tile carries a `.CMS-ArticleFavorite-icon` star, but HR Search, Recommendations and Pages tiles ship **without** it by design:
 
-Clicking `.CMS-ArticleFavorite-icon` on the storefront works via Viskan's delegated click handler on `#Streamline`. The HR overlay sits outside `#Streamline`, so the handler never fires. Overlay stars are visually inert without custom wiring.
+- **Build:** leave the star out of the tile and say so in the response (tile-extractor rule 6 exception). Don't wire a substitute.
+- **QA:** the missing star is not a parity gap — grade it ACCEPTED with the platform named, never FAIL/WARN (qa-checklists → Product Tile → Wishlist icon).
 
-### Guest behaviour on the storefront
+### Why it can't be wired
 
-For unauthenticated users, the star toggle is **purely visual** — no XHR or fetch call is made. State lives in Redux memory only.
+Clicking `.CMS-ArticleFavorite-icon` on the storefront works via Viskan's delegated click handler on `#Streamline`. The HR overlay sits outside `#Streamline`, so the handler never fires and overlay stars are visually inert. For unauthenticated users the storefront toggle is **purely visual** — no XHR or fetch call is made, state lives in Redux memory only — so there is no API for the overlay to call either. Any star rendered in an HR tile would be disconnected from the customer's real favourites, which is why the platform position is to leave it out.
 
-### Implementation pattern for the HR overlay
+### Historical — localStorage shim (do not ship)
 
-Wire up the toggle in `reinit_wishlist`, called from `initializationCode` after each render. Use `localStorage` as the persistence layer, keyed by product URL pathname (e.g. `/en-gb/artikel/w-team-polo`). The pathname is stable across reloads, and all color/size variants of a product share the same slug, so they all reflect the same saved state.
+A `localStorage`-backed toggle (`reinit_wishlist`, keyed by product URL pathname, re-run after every render) was previously documented here as a workaround. It is kept only for reference — **do not ship it**: it fakes a favourite state the storefront never sees, and Hello Retail does not support the control on Viskan.
 
 ```javascript
 function reinit_wishlist(container) {
@@ -112,8 +113,6 @@ function reinit_wishlist(container) {
     });
 }
 ```
-
-`reinit_wishlist` is called twice in `initializationCode` — after initial render and after every search update. The `_wishlistBound` guard prevents duplicate listeners; the state-restore block runs every time so newly loaded tiles pick up the saved state immediately.
 
 ---
 

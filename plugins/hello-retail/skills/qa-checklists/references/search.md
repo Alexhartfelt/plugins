@@ -229,7 +229,8 @@ for the accessibility-template generation.
 > **Ordering rule:** filters are listed in **alphabetical order**, and the options inside each
 > filter are alphabetical too — with two exceptions: **Category** follows the category
 > hierarchy, and **Size** follows logical size order (XS, S, M, L, XL…), never alphabetical.
-> Verify both levels explicitly.
+> Verify both levels explicitly. The rule is about **filters** only — the sorting control's own
+> options are never alphabetised (see *Sorting* below).
 
 - [ ] Filters not listed in alphabetical order
 - [ ] Options within a filter not in the required order (alphabetical; Category → hierarchy;
@@ -281,6 +282,10 @@ for the accessibility-template generation.
 - [ ] Strange name…
 - [ ] Missing (e.g. added lowest price but not highest price)
 - [ ] Strange sorting option (e.g. Categories)
+- **Not a defect — sort options not in alphabetical order.** Sort options follow the configured
+  order (default sort first, then price / newest / …), like the customer's own dropdown; they
+  are never alphabetised and "sorting not alphabetical" must not be reported. Compare the
+  option set and the labels against native instead.
 - [ ] Inconsistent compared to other solutions
 - [ ] Translation / typo — **diff the exact string against the native site's own sort dropdown**,
       don't just read it and confirm it "looks like correct Italian/Danish/etc." ("Prezzo

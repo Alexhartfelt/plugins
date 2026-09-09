@@ -686,7 +686,10 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       breakpoint** from the native baseline (`../qa-checklists/SKILL.md` Step 3): query the
       native DOM at 1440 / 820 / 375 before writing the finding; native often has no wishlist
       element at mobile at all, and the fix must not add one there (real 2026-07-31 case: the
-      correct fix scope was desktop + tablet only)
+      correct fix scope was desktop + tablet only). **Viskan / Streamline exception:** Hello
+      Retail does not support wishlist buttons on Viskan — HR tiles ship without the native star
+      by design; record ACCEPTED (platform named), never FAIL/WARN
+      (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`)
 - [ ] **Delivery / availability text** — matches native exactly (capitalisation, punctuation,
       spacing)
 - [ ] **Side-by-side element parity sweep — one HR tile next to one native tile, per
@@ -1024,10 +1027,14 @@ Checks against `templateCode` / `templateStyles` that the rendered pass can't se
       markers left in the template.
 - [ ] **Localization integrity** — every hardcoded string in the template is in the store
       language; no stray English in a non-English store (or vice-versa).
-- [ ] **Liquid gotchas** — price uses `| priceWithCurrency: product.currency` (never
-      `| priceWithCurrencySymbol` or Shopify `| money`); no nonexistent `| raw`; never
-      `| remove: '.'` (breaks thousands separators — use targeted `| replace: 'kr.', 'kr'`);
-      banner branch untouched.
+- [ ] **Liquid gotchas** — price uses an HR price filter: `| price` + `| currencySymbol`,
+      `| priceWithCurrencySymbol`, or `| priceWithCurrency: product.currency` — **any of these is
+      fine when the rendered format matches the customer's; never flag a working
+      `price` + `currencySymbol` as "should be `priceWithCurrency`"** (`| price` applies the same
+      dashboard formatting, decimals included; the only real price failures are Shopify's
+      `| money`, a hardcoded symbol, and a bare `| priceWithCurrency` missing its
+      `: product.currency` argument); no nonexistent `| raw`; never `| remove: '.'` (breaks
+      thousands separators — use targeted `| replace: 'kr.', 'kr'`); banner branch untouched.
 - [ ] **JS price/total re-parsing gotcha** — if `initializationCode` reads a rendered price or
       cart-total string back into a number (e.g. a cart-recom's free-shipping headline JS), the
       same thousands-separator trap applies in JS as in Liquid: a naive

@@ -157,6 +157,15 @@ functionality instead: click-through, PDP-price parity, CTA/ATC, translations
 > is the currency suffix inside a conditional, or appended unconditionally? Is it present on the
 > `<ins>` (new) price as well as the `<del>` (old) one? Sale pairs routinely format their two
 > members differently, and the commented-out suffix on one member is a real, repeat finding.
+>
+> **The filter choice is never the defect.** `{{ product.price | price }} {{ product.currency | currencySymbol }}`
+> and `{{ product.price | priceWithCurrency: product.currency }}` are equivalent — `| price`
+> applies the same dashboard price formatting (decimals included) as the one-shot filter, so
+> neither form is "wrong" or "risky once a decimal price appears", and a working
+> `price` + `currencySymbol` is never reported as "should be `priceWithCurrency`". Grade the
+> rendered output against native; the real code failures are Shopify's `| money`, a hardcoded
+> symbol or suffix, `| remove: '.'`, and a bare `| priceWithCurrency` with no
+> `: product.currency` argument.
 
 - [ ] Missing
 - [ ] Wrong price (e.g. rounded up/down)
@@ -321,6 +330,11 @@ functionality instead: click-through, PDP-price parity, CTA/ATC, translations
 
 ### Wishlist icon
 
+- **Platform exception — Viskan / Streamline: not supported, not a finding.** Hello Retail does
+  not support wishlist / favourite buttons on Viskan; HR tiles ship without the native star by
+  design even though every native tile carries one. "Missing / not set up" is ACCEPTED there
+  (platform named), never FAIL/WARN, and the rest of this block is N/A. →
+  `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`
 - [ ] Missing / not set up
 - [ ] Not working (our tiles don't remember products that have been added to the wishlist)
 - [ ] Tooltip: text is not shown in our tiles

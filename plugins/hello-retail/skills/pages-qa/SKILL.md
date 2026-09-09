@@ -191,7 +191,9 @@ say which ones you exercised. On every fixture page, run and record the same set
 
 - **Sorting:** price ascending, price descending, and every custom option the customer configured
   (a sort that reorders on the *sale* price where native uses the original is a real, easy-to-miss
-  defect). Note any native sort option that is missing from HR. **For any sort on a number-like
+  defect). Note any native sort option that is missing from HR. The **order** of the sort
+  options is not graded against alphabetical — they follow the configured order (default sort
+  first), never A→Z. **For any sort on a number-like
   field (price, percentage, date, rating), verify the field's actual data type in the feed** —
   `productData_get` on 2–3 SKUs, looking at the raw value, not just the schema: a string
   masquerading as a number sorts lexicographically (`"100"` before `"20"`, `"9%"` after

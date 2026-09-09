@@ -19,8 +19,8 @@ You do **not** generate the surrounding scaffolds (filters, close button, result
 1. **Replicate the picked-tile structure verbatim.** Same classes, same nesting, same `data-*` attributes, same inline styles, same `<link rel="stylesheet">` includes if present. Do not "improve" the markup. Customers want their search results to look identical to their category page.
 2. **Swap content tokens for `{{ product.* }}` references.** Title, URL, image src, price text, product ID — all become Liquid expressions. Keep the surrounding markup intact.
 3. **Pricing must always go through `priceWithCurrency` or `price` filters.** Never hand-roll `{{ product.price }}` raw. Canonical forms:
-   - `{{ product.price | priceWithCurrency: product.currency }}` — preferred one-shot
-   - `{{ product.price | price }}` — when you need to embed inside other markup
+   - `{{ product.price | priceWithCurrency: product.currency }}` — one-shot price + currency
+   - `{{ product.price | price }} {{ product.currency | currencySymbol }}` — the same output in two filters, for when the currency needs its own markup or position. The two forms are equivalent; match the customer's tile, neither is preferred
    - **Never** use `| replace: ",00", ""` — see [cheat-sheets/recoms/general.md#_price-formatting-best-practice_](../../cheat-sheets/recoms/general.md)
 4. **Discount badge formula is canonical, do not invent.** When the customer's tile shows a sale percentage:
    ```liquid

@@ -36,7 +36,7 @@ This is the full list of ecommerce platforms with first-party installation guide
 
 | Platform | Notes | D&TS guide |
 |---|---|---|
-| **Viskan / Streamline** | Nordic enterprise SPA. HR overlay is outside the CMS app root — CMS components need custom wiring. ATC goes through the `window.viskan.cart` API. | [viskan-streamline](./viskan-streamline/README.md) · [add-to-cart](./viskan-streamline/add-to-cart.md) · [feeds](./viskan-streamline/feeds.md) |
+| **Viskan / Streamline** | Nordic enterprise SPA. HR overlay is outside the CMS app root — CMS components need custom wiring. ATC goes through the `window.viskan.cart` API. Wishlist / favourite buttons are **not supported** — tiles ship without the star. | [viskan-streamline](./viskan-streamline/README.md) · [add-to-cart](./viskan-streamline/add-to-cart.md) · [feeds](./viskan-streamline/feeds.md) |
 
 ### Other custom platforms
 

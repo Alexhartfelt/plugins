@@ -58,6 +58,8 @@ domains yet missed on two others in the same period.
   comments FIRST:** some customers order a custom sort that must NOT be "fixed" to
   alphabetical (real case: a customer's custom size order, explicitly protected in comments —
   blind alphabetical sorting would have broken it). Ticket-covered order → PASS (by spec).
+  **Out of scope:** the sorting control's own options — they follow the configured order
+  (default sort first) and are never alphabetised, so their order is not a T3 finding.
 - **Origin:** caught on 2 cards, missed on 5 with the same defect class (2026-08-24 comparison).
 
 ### T4 · Discount/sale labels bleed over opened filter panels (z-index)

@@ -42,13 +42,13 @@ For every customer, you'll do some subset of these:
 | `product.title` | Always present |
 | `product.url` | Product detail link |
 | `product.imgUrl` | Primary image |
-| `product.price`, `product.oldPrice`, `product.currency` | Use `\| priceWithCurrency: product.currency` to format. Don't hand-roll `\| replace: ",00", ""`. |
+| `product.price`, `product.oldPrice`, `product.currency` | Format with `\| price` + `\| currencySymbol` or the one-shot `\| priceWithCurrency: product.currency` — the two are equivalent; pick whichever reproduces the customer's format. Don't hand-roll `\| replace: ",00", ""`. |
 | `product.isOnSale` | Boolean — drives the sale-price branch |
 | `product.isBanner`, `product.bannerImages.<SIZE>.url` | Retail Media slot |
 | `product.brand`, `product.productNumber`, `product.description`, `product.inStock` | Standard catalog fields |
 | `product.extraData.<key>`, `product.extraDataList.<key>` | Custom attributes from the feed — e.g. size, color, material, swatches |
 
-Full field list at [Website's Indexed product fields](https://support.helloretail.com/general-setup/websites-indexed-product-fields/). For price formatting, always use `| priceWithCurrency: product.currency` — don't hand-roll regex on the price string.
+Full field list at [Website's Indexed product fields](https://support.helloretail.com/general-setup/websites-indexed-product-fields/). For price formatting, use an HR price filter — `{{ product.price | price }} {{ product.currency | currencySymbol }}` and `{{ product.price | priceWithCurrency: product.currency }}` are equivalent (both apply the dashboard's price format, decimals included; neither is preferred) — and don't hand-roll regex on the price string.
 
 ## Pre-launch checklist
 

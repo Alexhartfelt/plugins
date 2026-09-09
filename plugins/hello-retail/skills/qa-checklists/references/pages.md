@@ -119,6 +119,9 @@ HR-rendered category pages. For tile-level items use `product-tile.md`.
 - [ ] Dropdown: looks a bit strange
 - [ ] Options disappear because of the placement of the box
 - [ ] Do we match the customer's own sorting options?
+- **Not a defect — sort options not in alphabetical order.** Sort options follow the configured
+  order (default sort first, then price / newest / …), never A→Z; compare the option set and
+  the labels against the customer's own dropdown instead.
 - [ ] Sorting on a number-like field (price, percentage, date, rating) actually orders
   numerically — verify the field's data type in the feed (`productData_get` on 2–3 SKUs, read
   the raw value, not just the schema): a string-typed field sorts lexicographically

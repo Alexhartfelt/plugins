@@ -10,6 +10,7 @@ Optional. These are **filter-facet selectors**, separate from the trigger / plac
 |---|---|---|
 | Order of the **filter groups** in the bar | Kategorier → Merke → Pris → Hudtype | Dashboard search-data config — `search_updateFilters` (the order of the `filters` array). Not this file. |
 | Order of the **options inside one filter** | the brand list reads Abib, Anua, Beauty of Joseon … instead of feed order | `sorting_selectors` in `initializationCode` — **this file** |
+| Order of the **sort options** (the sorting dropdown / mobile Sort list) | Relevans → Pris lav-høj → Pris høj-lav → Nyheder | Dashboard — `search_updateSorting`, the order of the `options` array. **Never alphabetised**: default sort first, then the rest as the customer's own dropdown lists them. Not this file, and not a QA finding. |
 
 A QA card that says "filters not alphabetical" or "filter sorting" almost always means the **second** one (nobody notices seven group headings being out of order; everybody notices a 40-item brand list in random order). Fixing the group order does not sort a single option, and a report that says "filter ordering fixed" without naming which one is ambiguous — always say both, with their state.
 
