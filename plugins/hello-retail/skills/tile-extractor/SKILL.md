@@ -90,12 +90,13 @@ my.helloretail.com navigation is the login preflight's read-only root-URL probe)
 
 3. **Never add comments** — no `{% comment %}`, no `{# #}`, no `/* */` anywhere in the output code
 
-4. **Never hardcode currency** — always use `{{ product.currency | currencySymbol }}`
+4. **Never hardcode currency** — always use `{{ product.currency | currencySymbol }}` (or the equivalent one-shot `| priceWithCurrency: product.currency` — see the Price section)
 
 5. **Never miss the form `action` attribute** — every ATC `<form>` must have `action="..."`
 
 6. **Never skip or omit any tile element** — if feed data for an element is missing, use a static fallback value and call it out in your response text (not in the code)
    - **Exception — when the fallback would actively mislead, omit with operator approval.** A static fallback must be *harmless*. If the only available data makes the element behave wrongly (e.g. the native hover-image is a lifestyle photo but the feed's `altImage` is a *different color's* packshot — hovering would show the wrong product; or `imgUrl` as hover-image causes a contain→cover crop-jump native tiles don't have), propose omitting the element until the feed carries the right field, get the operator's sign-off, and flag it in MISSING DATA. Wrong behavior is worse than an absent nicety.
+   - **Exception — platform-unsupported controls are left out by design, no approval needed.** Hello Retail does not support wishlist / favourite buttons on **Viskan / Streamline**: drop the native `.CMS-ArticleFavorite-icon` star from the tile (every native `ListArticle` carries one) and state the omission in your response text. QA grades its absence ACCEPTED, not as a missing element. → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`
 
 7. **If confused about an element's data source, say so in your response** — still include the element with your best guess or a static fallback; never silently drop it
 
@@ -892,6 +893,6 @@ reference files point to the exact files):
 - **Lightspeed / WebshopApp** (`cdn.webshopapp.com`, `.dmws_perfect-*`) → `references/dandomain.md` — shares the dmws_perfect ATC with DanDomain; code: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/lightspeed/{rating,wishlist}.md` + the shared DanDomain add-to-cart
 - **Centra** (headless, `/api/centra/`) → `references/centra.md` — MUI/Emotion class-name handling, read the live form (no canned ATC — inspect the real markup)
 - **Magento 2** (`Swissup_Breeze` scripts, `breeze` body class, or `mage/` scripts) → Magento 2 tile patterns (price box, dynamic IDs, nav button) are documented in this skill; feature code: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/{add-to-cart,rating,swatches}.md`.
-- **Viskan / Streamline** (`window.viskan`, `window._streamline`, `#Streamline` root) → no `references/` file; code + platform quirks: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/{README,add-to-cart,feeds}.md`. Key quirk: the HR overlay is injected **outside** `#Streamline`, so every Viskan delegated click handler (favourites, CMS components) is dead inside the overlay and needs custom wiring — ATC goes through the `window.viskan.cart` API instead, which does not rely on bubbling.
+- **Viskan / Streamline** (`window.viskan`, `window._streamline`, `#Streamline` root) → no `references/` file; code + platform quirks: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/{README,add-to-cart,feeds}.md`. Key quirks: the HR overlay is injected **outside** `#Streamline`, so every Viskan delegated click handler (CMS components) is dead inside the overlay — ATC goes through the `window.viskan.cart` API instead, which does not rely on bubbling; and **wishlist / favourite buttons are not supported** on Viskan — omit the `.CMS-ArticleFavorite-icon` star from the tile and say so in the response (rule 6 exception), never wire a substitute.
 
 **WooCommerce or an unknown platform have no reference file yet** — inspect the live tile via the browser MCP (Playwright preferred), infer the ATC form `action` and field names from the real markup, and note your findings in your response.

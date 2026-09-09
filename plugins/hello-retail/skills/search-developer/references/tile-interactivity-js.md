@@ -164,6 +164,7 @@ Field-captured extras (loading states, Quick View, `swatch-renderer` / `getMatch
 
 **Wishlist**
 
+- **Viskan / Streamline — wishlist is NOT supported.** Don't emit the favourite star and don't wire one: the overlay sits outside `#Streamline`, so Viskan's delegated handler never fires, and guest favourite state is in-memory Redux with no API to call — any overlay star would be disconnected from the customer's real favourites. Hello Retail ships Viskan tiles without it, and QA grades the absence ACCEPTED. → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/lightspeed/wishlist.md` — Lightspeed wishlist + the **SKU-vs-numeric-id blocker**: confirm the feed exposes the platform's numeric id before promising wishlist, or the control ships dead
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/shopify/wishlist.md` — Wishlist King app: custom-element auto-upgrade (no JS needed), and the **deterministic `wk-id`** technique — native ships a random per-render id in the `floating` position reference, which can't be copied verbatim into a Liquid loop; derive a stable one from `product.productNumber` instead
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/search/lightspeed.md` — the same blocker in full search-parity context

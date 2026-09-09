@@ -432,10 +432,15 @@ These are the most important checks — get these right.
     `{{ product.price | priceWithCurrency: product.currency }}` are all fine; `priceWithCurrency`
     is **not** mandatory and a working `price` + `currencySymbol` must not be flagged as "should
     be `priceWithCurrency`". The pass criterion is parity with the native tile (separators,
-    symbol, symbol position), not which filter produced it. The real failures are Shopify's
-    `| money` (not an HR filter) and a hardcoded currency symbol (`kr`, `€`, `$`). If
-    `priceWithCurrency` is used, it needs its `: product.currency` argument — the bare form was
-    pushed and had to be reverted in a real run (store-NO-1 2026-09-01).
+    symbol, symbol position), not which filter produced it. **Decimals are not an argument
+    either:** `| price` applies the same dashboard price formatting as `priceWithCurrency`, so a
+    `price` + `currencySymbol` tile renders `1 299,50 kr` exactly as the one-shot filter would —
+    never write "fine on whole prices, risky once a decimal appears" about the *filter choice*
+    (a "Wrong price filter" finding of that shape was rejected by the team as not a defect); the
+    decimal-fragile patterns are a hardcoded suffix and `| remove: '.'`, not the filter. The real
+    failures are Shopify's `| money` (not an HR filter) and a hardcoded currency symbol (`kr`,
+    `€`, `$`). If `priceWithCurrency` is used, it needs its `: product.currency` argument — the
+    bare form was pushed and had to be reverted in a real run (store-NO-1 2026-09-01).
 - [ ] **Price accuracy** — cross-check 2–3 SKUs between overlay and native page; flag if prices
       differ (B2B/multi-tier pricing, wrong customer group in feed)
 - [ ] **VAT prices** — if native tiles show incl./excl. VAT prices, a VAT display switcher,
@@ -480,6 +485,13 @@ These are the most important checks — get these right.
       the element — themes genuinely drop elements at mobile, and an unscoped "missing
       everywhere" fix breaks parity the other way (native-baseline rule,
       `../qa-checklists/SKILL.md` Step 3)
+- **ACCEPTED — do not flag: wishlist / favourite button absent on Viskan / Streamline.** Hello
+  Retail does not support wishlist buttons on Viskan (`window.viskan` / `window._streamline`,
+  `#Streamline` root): HR tiles ship without the native `.CMS-ArticleFavorite-icon` star by
+  design, so "native tiles have a heart/star on every tile, the HR tiles don't" is **not** a
+  parity gap there — record it ACCEPTED with the platform named, at every breakpoint, never
+  FAIL/WARN, and keep it off the fix list. Every other platform is still graded by the
+  per-breakpoint rule above. → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`
 - [ ] **Interactive-state parity (presence is not enough)** — for every stateful control on the
       tile (variant/unit toggles like Bottle/Case, swatches, size pickers, quantity steppers):
       actually **click it in the HR tile AND on a native tile** and compare the selected/active
@@ -543,7 +555,8 @@ These are the most important checks — get these right.
       increments), then off (state and count revert). A heart with reversed state or a count
       that never moves is a real defect class from manual QA; presence-only checks can't see
       it. Scope per breakpoint from the native baseline (native often has no wishlist element
-      at mobile at all).
+      at mobile at all). N/A on Viskan / Streamline — wishlist is unsupported there (ACCEPTED
+      rule above), so there is no control to toggle and nothing to report.
 
 ### Search Trigger & Behaviour
 
@@ -654,6 +667,8 @@ These are the most important checks — get these right.
       order is a FAIL for the unsorted ones. Fixing (a) does nothing for (b); "filter ordering
       fixed" without saying which is an ambiguous verdict — name both with their state. When a
       card or finding just says "filter sorting" / "filters not alphabetical", it means **(b)**.
+      Neither (a) nor (b) is about the **sorting control** — its options are never alphabetised
+      (ACCEPTED rule under "Sort options work" below).
 - [ ] **Filter/sort order — desktop vs mobile consistency, not just vs native.** Open both
       configs' filter rows side by side (same query) — the two configs are separate designs and
       drift independently; a sort control that's first on mobile and last on desktop is a defect
@@ -665,6 +680,13 @@ These are the most important checks — get these right.
     ordered/configured for this account?"), and FAIL only if the ClickUp card ordered sorting.
     (Shared severity ruling, `../qa-checklists/SKILL.md` Step 3 — two 2026-07-31 runs graded
     this opposite ways on the same domain.)
+  - **ACCEPTED — do not flag: sort options not in alphabetical order.** The sorting dropdown /
+    mobile Sort list is never alphabetised — its options follow the configured order
+    (`search_getSorting`: default sort first, then price / newest / …), the same way the
+    customer's own dropdown does; alphabetising them serves no purpose and is not something the
+    team does. Grade the sort control on its option **set**, its **labels** (string-diffed
+    against native, below) and desktop/mobile consistency — never on A→Z order. The alphabetical
+    rule applies to filter groups and the options inside LIST filters only (previous item).
   - **Sort/filter label text — diff against native's own string, don't eyeball "looks correct."**
     A misspelling can read as perfectly fine in isolation ("Prezzo descrescente" looks like valid
     Italian) and only surfaces as wrong next to native's own spelling ("Prezzo **decrescente**").

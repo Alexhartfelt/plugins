@@ -1038,6 +1038,11 @@ follow:
   case, 2026-07-31: native had no wishlist element in the mobile DOM at all, so adding one at
   mobile would have broken parity in the other direction; the correct fix scope was desktop +
   tablet only).
+- **Platform-unsupported controls are ACCEPTED, not missing.** Where Hello Retail does not
+  support a native tile control on the platform — today: wishlist / favourite buttons on
+  Viskan / Streamline (`window.viskan`, `#Streamline` root) — its absence from HR tiles is by
+  design: record ACCEPTED with the platform named, at every breakpoint, and keep it off the fix
+  list (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/README.md`).
 - **Same domain, second feature → reuse and reconcile.** When another feature's report for
   this domain already exists (search ↔ recoms share the product tile), diff its
   native-baseline facts against yours before saving. A contradiction (one report says native

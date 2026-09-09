@@ -9,6 +9,22 @@ structure to follow.
 
 ## Unreleased
 
+### Changed
+
+- `tile-extractor` and `search-developer` build Viskan / Streamline tiles without the favourite
+  star and no longer try to wire one: Hello Retail does not support wishlist buttons on Viskan.
+
+### Fixed
+
+- `search-qa`, `recom-qa`, `pages-qa` and `qa-checklists` no longer report the sort dropdown's
+  options for not being in alphabetical order. Sort options follow the configured order; only the
+  option set and the labels are compared with the customer's own dropdown.
+- `search-qa`, `recom-qa` and `qa-checklists` no longer report a missing wishlist / favourite
+  button on Viskan / Streamline shops, where the control is unsupported by design.
+- `recom-qa` and `qa-checklists` no longer report `{{ product.price | price }} {{ product.currency | currencySymbol }}`
+  as the wrong price filter; it is equivalent to `| priceWithCurrency: product.currency`, and
+  `hello-retail-knowledge` no longer presents the one-shot filter as mandatory.
+
 ## 1.2.0 — 2026-09-09
 
 ### Added
