@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.1.0 — 2026-09-09
+
 ### Changed
 
 - `feed-migration` now reads the bundled wiki for platform feed nuance, so a migration onto a
