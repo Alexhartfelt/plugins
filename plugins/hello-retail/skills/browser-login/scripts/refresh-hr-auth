@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Regenerate ~/.hr-auth.json from the shared browser profile (~/.hr-playwright-profile) —
+# headless, no window, no network. Claude can run this itself.
+#
+# Use it when the profile is logged in but the auth file is missing, stale, or predates the
+# last login (for example right after logging in through the playwright-profile browser).
+# If the profile is logged out this exits 2 and tells you to run setup-hr-browsers instead.
+# Exit 3 means another Chrome holds the profile — close it and retry.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=hr-browser-lib.sh
+. "$SCRIPT_DIR/hr-browser-lib.sh"
+
+have_node || { echo "No Node >= 18 found — run setup-hr-browsers first (it installs one under ~/.hr-node)." >&2; exit 2; }
+require_playwright
+check_chrome
+
+exec node "$SCRIPT_DIR/hr-auth.cjs" refresh

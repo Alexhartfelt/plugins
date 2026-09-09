@@ -6,14 +6,205 @@
     },
     "playwright": {
       "type": "stdio",
-      "command": "npx",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
       "args": [
-        "@playwright/mcp@latest",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
         "--viewport-size=1440,900",
-        "--user-data-dir",
-        "${HOME:-}${USERPROFILE:-}/.hello-retail-browser",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
         "--output-dir",
         "QA/screenshots"
+      ]
+    },
+    "playwright-01": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/01"
+      ]
+    },
+    "playwright-02": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/02"
+      ]
+    },
+    "playwright-03": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/03"
+      ]
+    },
+    "playwright-04": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/04"
+      ]
+    },
+    "playwright-05": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/05"
+      ]
+    },
+    "playwright-06": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/06"
+      ]
+    },
+    "playwright-07": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/07"
+      ]
+    },
+    "playwright-08": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/08"
+      ]
+    },
+    "playwright-09": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/09"
+      ]
+    },
+    "playwright-10": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--isolated",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--storage-state",
+        "${HOME:-}${USERPROFILE:-}/.hr-auth.json",
+        "--output-dir",
+        "QA/screenshots/10"
+      ]
+    },
+    "playwright-profile": {
+      "type": "stdio",
+      "command": "${HOME:-}${USERPROFILE:-}/.hr-node/bin/node",
+      "args": [
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/node_modules/@playwright/mcp/cli.js",
+        "--sandbox",
+        "--save-session",
+        "--viewport-size=1440,900",
+        "--config",
+        "${HOME:-}${USERPROFILE:-}/.hr-pw/hr-mcp-config.json",
+        "--user-data-dir",
+        "${HOME:-}${USERPROFILE:-}/.hr-playwright-profile",
+        "--output-dir",
+        "QA/screenshots/profile"
       ]
     }
   }

@@ -1,9 +1,9 @@
 {
-  "description": "Blocks browser automation against the my.helloretail.com Supervisor and dashboard pages. Dashboard reads and writes go through the hello-retail MCP; the only sanctioned my.helloretail.com navigation is the login preflight's read-only probe of the root URL.",
+  "description": "Blocks browser automation against the my.helloretail.com Supervisor and dashboard pages, on every playwright server this plugin ships (playwright, playwright-01…10, playwright-profile — their tools are named mcp__plugin_hello-retail_playwright*__…) and on the other browser backends. Dashboard reads and writes go through the hello-retail MCP; the only sanctioned my.helloretail.com navigation is the login check's read-only probe of the root URL.",
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__playwright.*__browser_(navigate|evaluate|run_code_unsafe)|mcp__claude-in-chrome__(navigate|javascript_tool|browser_batch)|mcp__Claude_Browser__(navigate|javascript_tool|preview_start)|mcp__Control_Chrome__(open_url|execute_javascript)|WebFetch",
+        "matcher": "mcp__(plugin_hello-retail_)?playwright[^_]*__browser_(navigate|evaluate|run_code_unsafe)|mcp__claude-in-chrome__(navigate|javascript_tool|browser_batch)|mcp__Claude_Browser__(navigate|javascript_tool|preview_start)|mcp__Control_Chrome__(open_url|execute_javascript)|WebFetch",
         "hooks": [
           {
             "type": "command",

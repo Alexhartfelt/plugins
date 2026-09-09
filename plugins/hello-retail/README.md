@@ -9,9 +9,10 @@ Hello Retail for AI agents. One plugin with three things in it:
 - **The knowledge base** (`docs/wiki/`) — how the platform works, per-platform install nuance,
   base templates, code cheat-sheets, translations, glossary — and a knowledge skill that answers
   questions from it with citations.
-- **The configuration the skills need**: the `hello-retail` MCP server (OAuth on first use), one
-  Playwright browser server for storefront checks, and a hook that blocks browser automation
-  against the Hello Retail dashboard.
+- **The configuration the skills need**: the `hello-retail` MCP server (OAuth on first use), a
+  fleet of Playwright browser servers for storefront checks — `playwright`, ten parallel
+  workers and the shared login profile, all sharing one saved Hello Retail login — and a hook
+  that blocks browser automation against the Hello Retail dashboard.
 
 ## Install
 
@@ -20,7 +21,10 @@ Hello Retail for AI agents. One plugin with three things in it:
 /plugin install hello-retail@helloretail
 ```
 
-Then run `/mcp` once to authorize `hello-retail`. Storefront checks need a browser — see
+Then run `/mcp` once to authorize `hello-retail`. Storefront checks need a logged-in browser:
+say "set up the Playwright browsers" (the `browser-login` skill) once per machine — it installs
+Node.js and Playwright under `~/.hr-*` with no admin rights and saves your Hello Retail login
+for every session. Until then the `playwright*` servers show as failed in `/mcp`. Details in
 [`docs/browser-login.md`](docs/browser-login.md).
 
 ## Skills
@@ -44,6 +48,7 @@ if you want to be explicit.
 | `newsletter-qa` | QA of a Newsletter Content tile (through the real renderer) and Triggered Email designs (local Liquid harness). Read-only. |
 | `qa-checklists` | The master QA catalogue by feature (Setup & Data, Product Tile, Recommendations, Search, Pages, Retail Media, Newsletter) and the shared QA procedure the per-feature skills run on. |
 | `hello-retail-knowledge` | Answers any Hello Retail question from `docs/wiki/`, citing the page. |
+| `browser-login` | Gets the Playwright browsers logged in to Hello Retail: one saved login shared by every worker, so any number of sessions QA in parallel. Runs when a login check fails or on a new machine. |
 
 Every skill states what it needs before it starts (usually a storefront URL and a `website-uuid`)
 and asks for anything missing rather than guessing.
@@ -53,8 +58,8 @@ and asks for anything missing rather than guessing.
 | | Required for |
 |---|---|
 | The `hello-retail` MCP, authorized via `/mcp` | Everything that reads or writes a design or feed |
-| A browser with a Hello Retail login | Storefront surveys, draft previews, the rendered QA passes — see [`docs/browser-login.md`](docs/browser-login.md) |
-| Node.js 18+ | The bundled Playwright server (Claude in Chrome works without it) |
+| A browser with a Hello Retail login | Storefront surveys, draft previews, the rendered QA passes — the `browser-login` skill sets it up; see [`docs/browser-login.md`](docs/browser-login.md) |
+| Google Chrome | The Playwright servers drive the installed Chrome (Node.js and Playwright are installed by `browser-login`) |
 | Ruby | Only `newsletter-qa`'s Triggered Email render harness |
 
 ## Three rules the skills follow
@@ -76,7 +81,7 @@ and asks for anything missing rather than guessing.
 skills/<skill>/SKILL.md      + references/ scripts/ — paths into the wiki are ${CLAUDE_PLUGIN_ROOT}/docs/wiki/…
 docs/wiki/                   the knowledge base (source of truth — edit here)
 docs/browser-login.md        browser backends and the login check
-.mcp.json                    hello-retail (HTTP) + playwright (persistent profile)
+.mcp.json                    hello-retail (HTTP) + playwright, playwright-01…10 (isolated, shared login) + playwright-profile
 hooks/hooks.json             dashboard guard
 AUTHORING.md                 how to write a skill for this plugin
 ```

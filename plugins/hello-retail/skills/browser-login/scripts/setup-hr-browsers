@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# One-time (and any-time) setup for the plugin's Playwright browsers on macOS / Linux / WSL.
+#
+#   bash setup-hr-browsers            install what is missing, then open the login window
+#   HR_UPDATE=1 bash setup-hr-browsers  also upgrade Playwright + @playwright/mcp
+#
+# RUN THIS IN YOUR OWN TERMINAL. A browser started from Claude's sandboxed shell on macOS has
+# no network, so the login page cannot load there. Safe to re-run; re-running refreshes the
+# login. Touches only ~/.hr-node, ~/.hr-pw, ~/.hr-playwright-profile and ~/.hr-auth.json.
+#
+# Windows: scripts/setup-hr-browsers.ps1 (native), or run this file inside WSL.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=hr-browser-lib.sh
+. "$SCRIPT_DIR/hr-browser-lib.sh"
+
+ensure_node
+ensure_playwright
+check_chrome
+
+node "$SCRIPT_DIR/hr-auth.cjs" login
+
+cat <<'EOM'
+
+Done. The playwright servers read ~/.hr-auth.json when they open a browser:
+  • a Claude Code session that has NOT opened a browser yet picks it up on its first action;
+  • a session whose browser is already open: run browser_close on that server, then continue;
+  • servers that never connected (fresh install): restart Claude Code once.
+EOM
