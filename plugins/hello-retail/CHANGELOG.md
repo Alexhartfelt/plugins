@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.2.1 — 2026-09-09
+
 ### Changed
 
 - `tile-extractor` and `search-developer` build Viskan / Streamline tiles without the favourite
