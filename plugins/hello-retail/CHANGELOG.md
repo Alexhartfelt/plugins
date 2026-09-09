@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.1.1 — 2026-09-09
+
 ### Fixed
 
 - `search-developer`, `tile-extractor`, `pages-developer` and `newsletter-qa` now reach the
