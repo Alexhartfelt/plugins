@@ -19,7 +19,8 @@
   },
   "globs": ["**/*.md"],
   "ignores": [
-    "node_modules/**",
+    "**/node_modules/**",
+    ".claude/**",
     "plugins/*/docs/wiki/**",
     "plugins/*/skills/*/references/wiki/**",
     "**/CHANGELOG.md"

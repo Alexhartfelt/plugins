@@ -16,7 +16,8 @@ plugins/<plugin-name>/
 ```
 
 Every plugin here must also be listed in [`../.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
-`npm run validate` enforces all of the above.
+`npm run validate` enforces all of the above. The full layout with the reasons behind it, file
+templates and the checklist for adding a plugin are in [`../PLUGIN-TEMPLATE.md`](../PLUGIN-TEMPLATE.md).
 
 Plugins here:
 
