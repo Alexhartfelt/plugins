@@ -9,6 +9,12 @@ structure to follow.
 
 ## Unreleased
 
+### Fixed
+
+- `tile-extractor` now recommends the `rawHtml` filter for rendering description HTML. The
+  previously suggested `raw` filter does not exist in Hello Retail Liquid and was flagged as a
+  FAIL by the QA skills.
+
 ## 1.2.2 — 2026-09-09
 
 ### Changed

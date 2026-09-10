@@ -445,7 +445,7 @@ Feed text fields (`title`, `extraData.shortDescription`, any subtitle/descriptio
 
 When a description or title field may contain HTML, **always ask the operator** before choosing a filter:
 
-- **Render the HTML** (operator wants formatting preserved): `{{ product.extraData.shortDescription | raw }}` — outputs the raw HTML as markup. Only safe if the field is trusted and the element is not placed inside an existing `<a>`.
+- **Render the HTML** (operator wants formatting preserved): `{{ product.extraData.shortDescription | rawHtml }}` — outputs the raw HTML as markup (`rawHtml` is the Hello Retail custom filter; there is no `raw` filter — the QA skills flag it as a FAIL). Only safe if the field is trusted and the element is not placed inside an existing `<a>`.
 
 - **Strip the HTML** (operator wants plain text): `{{ product.extraData.shortDescription | strip_html | truncate: 80 | escape }}` — order matters: `strip_html` (remove tags) → `truncate` (limit length) → `escape` (neutralize any residual `< > &`).
 
@@ -453,7 +453,7 @@ When a description or title field may contain HTML, **always ask the operator** 
 
 - **Element text content** (`<h3>`, `<p>`, `<a>` text): `product.title` stays **unfiltered** — `{{ product.title }}`, no `| escape` — so special characters render as-is. This is a deliberate team convention (2026-07-21): titles are controlled feed data, and escaping them in text positions renders entities literally.
 
-- **Never** leave a *description* field unfiltered — always either `| raw` or `| strip_html | truncate | escape`, never a bare `{{ product.description }}`. (Titles in element text are the exception above; descriptions routinely contain real HTML and stay under this rule.)
+- **Never** leave a *description* field unfiltered — always either `| rawHtml` or `| strip_html | truncate | escape`, never a bare `{{ product.description }}`. (Titles in element text are the exception above; descriptions routinely contain real HTML and stay under this rule.)
 
 ### Price — ALWAYS use one of these four (match customer's format)
 
@@ -873,7 +873,7 @@ block from `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/<platform>/add-to-cart.md`
 | Discount %           | `\| minus \| divided_by \| times: 100 \| round`                                                                           | hardcoded                                     |
 | Swatch active        | `{% if forloop.first %}`                                                                                                  | hardcoded first item                          |
 | Missing data         | static fallback + note in response                                                                                        | silently omit / code comment                  |
-| Free text            | descriptions: ask operator `\| raw` (keep HTML) or `\| strip_html \| truncate: N \| escape` (plain text); `\| escape` ONLY inside attributes (`alt`, `aria-label`); title as element text stays bare `{{ product.title }}` | bare `{{ product.description }}` / `\| escape` on title in element text |
+| Free text            | descriptions: ask operator `\| rawHtml` (keep HTML) or `\| strip_html \| truncate: N \| escape` (plain text); `\| escape` ONLY inside attributes (`alt`, `aria-label`); title as element text stays bare `{{ product.title }}` | bare `{{ product.description }}` / `\| escape` on title in element text |
 | Form action          | always present on every `<form>`                                                                                          | missing or assumed                            |
 | Cart tracking        | `onclick="hrq.push(['trackClick','{{ product.trackingCode }}'])"` on every ATC button — and ONLY on ATC (never variant/view/sold-out navigation CTAs; `fix_links` covers those) | ATC button without `trackClick` / `trackClick` on a navigation CTA |
 | ATC init             | MutationObserver for HR-injected tiles                                                                                    | per-tile listener                             |
