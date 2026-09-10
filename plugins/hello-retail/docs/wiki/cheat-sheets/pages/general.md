@@ -33,7 +33,7 @@ Replace `helloretail-category-page-<pages-id>` with the customer's Pages ID. The
 
 ### _Hide irrelevant filters_
 
-If a filter only has one possible value (e.g. only one "On sale" tag exists), it's noise — remove it. Example: Pandasia line 127–145 of Pages JavaScript.
+If a filter only has one possible value (e.g. only one "On sale" tag exists), it's noise — remove it.
 
 ```javascript
 if(document.querySelectorAll("div[data-filter-name='Tilbud'] .aw-filter-tag-list label").length == "1"){

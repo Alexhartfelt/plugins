@@ -17,13 +17,13 @@ Wire HR's instant search so a "show more results" link sends shoppers to Shopify
 
 ```xml
 <div class="aw-grid-search-results__submit-wrapper">
-    <a href="https://shenanigans.toys/pages/search-results?q={{query}}" class="aw-grid-search-results__submit-link">
+    <a href="https://example-shop.com/pages/search-results?q={{query}}" class="aw-grid-search-results__submit-link">
         {{ show_more_results_text }} ({{ products.totalResults }})
     </a>
 </div>
 ```
 
-> Replace `https://shenanigans.toys` with the customer's domain. The `/pages/search-results` route is a Shopify convention — they need to have that page created in Shopify admin.
+> Replace `https://example-shop.com` with the customer's domain. The `/pages/search-results` route is a Shopify convention — they need to have that page created in Shopify admin.
 
 ---
 

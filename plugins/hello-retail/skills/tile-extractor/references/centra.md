@@ -83,12 +83,12 @@ carry HR cart tracking (Output Rule #11):
 
 ## Surveying — headless React caveats
 
-- The tile only exists after JS renders — always inspect via the Claude in Chrome MCP
-  (`mcp__Claude_in_Chrome__*`; Playwright `mcp__playwright__browser_*` is the fallback when
-  Chrome isn't connected), never a static fetch, or you'll get an empty shell.
+- The tile only exists after JS renders — always inspect via a real browser MCP (Playwright
+  `mcp__plugin_hello-retail_playwright__browser_*` by default; Claude in Chrome
+  `mcp__claude-in-chrome__*` as the fallback), never a static fetch, or you'll get an empty shell.
 - **React reconciliation removes foreign DOM injected inside its tree.** When testing/harnessing
   a tile on the live page, append it to `document.body` (fixed-position) — like the real HR
   overlay — never inside the React-managed grid.
-- On Chrome, the `javascript_tool` blocks outputs containing URLs/query strings;
-  return structural summaries and sliced data per the SKILL.md extraction snippets
-  (the Playwright fallback's `browser_evaluate` has no such restriction).
+- On the Claude in Chrome fallback, the `javascript_tool` blocks outputs containing URLs/query
+  strings; return structural summaries and sliced data per the SKILL.md extraction snippets
+  (Playwright's `browser_evaluate` has no such restriction).
