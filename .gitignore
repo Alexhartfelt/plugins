@@ -42,6 +42,10 @@ test-results/
 .superpowers/
 CLAUDE.local.md
 
+# Internal working documents — backlogs, gap analyses, plans, review and meeting notes.
+# They are for the team's own use and never ship or get published; keep them here.
+/internal/
+
 # Scratch / temp
 tmp/
 *.tmp
