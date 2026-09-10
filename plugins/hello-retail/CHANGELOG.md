@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.4.0 — 2026-09-10
+
 ### Added
 
 - `customer-analytics-report` is a new skill: it generates a branded Hello Retail PDF analytics
