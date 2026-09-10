@@ -24,29 +24,74 @@ shell scripts. Node.js (22, see `.nvmrc`) is used purely for the validation and 
 
 ## Installing
 
-In Claude Code (terminal or desktop app):
+Everything is declared in your **user settings**, `~/.claude/settings.json` — registering the
+marketplace, enabling the plugin and turning auto-update on. Quit Claude Code, merge this into
+the file, start it again, and you are done; no `/plugin` commands needed.
 
-```
-/plugin marketplace add helloretail/plugins
-/plugin install hello-retail@helloretail
+```jsonc
+{
+  "env": {
+    // Plugin auto-update is skipped whenever the CLI auto-updater is off — which is the
+    // case in the Claude desktop app, since it manages its own updates. This re-enables it.
+    "FORCE_AUTOUPDATE_PLUGINS": "1"
+  },
+  "extraKnownMarketplaces": {
+    "helloretail": {
+      // SSH, not HTTPS: the background refresh runs its `git pull` with credential helpers
+      // disabled, so it cannot authenticate to a private repo over HTTPS.
+      "source": { "source": "git", "url": "git@github.com:helloretail/plugins.git" },
+      // "Automatically update this marketplace and its installed plugins on startup."
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "hello-retail@helloretail": true
+  }
+}
 ```
 
-While the repo is private, the **background auto-update only works over SSH**. Register the
-marketplace with the SSH URL and turn auto-update on if you want new merges to reach you
-without doing anything:
+Check `ssh -T git@github.com` greets you by name before you rely on it — the background pull
+fails silently when the key is missing.
+
+**`autoUpdate` has to be written by hand.** `claude plugin marketplace add` does not set it,
+and only a few built-in marketplaces default to on. Without it the marketplace is registered
+but never pulls, which looks exactly like the plugin being frozen at whatever version you
+first installed. It is read from settings in preference to
+`~/.claude/plugins/known_marketplaces.json`, so settings is the copy worth getting right —
+managed settings override even that.
+
+**Edit `settings.json` with Claude Code closed.** A running app holds the plugin config in
+memory and rewrites both `settings.json` and `known_marketplaces.json` when it next saves,
+silently reverting edits made underneath it.
+
+Once the repository is public, plain HTTPS works and the SSH requirement disappears. People
+without GitHub access use the claude.ai **organization plugin directory**, which an org admin
+points at this repository once through the Claude GitHub App.
+
+### Updating by hand
+
+Auto-update runs at startup, so restarting is normally enough. To pull mid-session:
 
 ```bash
-claude plugin marketplace add git@github.com:helloretail/plugins.git
+claude plugin marketplace update helloretail && claude plugin update hello-retail@helloretail
 ```
 
-Then in Claude Code: `/plugin marketplace update helloretail` pulls the latest, and
-`/reload-plugins` (or a restart) loads it into the running session. Users of the Claude
-desktop app additionally need `FORCE_AUTOUPDATE_PLUGINS=1` in their user settings `env`
-for the background refresh to run (the desktop app disables the CLI auto-updater). Once the
-repository is public, plain HTTPS works and the SSH step disappears.
+The new version still only loads in a fresh session — the CLI says so when it finishes.
 
-People without GitHub access use the claude.ai **organization plugin directory**, which an
-org admin points at this repository once through the Claude GitHub App.
+### Testing an unmerged change
+
+Auto-update installs from `origin/main`, so uncommitted work in your clone never loads. To try
+unmerged changes, point the marketplace at the checkout instead — a `directory` source serves
+whatever is on disk, and never auto-updates, because Claude Code will not run `git pull` in
+your working copy:
+
+```bash
+claude plugin marketplace remove helloretail
+claude plugin marketplace add ~/Documents/GitHub/plugins
+claude plugin install hello-retail@helloretail
+```
+
+Restore the block above when you are done, or you will quietly stop receiving releases.
 
 ## Working on the plugin
 
