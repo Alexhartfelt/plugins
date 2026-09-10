@@ -9,6 +9,35 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `customer-analytics-report` now includes a Recommendations section: site-wide impressions,
+  clicks, click-through rate, conversion rate, average order size and revenue for the LIVE boxes,
+  a top-boxes-by-revenue table showing each box's placement (product page, category page, front
+  page, cart), and callouts for the top-earning box and the most under-clicked high-traffic box.
+  Recommendation revenue also appears as a KPI in the executive summary. The section omits itself
+  when the customer has no LIVE boxes or Recommendations is not on the agreement; API-served
+  (UNMANAGED) recommendations are added as a footnote when a shop has them.
+
+### Changed
+
+- `customer-analytics-report` lets each no-result query carry its own suggested action and
+  priority in the table, decided from what the query actually is (a missing product, a service
+  question, a colour variant). Previously the action was assigned by rank, so a "returns" query
+  could be labelled "Add synonym or product category".
+
+### Fixed
+
+- `customer-analytics-report` reads the search volume change correctly: the connector returns it
+  in percent units already, so a +0.9% period is no longer reported as "up 86%".
+- `customer-analytics-report` names the MCP parameters and response fields the connector actually
+  uses (`startDate`/`endDate`, `channelId`, the nested `totals` and `metrics` objects), so a report
+  no longer stalls on a rejected call or a missing field. A feature that is not on the customer's
+  agreement fails the call instead of returning zeros; the skill now treats that as "section
+  absent" rather than an error.
+- `customer-analytics-report` shows the website's own currency on the executive-summary revenue
+  KPI instead of always "DKK".
+
 ## 1.4.0 — 2026-09-10
 
 ### Added

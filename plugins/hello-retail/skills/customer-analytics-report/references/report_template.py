@@ -161,9 +161,11 @@ TOP_SEARCHES = [
     ("query", 0, 0.0, 0.0),
 ]
 
-# List of (query_string, search_count)
+# List of (query_string, search_count, suggested_action, priority) — priority "High" / "Medium" / "Low".
+# A plain (query_string, search_count) row still works: the template then assigns a generic
+# action by rank, which misfits service queries ("returns") — so give the action when you know it.
 NO_RESULT = [
-    ("query", 0),
+    ("query", 0, "Add product or synonym", "High"),
 ]
 
 HAS_PA = True   # set False if customer has no Product Agent channels
@@ -207,6 +209,33 @@ TOP_PAGES = [
 TOP_URLS = [
     ("/category/example", 0, 0, 0.0, 0.0),
 ]
+
+HAS_RECOMS = True   # set False if the customer has no LIVE recommendation boxes (drafts produce
+                    # no analytics) or Recommendations is not part of the agreement
+
+# Site-wide MANAGED totals — recoms_getAnalyticsTotals(recomType=MANAGED)
+RECOMS = {
+    "views":           0,     # impressions
+    "clicks":          0,
+    "conversions":     0,
+    "revenue":         0.0,
+    "ctr":             0.0,   # clickThroughRate, as decimal
+    "conversion_rate": 0.0,   # as decimal
+    "avg_order_size":  0.0,
+}
+
+# Every LIVE box with traffic — recoms_getAnalyticsGrouped(sortBy=VIEWS, limit=20).
+# List of (box_name, placement, views, clicks, conversions, revenue, ctr_decimal, conversion_rate_decimal)
+# placement is the row's `type`: "Product page", "Category page", "Front page", "Cart page", "404 page" …
+# The template ranks these by revenue for the table and scans all of them for the callouts.
+RECOM_BOXES = [
+    ("Box name", "Product page", 0, 0, 0, 0.0, 0.0, 0.0),
+]
+
+# API-served (UNMANAGED) totals — recoms_getAnalyticsTotals(recomType=UNMANAGED).
+# None when the response is all-zero (nothing served through the API);
+# otherwise (views, clicks, conversions, revenue).
+RECOMS_UNMANAGED = None
 
 # 4 bullet insights — each (bold_intro_html, detail_text)
 # bold_intro should include <b>...</b> tags
@@ -461,7 +490,7 @@ def build_report(output_path):
     story.append(Paragraph("Customer\nAnalytics\nReview", styles["cover_title"]))
     story.append(Spacer(1, 4*mm))
     story.append(Paragraph(
-        "On-site search, category Pages & Product Agent results\n"
+        "On-site search, Recommendations, category Pages & Product Agent results\n"
         "— plus the demand you're not yet capturing", styles["cover_sub"]))
     story.append(Spacer(1, 14*mm))
     story.append(Paragraph(f"Prepared for <b>{WEBSITE}</b>  ·  {CURRENCY}", styles["cover_meta"]))
@@ -476,17 +505,23 @@ def build_report(output_path):
     # never by an arrow glyph — Poppins ships no ▲/▼/↑/↓, so those drop silently.
     chg_word = "down" if chg < 0 else "up"
 
+    show_recoms = HAS_RECOMS and RECOM_BOXES
+    recoms_lead = (f" Recommendations added a further <b>{fmt_rev(RECOMS['revenue'])}</b> "
+                   f"across {len(RECOM_BOXES)} live boxes." if show_recoms else "")
     story += section_block(next_sec(), "Executive Summary", "Search is your\nhighest-intent channel", styles,
         lead_text=(f"Search on {WEBSITE} drove <b>{CURRENCY} {fmt_num(total_rev)}</b> in attributed revenue "
-                   f"over the last 30 days. This review shows what shoppers searched for, "
+                   f"over the last 30 days.{recoms_lead} This review shows what shoppers searched for, "
                    f"what's working, and where dead-end searches point to quick wins."))
     story.append(Spacer(1, 4*mm))
-    story.append(kpi_row([
-        (fmt_num(total_rev),          "DKK", "Search-Assisted Revenue (30D)"),
-        (fmt_num(SEARCH["searches"]), "",    "Total Searches"),
-        (fmt_num(SEARCH["clicks"]),   "",    "Result Clicks"),
-        (fmt_num(TOP_SEARCHES[0][1]), "",    f'Top Query · "{TOP_SEARCHES[0][0].upper()}"'),
-    ], styles))
+    summary_kpis = [
+        (fmt_num(total_rev),          CURRENCY, "Search-Assisted Revenue (30D)"),
+        (fmt_num(SEARCH["searches"]), "",       "Total Searches"),
+        (fmt_num(SEARCH["clicks"]),   "",       "Result Clicks"),
+        (fmt_num(TOP_SEARCHES[0][1]), "",       f'Top Query · "{TOP_SEARCHES[0][0].upper()}"'),
+    ]
+    if show_recoms:
+        summary_kpis.insert(1, (fmt_num(RECOMS["revenue"]), CURRENCY, "Recommendations Revenue (30D)"))
+    story.append(kpi_row(summary_kpis, styles))
     story.append(Spacer(1, 2*mm))
     story.append(Paragraph(
         f"Search-assisted revenue = direct ({fmt_rev(SEARCH['direct_revenue'])}) "
@@ -538,16 +573,83 @@ def build_report(output_path):
         action_texts = ["Add synonym or product category", "Check stock / add product",
                         "Add product or redirect", "Add product", "Fix page link or synonym"]
         priorities   = ["High", "High", "Medium", "Medium", "Low"]
-        nr_rows = [[q, fmt_num(cnt),
-                    action_texts[i] if i < len(action_texts) else "Review",
-                    priorities[i]   if i < len(priorities)   else "Low"]
-                   for i, (q, cnt) in enumerate(NO_RESULT)]
+        nr_rows = []
+        for i, row in enumerate(NO_RESULT):
+            q, cnt = row[0], row[1]
+            action = row[2] if len(row) > 2 else (action_texts[i] if i < len(action_texts) else "Review")
+            prio   = row[3] if len(row) > 3 else (priorities[i]   if i < len(priorities)   else "Low")
+            nr_rows.append([q, fmt_num(cnt), action, prio])
         story.append(data_table(
             ["No-result Query", "Searches", "Suggested Action", "Priority"],
             nr_rows, col_widths=[0.25, 0.15, 0.40, 0.20], right_cols=[1]))
     story.append(PageBreak())
 
-    # PAGE 4 — PRODUCT AGENTS (skipped if HAS_PA is False)
+    # PAGE — RECOMMENDATIONS (skipped if HAS_RECOMS is False)
+    if show_recoms:
+        story += section_block(next_sec(), "Recommendations", "Boxes that\nsell", styles,
+            lead_text=(f"Hello Retail Recommendations place personalised product boxes across the shop — "
+                       f"front page, category, product and cart pages. Over the period the live boxes were shown "
+                       f"<b>{fmt_num(RECOMS['views'])} times</b>, drew <b>{fmt_num(RECOMS['clicks'])} clicks</b> "
+                       f"and drove <b>{fmt_rev(RECOMS['revenue'])}</b> in attributed revenue."))
+        story.append(Spacer(1, 4*mm))
+        story.append(kpi_row([
+            (fmt_rev(RECOMS["revenue"]),         "", "Recommendations Revenue (30D)"),
+            (fmt_num(RECOMS["views"]),           "", "Impressions"),
+            (fmt_pct(RECOMS["ctr"]),             "", "Click-through Rate"),
+            (fmt_pct(RECOMS["conversion_rate"]), "", "Conversion Rate"),
+            (fmt_rev(RECOMS["avg_order_size"]),  "", "Avg Order Size"),
+        ], styles))
+        story.append(Spacer(1, 2*mm))
+        unmanaged_note = ""
+        if RECOMS_UNMANAGED:
+            um_views, um_clicks, um_conv, um_rev = RECOMS_UNMANAGED
+            unmanaged_note = (f"  ·  API-served recommendations added {fmt_rev(um_rev)} "
+                              f"from {fmt_num(um_views)} impressions (not included above)")
+        story.append(Paragraph(
+            f"{fmt_num(RECOMS['conversions'])} conversions  ·  "
+            f"Only LIVE boxes report analytics; drafts serve nothing.{unmanaged_note}", styles["small"]))
+        story.append(Spacer(1, 6*mm))
+
+        story.append(Paragraph("Top boxes by revenue", styles["h2"]))
+        story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
+        by_revenue = sorted(RECOM_BOXES, key=lambda b: b[5], reverse=True)[:10]
+        bx_rows = [[name, place, fmt_num(v), fmt_num(clk), fmt_pct(ctr), fmt_pct(cr), fmt_rev(rev)]
+                   for name, place, v, clk, conv, rev, ctr, cr in by_revenue]
+        story.append(data_table(
+            ["Box", "Placement", "Impressions", "Clicks", "CTR", "Conv. Rate", "Revenue"],
+            bx_rows, col_widths=[0.28, 0.14, 0.13, 0.10, 0.09, 0.11, 0.15], right_cols=[2, 3, 4, 5, 6]))
+        story.append(Spacer(1, 2*mm))
+        story.append(Paragraph(
+            "Conversion rate is conversions per click. A box on the product page is shown on every "
+            "product view, so its impressions dwarf a front-page or cart box — compare boxes on CTR "
+            "and conversion rate, not on impressions.", styles["small"]))
+        story.append(Spacer(1, 6*mm))
+
+        best_bx = by_revenue[0]
+        story.append(callout("Your top-earning box",
+            f"<b>{best_bx[0]}</b> on the {best_bx[1].lower()} drove {fmt_rev(best_bx[5])} — "
+            f"{fmt_pct(best_bx[5] / RECOMS['revenue']) if RECOMS['revenue'] else '0.0%'} of all recommendation "
+            f"revenue — at a {fmt_pct(best_bx[6])} click-through rate and {fmt_pct(best_bx[7])} conversion rate.",
+            styles))
+        story.append(Spacer(1, 4*mm))
+
+        # The under-clicked box: enough traffic to matter (at least 5% of the busiest box's
+        # impressions, and at least 1,000), yet a CTR under half the site average. A 404-page
+        # box with a few thousand views never qualifies; a front-page box shown 200k times does.
+        max_views = max(b[2] for b in RECOM_BOXES)
+        busy = [b for b in RECOM_BOXES if b[2] >= max(1000, 0.05 * max_views)]
+        if busy and RECOMS["ctr"]:
+            weakest = min(busy, key=lambda b: b[6])
+            if weakest[6] < 0.5 * RECOMS["ctr"]:
+                story.append(callout("Most under-clicked placement",
+                    f"<b>{weakest[0]}</b> on the {weakest[1].lower()} was shown {fmt_num(weakest[2])} times "
+                    f"but clicked on {fmt_pct(weakest[6])} of them — under half the site average of "
+                    f"{fmt_pct(RECOMS['ctr'])}. Review its position on the page, its design and its "
+                    f"recommendation strategy; a box this visible should earn more than {fmt_rev(weakest[5])}.",
+                    styles))
+        story.append(PageBreak())
+
+    # PAGE — PRODUCT AGENTS (skipped if HAS_PA is False)
     if HAS_PA and PA_AGENTS:
         story += section_block(next_sec(), "Product Agents", "Klaviyo channel\nperformance", styles,
             lead_text=(f"Automated email flows powered by Hello Retail Product Agents, "
@@ -670,8 +772,9 @@ def build_report(output_path):
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph(
         f"Prepared by Hello Retail · Customer Success. "
-        f"Figures from Hello Retail Search, Pages and Product Agent Analytics for {WEBSITE}, "
+        f"Figures from Hello Retail Search, Recommendations, Pages and Product Agent Analytics for {WEBSITE}, "
         f"{PERIOD} vs {CMP_PERIOD}. Search revenue is search-attributed (direct + indirect); "
+        f"Recommendations revenue is attributed to purchases following a click on a LIVE recommendation box; "
         f"Pages revenue is attributed to LIVE Hello Retail pages; "
         f"Product Agent revenue attributed via Klaviyo conversion metric.",
         styles["small"]))
