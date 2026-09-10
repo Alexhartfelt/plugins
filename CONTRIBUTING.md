@@ -46,6 +46,10 @@ plugins/<plugin-name>/
 Add it to `.claude-plugin/marketplace.json` under `plugins` with
 `"source": "./plugins/<plugin-name>"`. Run `npm run validate`.
 
+The full layout — every file a plugin carries and why, copy-paste templates for the manifests,
+`.mcp.json` and `hooks.json`, the path and naming conventions, and a step-by-step checklist —
+is in [PLUGIN-TEMPLATE.md](PLUGIN-TEMPLATE.md). Start a new plugin from it.
+
 ## Adding or changing a skill
 
 A skill is a **repeatable, multi-step procedure**. Facts belong in the wiki; one-offs are

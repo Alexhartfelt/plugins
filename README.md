@@ -12,6 +12,7 @@ installs straight from this repository over git.
 .claude-plugin/marketplace.json   # the marketplace: name + list of plugins (source paths)
 plugins/hello-retail/             # the plugin (see plugins/hello-retail/README.md)
 plugins/hello-retail/CHANGELOG.md # release notes, written per PR under `## Unreleased`
+PLUGIN-TEMPLATE.md                # the plugin layout, file templates and conventions — start a new plugin from it
 scripts/validate.mjs              # structural checks + `claude plugin validate --strict`
 scripts/bump-version.mjs          # bumps changed plugins' versions (level from the merge commit title)
 scripts/changelog.mjs             # rolls `## Unreleased` into `## <version>`, reads it back for the Release
@@ -123,8 +124,9 @@ Try a local checkout as a marketplace without pushing:
 /plugin marketplace add /path/to/this/checkout
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and
-[plugins/hello-retail/AUTHORING.md](plugins/hello-retail/AUTHORING.md) for the skill playbook.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions,
+[PLUGIN-TEMPLATE.md](PLUGIN-TEMPLATE.md) for the full plugin layout and the checklist for adding a
+plugin, and [plugins/hello-retail/AUTHORING.md](plugins/hello-retail/AUTHORING.md) for the skill playbook.
 
 ## Rules that CI enforces
 
