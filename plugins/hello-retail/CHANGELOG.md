@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.2.3 — 2026-09-10
+
 ### Fixed
 
 - `tile-extractor` now recommends the `rawHtml` filter for rendering description HTML. The
