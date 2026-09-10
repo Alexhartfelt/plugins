@@ -9,6 +9,46 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `customer-analytics-report` is a new skill: it generates a branded Hello Retail PDF analytics
+  report for a customer — Search performance, Pages performance and Product Agent (Klaviyo)
+  results — from live MCP data. Feature sections omit themselves when the customer has no data
+  for them, and the PDF is written to the gitignored `output/<customer>/` folder.
+- `tile-extractor` ships three new references — `survey-snippets.md` (extraction, variation and
+  label survey, the PARENT HOOKS harness, alignment and hover probes), `liquid-rules.md` (every
+  field-level template rule) and `magento.md` (Luma / Breeze / Hyvä tile patterns) — so the skill
+  body itself is now a 500-line flow instead of a 900-line manual.
+
+### Changed
+
+- `tile-extractor` now returns its result in a fixed response format (TILE_BODY, JS, CSS BLOCK,
+  PLATFORM, PARITY TABLE, VARIATIONS, LABEL VOCABULARY, PARENT HOOKS, ALIGNMENT, SHELL CSS NOTES,
+  MISSING DATA, OPEN QUESTIONS, ASSUMPTIONS) and can run as a background subagent: it no longer
+  stops to ask the operator but takes the safe default and lists the decision under OPEN QUESTIONS.
+- `tile-extractor` uses Playwright as the default browser and Claude in Chrome as the fallback,
+  like every other skill, and names the real tool prefixes. Consent popups are swept again in every
+  new Playwright session, since the default servers run isolated.
+- `tile-extractor` reports hover-only elements, unreachable theme rules, tile geometry and button
+  colours under SHELL CSS NOTES for the shell skill to style, instead of asking for overlay CSS it
+  is not allowed to write.
+- `tile-extractor` detects Shopware, Starweb, BigCommerce, Wikinggruppen, PrestaShop and Magento
+  Hyvä, routes each to its wiki page, and ships a one-shot detection snippet.
+- `tile-extractor` binds all image attributes to `imgUrl` and flags full-size feed images to the
+  operator instead of rewriting image URLs per platform.
+- `tile-extractor` drives the sale badge from `isOnSale` only, guards the discount calculation,
+  handles "from" prices, the `,-` zero-decimal form, sale-pair suffixes, hex colour swatches, and
+  the customer-specific price and availability fields (excl. VAT, Omnibus lowest price, unit
+  price, delivery text, B2B) with explicit fallbacks.
+- `tile-extractor` scans native markup for Liquid-conflicting template syntax (`{{ }}`, Alpine
+  `x-data`, Vue bindings) and keeps braces out of the template until an escape is verified.
+
+### Fixed
+
+- `tile-extractor` no longer contradicts itself on CSS output, the MutationObserver engine (now
+  standalone tiles only), the list of stripped attributes, or which wiki platform pages exist.
+- Four knowledge-base files no longer carry real merchant names or domains.
+
 ## 1.2.3 — 2026-09-10
 
 ### Fixed

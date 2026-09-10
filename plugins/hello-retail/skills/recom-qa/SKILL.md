@@ -617,7 +617,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
 - [ ] **Styling survives outside the category grid** — tile CSS doesn't depend on theme
       ancestor classes that don't exist around the recom container (missing PARENT HOOKS →
       tile renders unstyled or different despite identical markup; build-side detection lives
-      in `../tile-extractor/SKILL.md` → ANCESTOR-SCOPED CSS)
+      in `../tile-extractor/references/survey-snippets.md` → ANCESTOR-SCOPED CSS)
 - [ ] **Consistent across page types** — the same box renders identically on homepage / PDP /
       category / cart (you crawl them all anyway — compare). Differences mean the tile leans on
       page-injected styles; on CSS-in-JS storefronts (MUI/Emotion, styled-components) the tile
@@ -1045,7 +1045,7 @@ Checks against `templateCode` / `templateStyles` that the rendered pass can't se
 - [ ] **`| strip_html` — only when the field actually carries HTML.** This is **not** a blanket
       rule, and flagging it reflexively is a known false positive. A bare `{{ product.title }}` in
       element text is the **correct** build convention (see
-      `../tile-extractor/SKILL.md`); `product.description` is the field that
+      `../tile-extractor/references/liquid-rules.md`); `product.description` is the field that
       routinely contains real HTML. So verify before flagging: look at the **rendered** tile for
       tags leaking as visible text, escaped entities (`&amp;`, `&lt;`), or unexpected nested
       elements inside the title, and cross-check the field in `productData_get`. Clean plain text

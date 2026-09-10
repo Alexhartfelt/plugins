@@ -38,7 +38,7 @@ Custom-element form (equivalent):
 </lipscore-rating-small>
 ```
 
-> **`extraData` field name varies per customer.** RockDenim uses `extraData.productGroupId`; other shops have used `extraData.lipscoreProductId`, `extraData.parentId`, etc. Whatever it's called in their feed, the value must match the ID Lipscore stored — see section 2.
+> **`extraData` field name varies per customer.** one shop uses `extraData.productGroupId`; others have used `extraData.lipscoreProductId`, `extraData.parentId`, etc. Whatever it's called in their feed, the value must match the ID Lipscore stored — see section 2.
 
 Required data attributes:
 
@@ -49,7 +49,7 @@ Required data attributes:
 - `data-ls-image-url`
 - `data-ls-price-currency`
 
-> **Currency** — bind `{{ product.currency }}` if the shop is multi-currency; if it's single-currency, hardcoding the ISO code (e.g. `"SEK"`, as RockDenim does) is fine and avoids a feed dependency.
+> **Currency** — bind `{{ product.currency }}` if the shop is multi-currency; if it's single-currency, hardcoding the ISO code (e.g. `"SEK"`) is fine and avoids a feed dependency.
 
 Mirror the same widget into the **Initial Content** tile so suggestions and result tiles stay aligned (see [search-templates.md](../../onboarding/search-templates.md#the-customization-loop) step 5).
 

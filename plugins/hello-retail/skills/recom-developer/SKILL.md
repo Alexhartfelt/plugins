@@ -136,7 +136,7 @@ const nestedSlides = root.querySelectorAll('.swiper-slide .swiper-slide').length
 console.log({ nonSlide, nestedSlides }); // expect: [] and 0
 ```
 
-If either fails, the tile is emitting unescaped HTML or unbalanced tags (commonly a feed field with raw `<p>`/`<a>`). Fix it at the **tile** (see the tile skill's *Free-text feed fields — strip and escape* rule), not with CSS. → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/recoms/layout-troubleshooting.md`
+If either fails, the tile is emitting unescaped HTML or unbalanced tags (commonly a feed field with raw `<p>`/`<a>`). Fix it at the **tile** (`../tile-extractor/references/liquid-rules.md` → *Free-text feed fields — ask operator: raw or strip?*; the tile skill defaults to strip when it runs as a subagent), not with CSS. → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/recoms/layout-troubleshooting.md`
 
 Then run a **price-parity spot check** — feed prices can be wrong in ways that look plausible on the tile (a feed URL pinned to another Shopify market inflates every price by a constant factor):
 

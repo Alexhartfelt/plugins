@@ -79,8 +79,10 @@ settings from memory or from this file.
    (`{# text … #}` / `{# choice … #}`): `product_title_single/multiple`,
    `filters_title`, `sorting_title`, `clear_button_text`, `filter_search_text`,
    `filter_position` — value-swaps only, never rename/add/delete.
-3. **Tile body.** Comes from `tile-extractor` (its LIQUID RULES and
-   Output Rules are binding here too — do not restate or improvise them). Splice the
+3. **Tile body.** Comes from `tile-extractor`, started as a background subagent with
+   `target surface = pages`; read its RESPONSE FORMAT sections by name (`../tile-extractor/SKILL.md`).
+   Its Output Rules and `../tile-extractor/references/liquid-rules.md` are binding here too — do not
+   restate or improvise them. Splice the
    converted tile into the per-product slot of `templateHtml` only; keep the design's
    own product-loop wrapper element the way recom keeps `.hr-product`.
 

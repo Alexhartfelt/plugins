@@ -47,7 +47,7 @@ domains yet missed on two others in the same period.
 - **Verify:** apply one **custom/extraData** facet (length/width-style, not a standard
   brand/size facet) — the applied-state chip must render in the selected-filters row and must
   be clearable. Standard facets rendering chips is not a PASS for this item.
-- **Origin:** custom facets bypass the standard selected-filters render path (Broeken Binkie,
+- **Origin:** custom facets bypass the standard selected-filters render path (store-NL-2,
   2026-08).
 
 ### T3 · Facet ordering not alphabetical / not size-logical
