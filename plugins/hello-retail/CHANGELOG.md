@@ -9,6 +9,11 @@ structure to follow.
 
 ## Unreleased
 
+### Fixed
+
+- `hello-retail-knowledge` now names Brian Petersen as Head of D&TS; the wiki previously listed
+  Lea Silkensen, who has left the company.
+
 ## 1.5.0 — 2026-09-10
 
 ### Added

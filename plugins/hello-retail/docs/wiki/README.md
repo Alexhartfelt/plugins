@@ -52,7 +52,7 @@ D&TS (Delivery & Technical Services) is the umbrella for the three customer-faci
 - **Success** — drive long-term value, EBRs, optimization (Lasse Ingemann Lind, Anthony Derda Rizzuto, Stephanie Liekola Isla, Yaser Osman, and others).
 - **Support** — fast technical answers and bug triage.
 
-Head of D&TS: **Lea Silkensen**.
+Head of D&TS: **Brian Petersen**.
 
 For where each team plugs in during the customer lifecycle see [onboarding/onboarding.md](./onboarding/onboarding.md).
 
