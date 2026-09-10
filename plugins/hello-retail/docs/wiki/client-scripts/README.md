@@ -24,3 +24,5 @@ Copy [`_TEMPLATE.md`](./_TEMPLATE.md) into each new folder and fill it in.
 <!-- Add a row per script. Keep newest at top. -->
 
 > No per-customer script instances are committed to this wiki — they carry customer-identifiable material. The naming convention above and [`_TEMPLATE.md`](./_TEMPLATE.md) define how a new entry should be structured when one is added.
+>
+> Where entries come from: the `customer-handoff` skill records every customer's unique cases in the hand-off document (the operator's gitignored `output/handoffs/` folder for now) and restates the reusable ones with placeholders in its *Learnings for the knowledge base* section. An entry here is that anonymised learning, lifted over with the script it describes.

@@ -100,6 +100,12 @@ Other QA checks:
 ## 7 · Handoff to CSM
 
 - Document the final configuration, feature-by-feature, in the internal Hello Retail tooling.
+- Write or update the customer's **hand-off document** with the `customer-handoff` skill: platform and
+  theme, the ClickUp card with project owner / developer / CSM and start–end dates, onboarding
+  performance, the configuration snapshot, every unique case and how it was solved, decisions and
+  open items. The developer, feed and QA skills run it automatically for their stage. It lives in the
+  operator's `output/handoffs/` folder (one document per website; a shared store comes later) —
+  never in this wiki.
 - Schedule first **EBR (Executive Business Review)** with the CSM (typically 30/60/90 days post-launch).
 - Customer's CSM picks up ongoing strategy, opportunities for new features, and EBR cadence.
 

@@ -722,7 +722,9 @@ directly to the customer's design with `newsletterContent_updateDesign` (or
 lands in place — no linked draft — so the approval gate is mandatory). Manual dashboard copy-paste
 is only the fallback when the MCP tools are unavailable. Do not write to the
 wiki unless explicitly asked — the wiki holds the shared default template, not
-per-customer outputs.
+per-customer outputs. Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `newsletter`; mandatory — do not ask whether to, do not skip) so the design key, the feed
+fields used and any customer-specific decision are recorded in the customer's living hand-off
+document under `output/handoffs/` (local for now).
 
 ## Always copy the real sale-price structure
 

@@ -889,7 +889,8 @@ the Handoff fix plan."]
 (its own Issues Found and operator list). Repeat shared findings in every affected domain's
 report with a "shared — also affects [domains]" tag; when a domain's design is identical to
 another's, carry the code findings over with a "design identical to [domain]" note. Close the
-run with a chat summary listing the report files and a one-line verdict per domain.
+run with a chat summary listing the report files and a one-line verdict per domain. Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `search`; mandatory — do not ask whether to, do not skip) so the verdicts, the Handoff fix plan and the brief's
+Decisions / Declined / Known-open land in the customer's living hand-off document under `output/handoffs/` (local for now).
 
 ---
 

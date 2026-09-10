@@ -204,6 +204,8 @@ settings from memory or from this file.
    (`../qa-checklists/references/pages.md`): native-reference survey first, the
    test-div browser probe from the pages cheat sheet, four widths (1440/1024/820/375),
    worst-case tiles, measured verdicts. A FAIL verdict is a successful QA run.
+8. **Hand-off record.** Run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `pages`; mandatory — do not ask whether to, do not skip) so the design keys, filters/sorting decisions and any
+   workaround land in the customer's living hand-off document under `output/handoffs/` (local for now).
 
 ## Integration awareness (affects what "perfect" means)
 

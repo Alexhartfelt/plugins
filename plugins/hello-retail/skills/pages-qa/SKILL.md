@@ -284,7 +284,8 @@ routes instead of patching: the proposed fix in plain words, who applies it (ope
 dashboard, the customer, HR support, or the `pages-developer` skill for design/template
 fixes via `pages_updateDesign`), and the checklist item + page URL to re-verify. End
 it with the kickoff line: "To execute: open Claude Code in this folder and say — read this
-report and apply the Handoff fix plan."
+report and apply the Handoff fix plan." Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `pages`; mandatory — do not ask whether to, do not skip)
+so the verdicts and the fix plan land in the customer's living hand-off document under `output/handoffs/` (local for now).
 
 ## Boundaries
 

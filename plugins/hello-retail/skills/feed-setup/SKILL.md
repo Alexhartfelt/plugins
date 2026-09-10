@@ -76,7 +76,9 @@ Call `feeds_create` with:
 ### Step 5 — Confirm
 
 Report the feed ID and state. Feeds are always left `INACTIVE` — never activate a feed
-unless the user explicitly asks.
+unless the user explicitly asks. Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `setup-data`; mandatory — do not ask whether to, do not skip): the feed ID, the source type and every
+non-obvious transform (why it exists, when it can go) belong in the customer's living hand-off
+document under `output/handoffs/` (local for now).
 
 ---
 
