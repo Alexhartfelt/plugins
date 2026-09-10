@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.5.0 — 2026-09-10
+
 ### Added
 
 - `customer-analytics-report` now includes a Recommendations section: site-wide impressions,
