@@ -9,6 +9,18 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `customer-analytics-report` is a new skill: it generates a branded Hello Retail PDF analytics
+  report for a customer — Search performance, Pages performance and Product Agent (Klaviyo)
+  results — from live MCP data. Feature sections omit themselves when the customer has no data
+  for them, and the PDF is written to the gitignored `output/<customer>/` folder. The 1.3.0 notes
+  mentioned this skill early — 1.3.0 did not contain it; this is the release that adds it.
+- `customer-analytics-report` carries the Hello Retail branding guidelines — the cerise palette,
+  Playfair Display / Poppins typography, the official logo and the categorical chart-series rules
+  — as a reference the report template implements, so a report needs no styling decisions. Trends
+  read "up 12.4%" / "down 2.3%" in words: nothing in a report signals good or bad by colour.
+
 ## 1.3.0 — 2026-09-10
 
 ### Added
