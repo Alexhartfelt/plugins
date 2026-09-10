@@ -37,6 +37,10 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
   `set -euo pipefail`.
 - Do not commit or push unless asked. Do not add a plugin to the marketplace that is not
   yet in `plugins/`.
+- Internal working documents — backlogs, gap analyses, plans, review notes, meeting notes,
+  anything written for the team rather than for the people who install the plugin — live in
+  `internal/` (gitignored) and are never committed. The repository tracks only what ships or
+  explains the plugin: `plugins/`, the root README and CONTRIBUTING, CI and `scripts/`.
 
 ## Release notes
 
