@@ -16,7 +16,7 @@ Each feature section is optional and self-omits when the customer has no data fo
 ## Required inputs
 
 - **websiteUuid** — the customer's Hello Retail website UUID (ask if not provided)
-- **language** — optional, default English. Supported: `en` (English), `da` (Danish). The operator names it ("in Danish", "på dansk"); do not infer it from the website's `language` field — a Danish shop may want an English report for a foreign owner, and the operator decides. Another language is not a reason to stop: see Notes → Languages for how to add one.
+- **language** — optional, default English. Any language the operator names ("in Danish", "på dansk", "auf Deutsch") — you translate the report's fixed text yourself in Step 4b; the template translates nothing. Do not infer it from the website's `language` field — a Danish shop may want an English report for a foreign owner; the operator decides. English is also the fallback: a string you cannot translate well stays English.
 - **period** — date range, default last 30 days (compute `startDate` = today minus 30 days, `endDate` = today, formatted as ISO dates YYYY-MM-DD). The comparison period is the same length, ending the day before `startDate`: `CMP_START` … `CMP_END`.
 
 ---
@@ -229,7 +229,7 @@ Then edit the copy, replacing every placeholder between the `DATA SECTION` and
 
 | Name | Fill from |
 |---|---|
-| `LANG` | the requested language code — `"en"` (default) or `"da"` |
+| `LANG`, `LANG_STRINGS`, `LANG_LOCALE` | the report language (Step 4b) — `"en"` with both dicts empty for English |
 | `WEBSITE`, `CURRENCY` | `website_getInfo` (2a) |
 | `PERIOD`, `CMP_PERIOD` | the requested range, and the same-length range immediately before it, written in the report language — en `"11 Aug – 10 Sep 2026"`, da `"11. aug. – 10. sep. 2026"` |
 | `SEARCH` | `search_getAnalyticsOverview` (2b) — `change_pct` is `changePercent` as-is (already percent units) |
@@ -240,9 +240,51 @@ Then edit the copy, replacing every placeholder between the `DATA SECTION` and
 | `HAS_RECOMS`, `RECOMS`, `RECOM_BOXES`, `RECOMS_UNMANAGED` | `recoms_getAnalyticsTotals` and `recoms_getAnalyticsGrouped` (2h) — `HAS_RECOMS = False` when the MANAGED totals are all-zero or Recommendations is not on the agreement |
 | `STANDOUTS`, `STEPS` | the insights derived in Step 3 |
 
-Nothing below the `END DATA` banner should change — the translated labels live there and are
-selected by `LANG`. Rates stay decimals (`0.64`, not `64`); `change_pct` and `revenue_change` are
-plain numbers in percent units (`-2.29`, `12.4`), passed through from the API unchanged.
+Nothing below the `END DATA` banner should change — the English strings live there and are the
+source you translate from. Rates stay decimals (`0.64`, not `64`); `change_pct` and `revenue_change`
+are plain numbers in percent units (`-2.29`, `12.4`), passed through from the API unchanged.
+
+### 4b. Report in another language
+
+English needs nothing: `LANG = "en"`, `LANG_STRINGS = {}`, `LANG_LOCALE = {}`. For any other language
+**you are the translator** — the template only validates, warns and falls back to English.
+
+1. In the copied script, read the `STRINGS` dict below `END DATA`: about 90 keys of English text, each
+   with its `{placeholders}`, and a comment marking KPI labels and table headers.
+2. Fill `LANG_STRINGS` with every key translated into the report language:
+   - Keep every `{placeholder}` exactly. The build stops and names the key if one is missing or renamed.
+   - Product names stay as they are: Hello Retail, Recommendations, Pages, Product Agents, Klaviyo, LIVE, URL, API.
+   - One term per concept, used everywhere. Choose the language's word for click-through rate, conversion
+     rate, revenue, impressions once, and reuse it in KPI labels, table headers, callouts — and in your
+     STANDOUTS and STEPS.
+   - Length: `kpi_*` labels at most 30 characters (the box wraps to two lines, no more); the narrow table
+     headers `th_ctr_short`, `th_clicks`, `th_box`, `th_views`, `th_page`, `th_url`, `th_agent`, `th_priority`
+     at most 12 (cells never wrap). `cover_title` is three short lines at 58 pt and the `h1_*` titles two
+     lines at 28 pt — keep the `\n` breaks.
+   - `placements` maps the API's English placement types to `(table label, prose phrase)`; the phrase
+     follows the box name in a sentence ("… on the front page" → "… på forsiden"), so give the natural form.
+   - `nr_actions` and `nr_priorities` are lists of five in the same order; `up` / `down` are the words in
+     "volume is {up} 5.9%".
+   - A key you cannot translate well: **leave it out**. It renders in English. The fallback is always
+     English, never a guess.
+3. Fill `LANG_LOCALE` with the language's conventions — `thousands`, `decimal`, the `pct` and `money`
+   patterns, the `date` pattern and the twelve `months`. Common ones:
+
+   | | thousands | decimal | `pct` | `money` | `date` |
+   |---|---|---|---|---|---|
+   | en | `,` | `.` | `{v}%` | `{cur} {num}` | `{d} {month} {y}` |
+   | da | `.` | `,` | `{v} %` | `{num} {cur}` | `{d}. {month} {y}` |
+   | sv / nb | ` ` (space) | `,` | `{v} %` | `{num} {cur}` | sv `{d} {month} {y}`, nb `{d}. {month} {y}` |
+   | de | `.` | `,` | `{v} %` | `{num} {cur}` | `{d}. {month} {y}` |
+   | nl | `.` | `,` | `{v}%` | `{cur} {num}` | `{d} {month} {y}` |
+   | fr | ` ` (space) | `,` | `{v} %` | `{num} {cur}` | `{d} {month} {y}` |
+
+4. Run the script. Warnings (`!` lines) name labels that will not fit their box — shorten them and run
+   again. A problem list stops the build and names the offending key — fix it; do not remove the check.
+
+Wording is generated per report, so it can differ slightly from one month to the next. When a customer
+gets the same language repeatedly, copy `LANG_STRINGS` and `LANG_LOCALE` from their previous report
+script in `output/<domain>/` instead of translating again — identical wording, zero drift.
 
 ---
 
@@ -269,6 +311,6 @@ never paste customer figures into a commit, a PR or any file inside the repo.
 - **Fonts are cached**: Playfair Display and Poppins download from Google Fonts to `~/.hr_report_fonts` on first run (~5 seconds) and are reused after that. The first run needs internet; later runs do not.
 - **Branding is not a per-customer decision**: colours and fonts come from `references/branding.md` and are already applied. Never introduce a raw hex, never signal good/bad with colour — cerise is the only brand hue and direction is stated in words ("up 12.4%", "down 2.3%"), never by a colour shift and never by an arrow glyph, which Poppins would silently drop.
 - **Currency**: Use whatever currency the customer's website is set to — displayed throughout without conversion.
-- **Period strings**: English "14 Jun – 14 Jul 2026"; Danish "14. jun. – 14. jul. 2026" (day with a full stop, lower-case abbreviated month with a full stop). Comparison period is the same duration immediately before the main period.
-- **Languages**: the template carries every fixed string — headings, KPI labels, table headers, callouts, footer — in a `STRINGS` table keyed by language, plus a `LOCALES` table with the number, currency and date conventions (English `1,234,567` · `62.2%` · `DKK 1,234,567` · `11 September 2026`; Danish `1.234.567` · `62,2 %` · `1.234.567 DKK` · `11. september 2026`). `LANG` selects both; a key missing from a language falls back to English, so a partial translation still renders. Placement names from the recommendations API arrive in English and are translated by the template — keep them as returned in `RECOM_BOXES`. **Adding a language** is a change to the template, not to a report: add a `LOCALES` entry and a `STRINGS` entry to `references/report_template.py`, render a report in the new language to check every string fits its KPI box and table column, and ship it in a PR with a CHANGELOG entry — never as a one-off edit inside `output/`.
+- **Period strings**: in the report language's convention — English "14 Jun – 14 Jul 2026", Danish "14. jun. – 14. jul. 2026", German "14. Juni – 14. Juli 2026". Comparison period is the same duration immediately before the main period.
+- **Languages**: English is built into the template. Every other language is produced at report time — you translate the template's English `STRINGS` into `LANG_STRINGS` and set `LANG_LOCALE` (Step 4b); the template validates placeholders, warns when a label will not fit, and renders any untranslated key in English. Placement names from the recommendations API arrive in English and are translated through the `placements` key — keep them as returned in `RECOM_BOXES`. No language ever needs a change to the template or a PR.
 - **STANDOUTS and STEPS**: Derive analytically from the real data — never copy the placeholder examples. Write genuine insights based on what the numbers actually show for this customer.

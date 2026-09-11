@@ -138,12 +138,19 @@ WHITE       = colors.white                 # bg-surface
 # DATA SECTION — fill with live values from Hello Retail MCP
 # ════════════════════════════════════════════════════════════════════════════
 
-LANG       = "en"                       # report language: "en" or "da" (see STRINGS below END DATA).
-                                        # Everything YOU write in this section — PERIOD strings,
-                                        # agent names, no-result actions and priorities, STANDOUTS,
-                                        # STEPS — must be in this language too.
+LANG       = "en"                       # report language code. English is the default and the
+                                        # fallback. For any other language, translate every key of
+                                        # STRINGS (below END DATA) into LANG_STRINGS and set the
+                                        # conventions in LANG_LOCALE — and write everything ELSE in
+                                        # this section (PERIOD strings, agent names, no-result actions
+                                        # and priorities, STANDOUTS, STEPS) in that language too.
+LANG_STRINGS = {}                       # {"sec_summary": "Sammenfatning", ...} — same keys and the same
+                                        # {placeholders} as STRINGS; a key left out renders in English.
+LANG_LOCALE  = {}                       # {"thousands": ".", "decimal": ",", "pct": "{v} %",
+                                        #  "money": "{num} {cur}", "date": "{d}. {month} {y}",
+                                        #  "months": [...12 names...]} — see LOCALE for the English values.
 WEBSITE    = "CUSTOMER_DOMAIN"          # e.g. "example-shop.com"
-PERIOD     = "DD Mon – DD Mon YYYY"     # human-readable period — en "14 Jun – 14 Jul 2026", da "14. jun. – 14. jul. 2026"
+PERIOD     = "DD Mon – DD Mon YYYY"     # human-readable period in the report language, e.g. "14 Jun – 14 Jul 2026"
 CMP_PERIOD = "DD Mon – DD Mon YYYY"     # previous period (same length, immediately before)
 CURRENCY   = "DKK"                      # from website_getInfo
 
@@ -163,8 +170,8 @@ TOP_SEARCHES = [
     ("query", 0, 0.0, 0.0),
 ]
 
-# List of (query_string, search_count, suggested_action, priority) — priority "High" / "Medium" / "Low"
-# (or the LANG equivalents). A plain (query_string, search_count) row still works: the template then
+# List of (query_string, search_count, suggested_action, priority) — priority "High" / "Medium" / "Low",
+# in the report language. A plain (query_string, search_count) row still works: the template then
 # assigns a generic action by rank, which misfits service queries ("returns") — so give the action when you know it.
 NO_RESULT = [
     ("query", 0, "Add product or synonym", "High"),
@@ -262,313 +269,217 @@ STEPS = [
 # END DATA — do not edit below this line
 # ════════════════════════════════════════════════════════════════════════════
 
-# ── Languages ─────────────────────────────────────────────────────────────────
-# Every fixed string in the report lives here, keyed by language. To add a language,
-# add a LOCALES entry (number and date conventions) and a STRINGS entry; any key a
-# language leaves out falls back to English, so a partial translation still renders.
-# Placeholders in braces are filled with str.format — keep them in the translation.
-LOCALES = {
-    "en": {
-        "thousands": ",", "decimal": ".",
-        "pct":   "{v}%",            # 62.2%
-        "money": "{cur} {num}",     # DKK 1,234,567
-        "date":  "{d} {month} {y}", # 11 September 2026
-        "months": ["January", "February", "March", "April", "May", "June", "July",
-                   "August", "September", "October", "November", "December"],
-    },
-    "da": {
-        "thousands": ".", "decimal": ",",
-        "pct":   "{v} %",            # 62,2 %
-        "money": "{num} {cur}",      # 1.234.567 DKK
-        "date":  "{d}. {month} {y}", # 11. september 2026
-        "months": ["januar", "februar", "marts", "april", "maj", "juni", "juli",
-                   "august", "september", "oktober", "november", "december"],
-    },
+# ── Language ──────────────────────────────────────────────────────────────────
+# The report's fixed text lives in STRINGS, in English. A report in another language
+# is produced by the model that fills the DATA SECTION: it translates every key of
+# STRINGS into LANG_STRINGS and sets the conventions in LANG_LOCALE. Nothing here
+# translates anything — this block only merges, validates and falls back:
+#   • a key missing from LANG_STRINGS renders in English (never a guess);
+#   • a translation whose {placeholders} differ from the English original stops the
+#     build with the key named, because it would otherwise KeyError deep in ReportLab;
+#   • a translated KPI label or table header that is clearly too long for its box
+#     prints a warning (the cell cannot wrap), and the build goes on.
+# Placeholders in braces are filled with str.format — every translation keeps them.
+#
+# Length hints:  KPI label ≤ 30 characters (26 mm box, label wraps to two lines)
+#                table header ≤ 12 characters (cells never wrap; narrowest column 17 mm)
+#                everything else is free text.
+
+LOCALE = {                     # English conventions — override per key in LANG_LOCALE
+    "thousands": ",", "decimal": ".",
+    "pct":   "{v}%",            # 62.2%        (Danish "{v} %" → 62,2 %)
+    "money": "{cur} {num}",     # DKK 1,234,567 (Danish "{num} {cur}" → 1.234.567 DKK)
+    "date":  "{d} {month} {y}", # 11 September 2026 (Danish "{d}. {month} {y}" → 11. september 2026)
+    "months": ["January", "February", "March", "April", "May", "June", "July",
+               "August", "September", "October", "November", "December"],
 }
 
 STRINGS = {
-    "en": {
-        # cover + chrome
-        "report_type":     "Analytics Review",
-        "cover_title":     "Customer\nAnalytics\nReview",
-        "cover_sub":       "On-site search, Recommendations, category Pages & Product Agent results\n"
-                           "— plus the demand you're not yet capturing",
-        "cover_prepared":  "Prepared for <b>{site}</b>  ·  {cur}",
-        "cover_period":    "Period: <b>{p}</b> vs <b>{cp}</b>",
-        "cover_generated": "Generated <b>{today}</b>",
-        "footer_sources":  "Prepared by Hello Retail · Customer Success. Figures from Hello Retail Search, "
-                           "Recommendations, Pages and Product Agent Analytics for {site}, {p} vs {cp}. "
-                           "Search revenue is search-attributed (direct + indirect); Recommendations revenue is "
-                           "attributed to purchases following a click on a LIVE recommendation box; Pages revenue "
-                           "is attributed to LIVE Hello Retail pages; Product Agent revenue attributed via Klaviyo "
-                           "conversion metric.",
-        "up": "up", "down": "down",
-        # executive summary
-        "sec_summary":        "Executive Summary",
-        "h1_summary":         "Search is your\nhighest-intent channel",
-        "lead_summary":       "Search on {site} drove <b>{rev}</b> in attributed revenue over the last 30 days.{recoms} "
-                              "This review shows what shoppers searched for, what's working, and where dead-end "
-                              "searches point to quick wins.",
-        "lead_summary_recoms": " Recommendations added a further <b>{rev}</b> across {n} live boxes.",
-        "kpi_search_rev":     "Search-Assisted Revenue (30D)",
-        "kpi_recoms_rev":     "Recommendations Revenue (30D)",
-        "kpi_searches":       "Total Searches",
-        "kpi_clicks":         "Result Clicks",
-        "kpi_top_query":      'Top Query · "{q}"',
-        "summary_note":       "Search-assisted revenue = direct ({d}) + indirect ({i}). "
-                              "Volume is <b>{word} {pct}</b> vs the prior period.",
-        "h2_standouts":       "What stands out",
-        # top searches
-        "sec_top":        "Top Searches",
-        "h1_top":         "What converts",
-        "lead_top":       "Highest-volume genuine queries in the last 30 days and how well they engage. "
-                          "These are your shoppers' clearest intent signals — and search is converting them efficiently.",
-        "th_query":       "Query",
-        "th_searches":    "Searches",
-        "th_ctr":         "Click-through Rate",
-        "th_direct_rev":  "Direct Revenue",
-        "note_ctr":       "A click-through rate above 100% means shoppers click multiple results per search "
-                          "session — a strong engagement signal for high-intent queries.",
-        "h2_noresult":    "No-result searches",
-        "lead_noresult":  "Queries from the top 50 that returned zero results — direct evidence of demand "
-                          "the site can't satisfy. These are the easiest revenue wins.",
-        "th_nr_query":    "No-result Query",
-        "th_action":      "Suggested Action",
-        "th_priority":    "Priority",
-        "nr_actions":     ["Add synonym or product category", "Check stock / add product",
-                           "Add product or redirect", "Add product", "Fix page link or synonym"],
-        "nr_action_other": "Review",
-        "nr_priorities":  ["High", "High", "Medium", "Medium", "Low"],
-        "nr_priority_other": "Low",
-        # recommendations
-        "sec_recoms":       "Recommendations",
-        "h1_recoms":        "Boxes that\nsell",
-        "lead_recoms":      "Hello Retail Recommendations place personalised product boxes across the shop — "
-                            "front page, category, product and cart pages. Over the period the live boxes were shown "
-                            "<b>{views} times</b>, drew <b>{clicks} clicks</b> and drove <b>{rev}</b> in attributed revenue.",
-        "kpi_impressions":  "Impressions",
-        "kpi_ctr":          "Click-through Rate",
-        "kpi_conv_rate":    "Conversion Rate",
-        "kpi_aov":          "Avg Order Size",
-        "recoms_note":      "{conv} conversions  ·  Only LIVE boxes report analytics; drafts serve nothing.{um}",
-        "recoms_unmanaged": "  ·  API-served recommendations added {rev} from {views} impressions (not included above)",
-        "h2_top_boxes":     "Top boxes by revenue",
-        "th_box":           "Box",
-        "th_placement":     "Placement",
-        "th_impressions":   "Impressions",
-        "th_clicks":        "Clicks",
-        "th_ctr_short":     "CTR",
-        "th_conv_rate":     "Conv. Rate",
-        "th_revenue":       "Revenue",
-        "note_boxes":       "Conversion rate is conversions per click. A box on the product page is shown on every "
-                            "product view, so its impressions dwarf a front-page or cart box — compare boxes on CTR "
-                            "and conversion rate, not on impressions.",
-        "callout_best_box_title": "Your top-earning box",
-        "callout_best_box": "<b>{name}</b> {place} drove {rev} — {share} of all recommendation revenue — "
-                            "at a {ctr} click-through rate and {cr} conversion rate.",
-        "callout_weak_title": "Most under-clicked placement",
-        "callout_weak":     "<b>{name}</b> {place} was shown {views} times but clicked on {ctr} of them — under half "
-                            "the site average of {avg}. Review its position on the page, its design and its "
-                            "recommendation strategy; a box this visible should earn more than {rev}.",
-        # placement `type` from the API → (table label, "on the …" phrase for prose)
-        "placements": {
-            "Product page":  ("Product page",  "on the product page"),
-            "Category page": ("Category page", "on the category page"),
-            "Front page":    ("Front page",    "on the front page"),
-            "Cart page":     ("Cart page",     "on the cart page"),
-            "404 page":      ("404 page",      "on the 404 page"),
-            "Other":         ("Other",         "in its placement"),
-        },
-        "placement_other": "on the {raw}",
-        # product agents
-        "sec_pa":           "Product Agents",
-        "h1_pa":            "Klaviyo channel\nperformance",
-        "lead_pa":          "Automated email flows powered by Hello Retail Product Agents, delivering "
-                            "<b>{msgs} messages</b> through the active Klaviyo channel and generating "
-                            "<b>{rev}</b> in the period.",
-        "kpi_msgs":         "Messages Sent",
-        "kpi_open":         "Open Rate",
-        "kpi_click":        "Click Rate",
-        "kpi_conversions":  "Conversions",
-        "kpi_total_rev":    "Total Revenue",
-        "pa_note":          "Revenue per message: {rpm}  ·  Unsubscribe rate: {u}",
-        "h2_pa_agents":     "Performance by agent",
-        "th_agent":         "Agent",
-        "th_messages":      "Messages",
-        "th_open":          "Open Rate",
-        "th_click":         "Click Rate",
-        "th_rev":           "Revenue",
-        "th_rpm":           "Rev / Msg",
-        "callout_best_agent_title": "Highest revenue-per-message agent",
-        "callout_best_agent": "<b>{name}</b> generates {rpm} per message sent — the most efficient agent in the "
-                              "channel. Consider expanding its audience or send frequency.",
-        "callout_open_title": "Open rate has room to grow",
-        "callout_open":     "At {rate} overall, a subject line A/B test on {name} could meaningfully lift reach and revenue.",
-        # pages
-        "sec_pages":        "Pages",
-        "h1_pages":         "Category pages\nthat sell",
-        "lead_pages":       "Hello Retail Pages replaces the shop's static category and brand listings with "
-                            "personalised, merchandised pages. Over the period they drew <b>{views} views</b> "
-                            "and drove <b>{rev}</b> in attributed revenue.",
-        "kpi_pages_rev":    "Pages Revenue (30D)",
-        "kpi_page_views":   "Page Views",
-        "pages_note":       "Click-through rate {ctr}  ·  {conv} conversions  ·  revenue <b>{word} {pct}</b> "
-                            "vs the prior period. Only LIVE pages report analytics.",
-        "h2_top_pages":     "Top pages by revenue",
-        "th_page":          "Page",
-        "th_views":         "Views",
-        "th_conversions":   "Conversions",
-        "h2_top_urls":      "Top URLs by revenue",
-        "lead_urls":        "One page can serve many URLs — these are the actual category and brand URLs "
-                            "driving Pages revenue.",
-        "th_url":           "URL",
-        "callout_best_page_title": "Your best-performing page",
-        "callout_best_page": "<b>{name}</b> drove {rev} at a {cr} conversion rate. Use its layout and "
-                             "merchandising as the template for weaker category pages.",
-        # next steps
-        "sec_steps":        "Recommended Next Steps",
-        "h1_steps":         "Five moves,\nbiggest first",
+    # ── cover + chrome ──
+    "report_type":     "Analytics Review",
+    "cover_title":     "Customer\nAnalytics\nReview",                         # 3 short lines, 58 pt
+    "cover_sub":       "On-site search, Recommendations, category Pages & Product Agent results\n"
+                       "— plus the demand you're not yet capturing",
+    "cover_prepared":  "Prepared for <b>{site}</b>  ·  {cur}",
+    "cover_period":    "Period: <b>{p}</b> vs <b>{cp}</b>",
+    "cover_generated": "Generated <b>{today}</b>",
+    "footer_sources":  "Prepared by Hello Retail · Customer Success. Figures from Hello Retail Search, "
+                       "Recommendations, Pages and Product Agent Analytics for {site}, {p} vs {cp}. "
+                       "Search revenue is search-attributed (direct + indirect); Recommendations revenue is "
+                       "attributed to purchases following a click on a LIVE recommendation box; Pages revenue "
+                       "is attributed to LIVE Hello Retail pages; Product Agent revenue attributed via Klaviyo "
+                       "conversion metric.",
+    "up": "up", "down": "down",                                                # "volume is {up} 5.9%"
+    # ── executive summary ──
+    "sec_summary":        "Executive Summary",                                 # section label, upper-cased
+    "h1_summary":         "Search is your\nhighest-intent channel",            # 2 lines, 28 pt
+    "lead_summary":       "Search on {site} drove <b>{rev}</b> in attributed revenue over the last 30 days.{recoms} "
+                          "This review shows what shoppers searched for, what's working, and where dead-end "
+                          "searches point to quick wins.",
+    "lead_summary_recoms": " Recommendations added a further <b>{rev}</b> across {n} live boxes.",
+    "kpi_search_rev":     "Search-Assisted Revenue (30D)",                     # KPI label
+    "kpi_recoms_rev":     "Recommendations Revenue (30D)",                     # KPI label
+    "kpi_searches":       "Total Searches",                                    # KPI label
+    "kpi_clicks":         "Result Clicks",                                     # KPI label
+    "kpi_top_query":      'Top Query · "{q}"',                                 # KPI label
+    "summary_note":       "Search-assisted revenue = direct ({d}) + indirect ({i}). "
+                          "Volume is <b>{word} {pct}</b> vs the prior period.",
+    "h2_standouts":       "What stands out",
+    # ── top searches ──
+    "sec_top":        "Top Searches",
+    "h1_top":         "What converts",
+    "lead_top":       "Highest-volume genuine queries in the last 30 days and how well they engage. "
+                      "These are your shoppers' clearest intent signals — and search is converting them efficiently.",
+    "th_query":       "Query",                                                 # table header
+    "th_searches":    "Searches",                                              # table header
+    "th_ctr":         "Click-through Rate",                                    # table header (wide column)
+    "th_direct_rev":  "Direct Revenue",                                        # table header (wide column)
+    "note_ctr":       "A click-through rate above 100% means shoppers click multiple results per search "
+                      "session — a strong engagement signal for high-intent queries.",
+    "h2_noresult":    "No-result searches",
+    "lead_noresult":  "Queries from the top 50 that returned zero results — direct evidence of demand "
+                      "the site can't satisfy. These are the easiest revenue wins.",
+    "th_nr_query":    "No-result Query",                                       # table header (wide column)
+    "th_action":      "Suggested Action",                                      # table header (wide column)
+    "th_priority":    "Priority",                                              # table header
+    "nr_actions":     ["Add synonym or product category", "Check stock / add product",  # defaults by rank
+                       "Add product or redirect", "Add product", "Fix page link or synonym"],
+    "nr_action_other": "Review",
+    "nr_priorities":  ["High", "High", "Medium", "Medium", "Low"],             # defaults by rank
+    "nr_priority_other": "Low",
+    # ── recommendations ──
+    "sec_recoms":       "Recommendations",
+    "h1_recoms":        "Boxes that\nsell",
+    "lead_recoms":      "Hello Retail Recommendations place personalised product boxes across the shop — "
+                        "front page, category, product and cart pages. Over the period the live boxes were shown "
+                        "<b>{views} times</b>, drew <b>{clicks} clicks</b> and drove <b>{rev}</b> in attributed revenue.",
+    "kpi_impressions":  "Impressions",                                         # KPI label
+    "kpi_ctr":          "Click-through Rate",                                  # KPI label
+    "kpi_conv_rate":    "Conversion Rate",                                     # KPI label
+    "kpi_aov":          "Avg Order Size",                                      # KPI label
+    "recoms_note":      "{conv} conversions  ·  Only LIVE boxes report analytics; drafts serve nothing.{um}",
+    "recoms_unmanaged": "  ·  API-served recommendations added {rev} from {views} impressions (not included above)",
+    "h2_top_boxes":     "Top boxes by revenue",
+    "th_box":           "Box",                                                 # table header
+    "th_placement":     "Placement",                                           # table header
+    "th_impressions":   "Impressions",                                         # table header
+    "th_clicks":        "Clicks",                                              # table header
+    "th_ctr_short":     "CTR",                                                 # table header (narrowest column)
+    "th_conv_rate":     "Conv. Rate",                                          # table header
+    "th_revenue":       "Revenue",                                             # table header
+    "note_boxes":       "Conversion rate is conversions per click. A box on the product page is shown on every "
+                        "product view, so its impressions dwarf a front-page or cart box — compare boxes on CTR "
+                        "and conversion rate, not on impressions.",
+    "callout_best_box_title": "Your top-earning box",
+    "callout_best_box": "<b>{name}</b> {place} drove {rev} — {share} of all recommendation revenue — "
+                        "at a {ctr} click-through rate and {cr} conversion rate.",
+    "callout_weak_title": "Most under-clicked placement",
+    "callout_weak":     "<b>{name}</b> {place} was shown {views} times but clicked on {ctr} of them — under half "
+                        "the site average of {avg}. Review its position on the page, its design and its "
+                        "recommendation strategy; a box this visible should earn more than {rev}.",
+    # placement `type` from the API → (table label, phrase used in prose after the box name)
+    "placements": {
+        "Product page":  ("Product page",  "on the product page"),
+        "Category page": ("Category page", "on the category page"),
+        "Front page":    ("Front page",    "on the front page"),
+        "Cart page":     ("Cart page",     "on the cart page"),
+        "404 page":      ("404 page",      "on the 404 page"),
+        "Other":         ("Other",         "in its placement"),
     },
-    "da": {
-        "report_type":     "Analyserapport",
-        "cover_title":     "Din\nanalyse-\nrapport",
-        "cover_sub":       "Søgning, anbefalinger, kategorisider & Product Agents\n"
-                           "— og den efterspørgsel, du endnu ikke fanger",
-        "cover_prepared":  "Udarbejdet til <b>{site}</b>  ·  {cur}",
-        "cover_period":    "Periode: <b>{p}</b> mod <b>{cp}</b>",
-        "cover_generated": "Genereret <b>{today}</b>",
-        "footer_sources":  "Udarbejdet af Hello Retail · Customer Success. Tal fra Hello Retail Search-, "
-                           "Recommendations-, Pages- og Product Agent-analytics for {site}, {p} mod {cp}. "
-                           "Søgeomsætning er tilskrevet søgning (direkte + indirekte); anbefalingsomsætning er "
-                           "tilskrevet køb efter klik på en LIVE anbefalingsboks; Pages-omsætning er tilskrevet "
-                           "LIVE Hello Retail-sider; Product Agent-omsætning er tilskrevet via Klaviyos "
-                           "konverteringsmetrik.",
-        "up": "steget", "down": "faldet",
-        "sec_summary":        "Sammenfatning",
-        "h1_summary":         "Søgning er din\nmest købsklare kanal",
-        "lead_summary":       "Søgning på {site} har skabt <b>{rev}</b> i tilskrevet omsætning de seneste 30 dage.{recoms} "
-                              "Denne rapport viser, hvad kunderne søgte efter, hvad der virker, og hvor søgninger "
-                              "uden resultater peger på hurtige gevinster.",
-        "lead_summary_recoms": " Anbefalinger bidrog med yderligere <b>{rev}</b> fordelt på {n} aktive bokse.",
-        "kpi_search_rev":     "Søgeassisteret omsætning (30 dage)",
-        "kpi_recoms_rev":     "Anbefalingsomsætning (30 dage)",
-        "kpi_searches":       "Søgninger i alt",
-        "kpi_clicks":         "Klik på resultater",
-        "kpi_top_query":      'Topsøgning · "{q}"',
-        "summary_note":       "Søgeassisteret omsætning = direkte ({d}) + indirekte ({i}). "
-                              "Volumen er <b>{word} {pct}</b> i forhold til forrige periode.",
-        "h2_standouts":       "Det, der springer i øjnene",
-        "sec_top":        "Topsøgninger",
-        "h1_top":         "Det, der konverterer",
-        "lead_top":       "De mest søgte reelle søgeord de seneste 30 dage, og hvor godt de engagerer. "
-                          "Det er dine kunders tydeligste købssignaler — og søgningen konverterer dem effektivt.",
-        "th_query":       "Søgeord",
-        "th_searches":    "Søgninger",
-        "th_ctr":         "Klikrate",
-        "th_direct_rev":  "Direkte omsætning",
-        "note_ctr":       "En klikrate over 100 % betyder, at kunderne klikker på flere resultater pr. søgning "
-                          "— et stærkt engagementssignal for købsklare søgeord.",
-        "h2_noresult":    "Søgninger uden resultater",
-        "lead_noresult":  "Søgeord fra top 50, der gav nul resultater — direkte bevis på efterspørgsel, som "
-                          "butikken ikke kan opfylde. Det er de nemmeste omsætningsgevinster.",
-        "th_nr_query":    "Søgeord uden resultat",
-        "th_action":      "Foreslået handling",
-        "th_priority":    "Prioritet",
-        "nr_actions":     ["Tilføj synonym eller kategori", "Tjek lager / tilføj produkt",
-                           "Tilføj produkt eller redirect", "Tilføj produkt", "Ret sidelink eller synonym"],
-        "nr_action_other": "Gennemgå",
-        "nr_priorities":  ["Høj", "Høj", "Mellem", "Mellem", "Lav"],
-        "nr_priority_other": "Lav",
-        "sec_recoms":       "Anbefalinger",
-        "h1_recoms":        "Bokse,\nder sælger",
-        "lead_recoms":      "Hello Retail Recommendations placerer personaliserede produktbokse på tværs af butikken "
-                            "— forside, kategori-, produkt- og kurvsider. I perioden blev de aktive bokse vist "
-                            "<b>{views} gange</b>, fik <b>{clicks} klik</b> og skabte <b>{rev}</b> i tilskrevet omsætning.",
-        "kpi_impressions":  "Visninger",
-        "kpi_ctr":          "Klikrate",
-        "kpi_conv_rate":    "Konverteringsrate",
-        "kpi_aov":          "Gns. ordrestørrelse",
-        "recoms_note":      "{conv} konverteringer  ·  Kun LIVE-bokse rapporterer analytics; kladder vises ikke.{um}",
-        "recoms_unmanaged": "  ·  API-leverede anbefalinger bidrog med {rev} fra {views} visninger (ikke medregnet ovenfor)",
-        "h2_top_boxes":     "Bokse med størst omsætning",
-        "th_box":           "Boks",
-        "th_placement":     "Placering",
-        "th_impressions":   "Visninger",
-        "th_clicks":        "Klik",
-        "th_ctr_short":     "Klikrate",
-        "th_conv_rate":     "Konv.rate",
-        "th_revenue":       "Omsætning",
-        "note_boxes":       "Konverteringsrate er konverteringer pr. klik. En boks på produktsiden vises ved hver "
-                            "produktvisning, så dens visninger overskygger en forside- eller kurvboks — sammenlign "
-                            "bokse på klikrate og konverteringsrate, ikke på visninger.",
-        "callout_best_box_title": "Din mest indtjenende boks",
-        "callout_best_box": "<b>{name}</b> {place} skabte {rev} — {share} af al anbefalingsomsætning — "
-                            "med en klikrate på {ctr} og en konverteringsrate på {cr}.",
-        "callout_weak_title": "Mest overset placering",
-        "callout_weak":     "<b>{name}</b> {place} blev vist {views} gange, men fik kun klik i {ctr} af tilfældene — "
-                            "under halvdelen af gennemsnittet på {avg}. Gennemgå boksens placering på siden, dens "
-                            "design og dens anbefalingsstrategi; en boks så synlig bør tjene mere end {rev}.",
-        "placements": {
-            "Product page":  ("Produktside",   "på produktsiden"),
-            "Category page": ("Kategoriside",  "på kategorisiden"),
-            "Front page":    ("Forside",       "på forsiden"),
-            "Cart page":     ("Kurvside",      "på kurvsiden"),
-            "404 page":      ("404-side",      "på 404-siden"),
-            "Other":         ("Andet",         "i sin placering"),
-        },
-        "placement_other": "på {raw}",
-        "sec_pa":           "Product Agents",
-        "h1_pa":            "Klaviyo-kanalens\nresultater",
-        "lead_pa":          "Automatiserede e-mailflows drevet af Hello Retail Product Agents, som har leveret "
-                            "<b>{msgs} beskeder</b> gennem den aktive Klaviyo-kanal og skabt <b>{rev}</b> i perioden.",
-        "kpi_msgs":         "Sendte beskeder",
-        "kpi_open":         "Åbningsrate",
-        "kpi_click":        "Klikrate",
-        "kpi_conversions":  "Konverteringer",
-        "kpi_total_rev":    "Samlet omsætning",
-        "pa_note":          "Omsætning pr. besked: {rpm}  ·  Afmeldingsrate: {u}",
-        "h2_pa_agents":     "Resultater pr. agent",
-        "th_agent":         "Agent",
-        "th_messages":      "Beskeder",
-        "th_open":          "Åbningsrate",
-        "th_click":         "Klikrate",
-        "th_rev":           "Omsætning",
-        "th_rpm":           "Oms. / besked",
-        "callout_best_agent_title": "Agenten med højest omsætning pr. besked",
-        "callout_best_agent": "<b>{name}</b> skaber {rpm} pr. sendt besked — kanalens mest effektive agent. "
-                              "Overvej at udvide målgruppen eller sendefrekvensen.",
-        "callout_open_title": "Åbningsraten kan løftes",
-        "callout_open":     "Med {rate} samlet kan en A/B-test af emnelinjer på {name} løfte både rækkevidde og omsætning mærkbart.",
-        "sec_pages":        "Pages",
-        "h1_pages":         "Kategorisider,\nder sælger",
-        "lead_pages":       "Hello Retail Pages erstatter butikkens statiske kategori- og brandsider med "
-                            "personaliserede, merchandisede sider. I perioden fik de <b>{views} visninger</b> "
-                            "og skabte <b>{rev}</b> i tilskrevet omsætning.",
-        "kpi_pages_rev":    "Pages-omsætning (30 dage)",
-        "kpi_page_views":   "Sidevisninger",
-        "pages_note":       "Klikrate {ctr}  ·  {conv} konverteringer  ·  omsætningen er <b>{word} {pct}</b> "
-                            "i forhold til forrige periode. Kun LIVE-sider rapporterer analytics.",
-        "h2_top_pages":     "Sider med størst omsætning",
-        "th_page":          "Side",
-        "th_views":         "Visninger",
-        "th_conversions":   "Konverteringer",
-        "h2_top_urls":      "URL'er med størst omsætning",
-        "lead_urls":        "Én side kan betjene mange URL'er — her er de faktiske kategori- og brand-URL'er, "
-                            "der driver Pages-omsætningen.",
-        "th_url":           "URL",
-        "callout_best_page_title": "Din bedst præsterende side",
-        "callout_best_page": "<b>{name}</b> skabte {rev} med en konverteringsrate på {cr}. Brug dens layout og "
-                             "merchandising som skabelon for svagere kategorisider.",
-        "sec_steps":        "Anbefalede næste skridt",
-        "h1_steps":         "Fem tiltag,\nstørst først",
-    },
+    "placement_other": "on the {raw}",                                         # unknown placement type
+    # ── product agents ──
+    "sec_pa":           "Product Agents",
+    "h1_pa":            "Klaviyo channel\nperformance",
+    "lead_pa":          "Automated email flows powered by Hello Retail Product Agents, delivering "
+                        "<b>{msgs} messages</b> through the active Klaviyo channel and generating "
+                        "<b>{rev}</b> in the period.",
+    "kpi_msgs":         "Messages Sent",                                       # KPI label
+    "kpi_open":         "Open Rate",                                           # KPI label
+    "kpi_click":        "Click Rate",                                          # KPI label
+    "kpi_conversions":  "Conversions",                                         # KPI label
+    "kpi_total_rev":    "Total Revenue",                                       # KPI label
+    "pa_note":          "Revenue per message: {rpm}  ·  Unsubscribe rate: {u}",
+    "h2_pa_agents":     "Performance by agent",
+    "th_agent":         "Agent",                                               # table header
+    "th_messages":      "Messages",                                            # table header
+    "th_open":          "Open Rate",                                           # table header
+    "th_click":         "Click Rate",                                          # table header
+    "th_rev":           "Revenue",                                             # table header
+    "th_rpm":           "Rev / Msg",                                           # table header
+    "callout_best_agent_title": "Highest revenue-per-message agent",
+    "callout_best_agent": "<b>{name}</b> generates {rpm} per message sent — the most efficient agent in the "
+                          "channel. Consider expanding its audience or send frequency.",
+    "callout_open_title": "Open rate has room to grow",
+    "callout_open":     "At {rate} overall, a subject line A/B test on {name} could meaningfully lift reach and revenue.",
+    # ── pages ──
+    "sec_pages":        "Pages",
+    "h1_pages":         "Category pages\nthat sell",
+    "lead_pages":       "Hello Retail Pages replaces the shop's static category and brand listings with "
+                        "personalised, merchandised pages. Over the period they drew <b>{views} views</b> "
+                        "and drove <b>{rev}</b> in attributed revenue.",
+    "kpi_pages_rev":    "Pages Revenue (30D)",                                 # KPI label
+    "kpi_page_views":   "Page Views",                                          # KPI label
+    "pages_note":       "Click-through rate {ctr}  ·  {conv} conversions  ·  revenue <b>{word} {pct}</b> "
+                        "vs the prior period. Only LIVE pages report analytics.",
+    "h2_top_pages":     "Top pages by revenue",
+    "th_page":          "Page",                                                # table header
+    "th_views":         "Views",                                               # table header
+    "th_conversions":   "Conversions",                                         # table header
+    "h2_top_urls":      "Top URLs by revenue",
+    "lead_urls":        "One page can serve many URLs — these are the actual category and brand URLs "
+                        "driving Pages revenue.",
+    "th_url":           "URL",                                                 # table header
+    "callout_best_page_title": "Your best-performing page",
+    "callout_best_page": "<b>{name}</b> drove {rev} at a {cr} conversion rate. Use its layout and "
+                         "merchandising as the template for weaker category pages.",
+    # ── next steps ──
+    "sec_steps":        "Recommended Next Steps",
+    "h1_steps":         "Five moves,\nbiggest first",
 }
 
-if LANG not in STRINGS:
-    raise SystemExit(f"LANG={LANG!r} is not supported — add it to STRINGS and LOCALES, "
-                     f"or use one of: {', '.join(STRINGS)}")
-T = {**STRINGS["en"], **STRINGS[LANG]}          # per-key fallback to English
-L = {**LOCALES["en"], **LOCALES.get(LANG, {})}
+def _placeholders(s):
+    import string
+    return {f for _, f, _, _ in string.Formatter().parse(s) if f}
+
+def _check_translations():
+    problems, warnings = [], []
+    if LANG != "en" and not LANG_STRINGS:
+        warnings.append(f"LANG is {LANG!r} but LANG_STRINGS is empty — the report renders in English")
+    for key, val in LANG_STRINGS.items():
+        if key not in STRINGS:
+            warnings.append(f"LANG_STRINGS[{key!r}] is not a key the report uses — ignored")
+            continue
+        ref = STRINGS[key]
+        if isinstance(ref, str):
+            if not isinstance(val, str):
+                problems.append(f"LANG_STRINGS[{key!r}] must be a string"); continue
+            if _placeholders(val) != _placeholders(ref):
+                problems.append(f"LANG_STRINGS[{key!r}] must keep exactly these placeholders: "
+                                f"{sorted('{' + p + '}' for p in _placeholders(ref))}")
+            elif key.startswith("kpi_") and len(val) > 34:
+                warnings.append(f"LANG_STRINGS[{key!r}] is {len(val)} characters — a KPI label over ~30 wraps past its box")
+            elif key.startswith("th_") and len(val) > 16 and key in ("th_ctr_short", "th_clicks", "th_box", "th_views", "th_page", "th_url", "th_agent", "th_priority"):
+                warnings.append(f"LANG_STRINGS[{key!r}] is {len(val)} characters — this column fits ~12; the cell will not wrap")
+        elif isinstance(ref, list):
+            if not (isinstance(val, list) and len(val) == len(ref) and all(isinstance(v, str) for v in val)):
+                problems.append(f"LANG_STRINGS[{key!r}] must be a list of {len(ref)} strings")
+        elif isinstance(ref, dict):
+            if not (isinstance(val, dict) and all(isinstance(v, (tuple, list)) and len(v) == 2 for v in val.values())):
+                problems.append(f"LANG_STRINGS[{key!r}] must map each API placement type to (label, phrase)")
+    for key in LANG_LOCALE:
+        if key not in LOCALE:
+            warnings.append(f"LANG_LOCALE[{key!r}] is not a convention the report uses — ignored")
+    if "months" in LANG_LOCALE and len(LANG_LOCALE["months"]) != 12:
+        problems.append("LANG_LOCALE['months'] must list 12 month names, January first")
+    for w in warnings:
+        print(f"  ! {w}")
+    if problems:
+        raise SystemExit("Translation problems — fix LANG_STRINGS / LANG_LOCALE in the DATA SECTION:\n  - "
+                         + "\n  - ".join(problems))
+
+_check_translations()
+T = {**STRINGS, **{k: v for k, v in LANG_STRINGS.items() if k in STRINGS}}   # per-key fallback to English
+L = {**LOCALE,  **{k: v for k, v in LANG_LOCALE.items()  if k in LOCALE}}
 
 _d    = date.today()
 TODAY = L["date"].format(d=_d.day, month=L["months"][_d.month - 1], y=_d.year)

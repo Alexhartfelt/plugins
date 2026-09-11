@@ -11,11 +11,14 @@ structure to follow.
 
 ### Added
 
-- `customer-analytics-report` can write the report in Danish as well as English: say "report in
-  Danish" / "rapport på dansk" and every heading, KPI label, table header, callout and footer comes
-  out in Danish, with Danish number, currency and date conventions (`1.234.567`, `62,2 %`,
-  `1.234.567 DKK`, `11. september 2026`); the insights and next steps are written in Danish too.
-  English stays the default. Adding a further language is one translation table in the template.
+- `customer-analytics-report` writes the report in whatever language the operator asks for —
+  "analytics for this website in Danish" gives a Danish PDF. Headings, KPI labels, table headers,
+  callouts and footer are translated by the model at report time, with the language's number,
+  currency and date conventions (`1.234.567`, `62,2 %`, `1.234.567 DKK`, `11. september 2026` for
+  Danish), and the insights and next steps are written in that language. English stays the
+  default; a string that is not translated falls back to English rather than a guess, and the
+  template stops the build if a translation loses a placeholder and warns when a label will not
+  fit its box.
 
 ### Changed
 
