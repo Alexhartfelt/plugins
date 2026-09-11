@@ -1518,6 +1518,11 @@ defect; capture that knowledge while you have it:
 The plan **proposes, never applies** — the QA skills stay read-only; the fixer session owns
 the write path and its gates.
 
+**Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `<the feature's stage>`; mandatory — do not ask whether to, do not skip).** A QA report is one task's evidence; the
+customer's living hand-off document under `output/handoffs/` (local for now) is the record across tasks —
+it takes the verdicts, the fix plan as open items, and the brief's Decisions / Declined /
+Known-open with their author + date.
+
 If the user only asked to *see* a checklist, print it inline instead — no file needed.
 
 ## Running from the plugin

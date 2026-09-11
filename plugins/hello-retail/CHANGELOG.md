@@ -9,6 +9,34 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `customer-handoff` is a new skill: it writes one living hand-off document per website under the
+  gitignored `output/handoffs/` folder (company → website; local for now, laid out so the store can
+  move to a shared repository or a vector database later) and appends to it after every task. The document carries a machine-readable header and records the platform
+  and theme (mandatory, detected from the storefront), the ClickUp card with project owner,
+  developer, CSM and dates, a stage plan derived from the sold features (a Search-only customer
+  has three stages, a full-suite customer up to nine), an onboarding-performance section for
+  management — a per-stage ledger of working days and build / QA / fix rounds, a running snapshot,
+  and closing figures written only when the onboarding is closed — the configuration per feature
+  from the MCP, every unique case with root cause, solution and removal condition, decisions and
+  open items, and an anonymised learnings section the knowledge base can absorb later. Two modes:
+  record a stage, close the onboarding. It reads ClickUp and the dashboard, never writes to them,
+  and ships a script that regenerates the store's index from the document headers.
+
+### Changed
+
+- `search-developer`, `recom-developer`, `pages-developer`, `newsletter-developer`,
+  `triggered-email-developer`, `feed-setup`, `feed-migration` and the QA skills (`search-qa`,
+  `recom-qa`, `pages-qa`, `newsletter-qa`, `qa-checklists`) now end by running `customer-handoff`
+  for their stage, so every build, feed and QA task is recorded in the customer's hand-off
+  document and provenance lines, verdicts and fix plans stop living only in chat.
+
+### Fixed
+
+- `hello-retail-knowledge` now names Brian Petersen as Head of D&TS; the wiki previously listed
+  Lea Silkensen, who has left the company.
+
 ## 1.5.0 — 2026-09-10
 
 ### Added

@@ -293,6 +293,9 @@ what to change, in which file/marker, routed to newsletter-developer or
 triggered-email-developer
 ```
 
+Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `newsletter` (lane N) or `triggered-emails` (lane T); mandatory — do not ask whether to, do not skip) so the verdict and the fix plan land in
+the customer's living hand-off document under `output/handoffs/` (local for now).
+
 ## Tips from the first probe (2026-09-07)
 
 - **The render can look fine while the code is wrong.** The LIVE design used for the first probe

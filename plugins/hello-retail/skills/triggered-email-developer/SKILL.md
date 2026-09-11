@@ -224,7 +224,8 @@ without cropping/stretching). See `references/inspection-and-verification.md`.
 
 Show each template inline for review and save the `.liquid` to the output folder.
 Per-customer outputs do **not** go into the wiki — the wiki holds the shared
-defaults, not individual customer builds.
+defaults, not individual customer builds. Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `triggered-emails`; mandatory — do not ask whether to, do not skip) so the flows delivered and any
+customer-specific decision are recorded in the customer's living hand-off document under `output/handoffs/` (local for now).
 
 ## Quick reference: the rules that bite
 

@@ -198,7 +198,8 @@ Don't proceed to Step 6 while bucket 3 is non-empty and unresolved.
 ### Step 7 — Confirm
 
 Report the feed ID/state and repeat the three-bucket migration summary from Step 5 so
-there's a clear record of what changed and what still needs a human decision.
+there's a clear record of what changed and what still needs a human decision. Then run `customer-handoff` (`../customer-handoff/SKILL.md`; record mode, stage `setup-data`; mandatory — do not ask whether to, do not skip): the three-bucket summary is exactly the *unique cases*
+the customer's living hand-off document under `output/handoffs/` (local for now) should keep.
 
 ---
 
