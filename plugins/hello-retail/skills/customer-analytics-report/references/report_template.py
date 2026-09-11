@@ -138,12 +138,14 @@ WHITE       = colors.white                 # bg-surface
 # DATA SECTION — fill with live values from Hello Retail MCP
 # ════════════════════════════════════════════════════════════════════════════
 
+LANG       = "en"                       # report language: "en" or "da" (see STRINGS below END DATA).
+                                        # Everything YOU write in this section — PERIOD strings,
+                                        # agent names, no-result actions and priorities, STANDOUTS,
+                                        # STEPS — must be in this language too.
 WEBSITE    = "CUSTOMER_DOMAIN"          # e.g. "example-shop.com"
-PERIOD     = "DD Mon – DD Mon YYYY"     # human-readable period, e.g. "14 Jun – 14 Jul 2026"
+PERIOD     = "DD Mon – DD Mon YYYY"     # human-readable period — en "14 Jun – 14 Jul 2026", da "14. jun. – 14. jul. 2026"
 CMP_PERIOD = "DD Mon – DD Mon YYYY"     # previous period (same length, immediately before)
 CURRENCY   = "DKK"                      # from website_getInfo
-_d     = date.today()
-TODAY  = f"{_d.day} {_d.strftime('%B %Y')}"   # cross-platform (no %-d)
 
 SEARCH = {
     "searches":           0,       # total searches
@@ -161,9 +163,9 @@ TOP_SEARCHES = [
     ("query", 0, 0.0, 0.0),
 ]
 
-# List of (query_string, search_count, suggested_action, priority) — priority "High" / "Medium" / "Low".
-# A plain (query_string, search_count) row still works: the template then assigns a generic
-# action by rank, which misfits service queries ("returns") — so give the action when you know it.
+# List of (query_string, search_count, suggested_action, priority) — priority "High" / "Medium" / "Low"
+# (or the LANG equivalents). A plain (query_string, search_count) row still works: the template then
+# assigns a generic action by rank, which misfits service queries ("returns") — so give the action when you know it.
 NO_RESULT = [
     ("query", 0, "Add product or synonym", "High"),
 ]
@@ -196,7 +198,7 @@ PAGES = {
     "ctr":             0.0,   # clickThroughRate, as decimal
     "conversion_rate": 0.0,   # as decimal
     "avg_order_size":  0.0,
-    "revenue_change":  0.0,   # revenueChangePercent as a number (e.g. 12.4 for +12.4%)
+    "revenue_change":  0.0,   # revenueChangePercent as returned (percent units, e.g. 12.4 for +12.4%)
 }
 
 # List of (page_name, views, clicks, conversions, revenue, conversion_rate_decimal)
@@ -226,7 +228,8 @@ RECOMS = {
 
 # Every LIVE box with traffic — recoms_getAnalyticsGrouped(sortBy=VIEWS, limit=20).
 # List of (box_name, placement, views, clicks, conversions, revenue, ctr_decimal, conversion_rate_decimal)
-# placement is the row's `type`: "Product page", "Category page", "Front page", "Cart page", "404 page" …
+# placement is the row's `type` AS RETURNED BY THE API, in English: "Product page", "Category page",
+# "Front page", "Cart page", "404 page", "Other" — the template translates it for the report language.
 # The template ranks these by revenue for the table and scans all of them for the callouts.
 RECOM_BOXES = [
     ("Box name", "Product page", 0, 0, 0, 0.0, 0.0, 0.0),
@@ -259,18 +262,343 @@ STEPS = [
 # END DATA — do not edit below this line
 # ════════════════════════════════════════════════════════════════════════════
 
+# ── Languages ─────────────────────────────────────────────────────────────────
+# Every fixed string in the report lives here, keyed by language. To add a language,
+# add a LOCALES entry (number and date conventions) and a STRINGS entry; any key a
+# language leaves out falls back to English, so a partial translation still renders.
+# Placeholders in braces are filled with str.format — keep them in the translation.
+LOCALES = {
+    "en": {
+        "thousands": ",", "decimal": ".",
+        "pct":   "{v}%",            # 62.2%
+        "money": "{cur} {num}",     # DKK 1,234,567
+        "date":  "{d} {month} {y}", # 11 September 2026
+        "months": ["January", "February", "March", "April", "May", "June", "July",
+                   "August", "September", "October", "November", "December"],
+    },
+    "da": {
+        "thousands": ".", "decimal": ",",
+        "pct":   "{v} %",            # 62,2 %
+        "money": "{num} {cur}",      # 1.234.567 DKK
+        "date":  "{d}. {month} {y}", # 11. september 2026
+        "months": ["januar", "februar", "marts", "april", "maj", "juni", "juli",
+                   "august", "september", "oktober", "november", "december"],
+    },
+}
+
+STRINGS = {
+    "en": {
+        # cover + chrome
+        "report_type":     "Analytics Review",
+        "cover_title":     "Customer\nAnalytics\nReview",
+        "cover_sub":       "On-site search, Recommendations, category Pages & Product Agent results\n"
+                           "— plus the demand you're not yet capturing",
+        "cover_prepared":  "Prepared for <b>{site}</b>  ·  {cur}",
+        "cover_period":    "Period: <b>{p}</b> vs <b>{cp}</b>",
+        "cover_generated": "Generated <b>{today}</b>",
+        "footer_sources":  "Prepared by Hello Retail · Customer Success. Figures from Hello Retail Search, "
+                           "Recommendations, Pages and Product Agent Analytics for {site}, {p} vs {cp}. "
+                           "Search revenue is search-attributed (direct + indirect); Recommendations revenue is "
+                           "attributed to purchases following a click on a LIVE recommendation box; Pages revenue "
+                           "is attributed to LIVE Hello Retail pages; Product Agent revenue attributed via Klaviyo "
+                           "conversion metric.",
+        "up": "up", "down": "down",
+        # executive summary
+        "sec_summary":        "Executive Summary",
+        "h1_summary":         "Search is your\nhighest-intent channel",
+        "lead_summary":       "Search on {site} drove <b>{rev}</b> in attributed revenue over the last 30 days.{recoms} "
+                              "This review shows what shoppers searched for, what's working, and where dead-end "
+                              "searches point to quick wins.",
+        "lead_summary_recoms": " Recommendations added a further <b>{rev}</b> across {n} live boxes.",
+        "kpi_search_rev":     "Search-Assisted Revenue (30D)",
+        "kpi_recoms_rev":     "Recommendations Revenue (30D)",
+        "kpi_searches":       "Total Searches",
+        "kpi_clicks":         "Result Clicks",
+        "kpi_top_query":      'Top Query · "{q}"',
+        "summary_note":       "Search-assisted revenue = direct ({d}) + indirect ({i}). "
+                              "Volume is <b>{word} {pct}</b> vs the prior period.",
+        "h2_standouts":       "What stands out",
+        # top searches
+        "sec_top":        "Top Searches",
+        "h1_top":         "What converts",
+        "lead_top":       "Highest-volume genuine queries in the last 30 days and how well they engage. "
+                          "These are your shoppers' clearest intent signals — and search is converting them efficiently.",
+        "th_query":       "Query",
+        "th_searches":    "Searches",
+        "th_ctr":         "Click-through Rate",
+        "th_direct_rev":  "Direct Revenue",
+        "note_ctr":       "A click-through rate above 100% means shoppers click multiple results per search "
+                          "session — a strong engagement signal for high-intent queries.",
+        "h2_noresult":    "No-result searches",
+        "lead_noresult":  "Queries from the top 50 that returned zero results — direct evidence of demand "
+                          "the site can't satisfy. These are the easiest revenue wins.",
+        "th_nr_query":    "No-result Query",
+        "th_action":      "Suggested Action",
+        "th_priority":    "Priority",
+        "nr_actions":     ["Add synonym or product category", "Check stock / add product",
+                           "Add product or redirect", "Add product", "Fix page link or synonym"],
+        "nr_action_other": "Review",
+        "nr_priorities":  ["High", "High", "Medium", "Medium", "Low"],
+        "nr_priority_other": "Low",
+        # recommendations
+        "sec_recoms":       "Recommendations",
+        "h1_recoms":        "Boxes that\nsell",
+        "lead_recoms":      "Hello Retail Recommendations place personalised product boxes across the shop — "
+                            "front page, category, product and cart pages. Over the period the live boxes were shown "
+                            "<b>{views} times</b>, drew <b>{clicks} clicks</b> and drove <b>{rev}</b> in attributed revenue.",
+        "kpi_impressions":  "Impressions",
+        "kpi_ctr":          "Click-through Rate",
+        "kpi_conv_rate":    "Conversion Rate",
+        "kpi_aov":          "Avg Order Size",
+        "recoms_note":      "{conv} conversions  ·  Only LIVE boxes report analytics; drafts serve nothing.{um}",
+        "recoms_unmanaged": "  ·  API-served recommendations added {rev} from {views} impressions (not included above)",
+        "h2_top_boxes":     "Top boxes by revenue",
+        "th_box":           "Box",
+        "th_placement":     "Placement",
+        "th_impressions":   "Impressions",
+        "th_clicks":        "Clicks",
+        "th_ctr_short":     "CTR",
+        "th_conv_rate":     "Conv. Rate",
+        "th_revenue":       "Revenue",
+        "note_boxes":       "Conversion rate is conversions per click. A box on the product page is shown on every "
+                            "product view, so its impressions dwarf a front-page or cart box — compare boxes on CTR "
+                            "and conversion rate, not on impressions.",
+        "callout_best_box_title": "Your top-earning box",
+        "callout_best_box": "<b>{name}</b> {place} drove {rev} — {share} of all recommendation revenue — "
+                            "at a {ctr} click-through rate and {cr} conversion rate.",
+        "callout_weak_title": "Most under-clicked placement",
+        "callout_weak":     "<b>{name}</b> {place} was shown {views} times but clicked on {ctr} of them — under half "
+                            "the site average of {avg}. Review its position on the page, its design and its "
+                            "recommendation strategy; a box this visible should earn more than {rev}.",
+        # placement `type` from the API → (table label, "on the …" phrase for prose)
+        "placements": {
+            "Product page":  ("Product page",  "on the product page"),
+            "Category page": ("Category page", "on the category page"),
+            "Front page":    ("Front page",    "on the front page"),
+            "Cart page":     ("Cart page",     "on the cart page"),
+            "404 page":      ("404 page",      "on the 404 page"),
+            "Other":         ("Other",         "in its placement"),
+        },
+        "placement_other": "on the {raw}",
+        # product agents
+        "sec_pa":           "Product Agents",
+        "h1_pa":            "Klaviyo channel\nperformance",
+        "lead_pa":          "Automated email flows powered by Hello Retail Product Agents, delivering "
+                            "<b>{msgs} messages</b> through the active Klaviyo channel and generating "
+                            "<b>{rev}</b> in the period.",
+        "kpi_msgs":         "Messages Sent",
+        "kpi_open":         "Open Rate",
+        "kpi_click":        "Click Rate",
+        "kpi_conversions":  "Conversions",
+        "kpi_total_rev":    "Total Revenue",
+        "pa_note":          "Revenue per message: {rpm}  ·  Unsubscribe rate: {u}",
+        "h2_pa_agents":     "Performance by agent",
+        "th_agent":         "Agent",
+        "th_messages":      "Messages",
+        "th_open":          "Open Rate",
+        "th_click":         "Click Rate",
+        "th_rev":           "Revenue",
+        "th_rpm":           "Rev / Msg",
+        "callout_best_agent_title": "Highest revenue-per-message agent",
+        "callout_best_agent": "<b>{name}</b> generates {rpm} per message sent — the most efficient agent in the "
+                              "channel. Consider expanding its audience or send frequency.",
+        "callout_open_title": "Open rate has room to grow",
+        "callout_open":     "At {rate} overall, a subject line A/B test on {name} could meaningfully lift reach and revenue.",
+        # pages
+        "sec_pages":        "Pages",
+        "h1_pages":         "Category pages\nthat sell",
+        "lead_pages":       "Hello Retail Pages replaces the shop's static category and brand listings with "
+                            "personalised, merchandised pages. Over the period they drew <b>{views} views</b> "
+                            "and drove <b>{rev}</b> in attributed revenue.",
+        "kpi_pages_rev":    "Pages Revenue (30D)",
+        "kpi_page_views":   "Page Views",
+        "pages_note":       "Click-through rate {ctr}  ·  {conv} conversions  ·  revenue <b>{word} {pct}</b> "
+                            "vs the prior period. Only LIVE pages report analytics.",
+        "h2_top_pages":     "Top pages by revenue",
+        "th_page":          "Page",
+        "th_views":         "Views",
+        "th_conversions":   "Conversions",
+        "h2_top_urls":      "Top URLs by revenue",
+        "lead_urls":        "One page can serve many URLs — these are the actual category and brand URLs "
+                            "driving Pages revenue.",
+        "th_url":           "URL",
+        "callout_best_page_title": "Your best-performing page",
+        "callout_best_page": "<b>{name}</b> drove {rev} at a {cr} conversion rate. Use its layout and "
+                             "merchandising as the template for weaker category pages.",
+        # next steps
+        "sec_steps":        "Recommended Next Steps",
+        "h1_steps":         "Five moves,\nbiggest first",
+    },
+    "da": {
+        "report_type":     "Analyserapport",
+        "cover_title":     "Din\nanalyse-\nrapport",
+        "cover_sub":       "Søgning, anbefalinger, kategorisider & Product Agents\n"
+                           "— og den efterspørgsel, du endnu ikke fanger",
+        "cover_prepared":  "Udarbejdet til <b>{site}</b>  ·  {cur}",
+        "cover_period":    "Periode: <b>{p}</b> mod <b>{cp}</b>",
+        "cover_generated": "Genereret <b>{today}</b>",
+        "footer_sources":  "Udarbejdet af Hello Retail · Customer Success. Tal fra Hello Retail Search-, "
+                           "Recommendations-, Pages- og Product Agent-analytics for {site}, {p} mod {cp}. "
+                           "Søgeomsætning er tilskrevet søgning (direkte + indirekte); anbefalingsomsætning er "
+                           "tilskrevet køb efter klik på en LIVE anbefalingsboks; Pages-omsætning er tilskrevet "
+                           "LIVE Hello Retail-sider; Product Agent-omsætning er tilskrevet via Klaviyos "
+                           "konverteringsmetrik.",
+        "up": "steget", "down": "faldet",
+        "sec_summary":        "Sammenfatning",
+        "h1_summary":         "Søgning er din\nmest købsklare kanal",
+        "lead_summary":       "Søgning på {site} har skabt <b>{rev}</b> i tilskrevet omsætning de seneste 30 dage.{recoms} "
+                              "Denne rapport viser, hvad kunderne søgte efter, hvad der virker, og hvor søgninger "
+                              "uden resultater peger på hurtige gevinster.",
+        "lead_summary_recoms": " Anbefalinger bidrog med yderligere <b>{rev}</b> fordelt på {n} aktive bokse.",
+        "kpi_search_rev":     "Søgeassisteret omsætning (30 dage)",
+        "kpi_recoms_rev":     "Anbefalingsomsætning (30 dage)",
+        "kpi_searches":       "Søgninger i alt",
+        "kpi_clicks":         "Klik på resultater",
+        "kpi_top_query":      'Topsøgning · "{q}"',
+        "summary_note":       "Søgeassisteret omsætning = direkte ({d}) + indirekte ({i}). "
+                              "Volumen er <b>{word} {pct}</b> i forhold til forrige periode.",
+        "h2_standouts":       "Det, der springer i øjnene",
+        "sec_top":        "Topsøgninger",
+        "h1_top":         "Det, der konverterer",
+        "lead_top":       "De mest søgte reelle søgeord de seneste 30 dage, og hvor godt de engagerer. "
+                          "Det er dine kunders tydeligste købssignaler — og søgningen konverterer dem effektivt.",
+        "th_query":       "Søgeord",
+        "th_searches":    "Søgninger",
+        "th_ctr":         "Klikrate",
+        "th_direct_rev":  "Direkte omsætning",
+        "note_ctr":       "En klikrate over 100 % betyder, at kunderne klikker på flere resultater pr. søgning "
+                          "— et stærkt engagementssignal for købsklare søgeord.",
+        "h2_noresult":    "Søgninger uden resultater",
+        "lead_noresult":  "Søgeord fra top 50, der gav nul resultater — direkte bevis på efterspørgsel, som "
+                          "butikken ikke kan opfylde. Det er de nemmeste omsætningsgevinster.",
+        "th_nr_query":    "Søgeord uden resultat",
+        "th_action":      "Foreslået handling",
+        "th_priority":    "Prioritet",
+        "nr_actions":     ["Tilføj synonym eller kategori", "Tjek lager / tilføj produkt",
+                           "Tilføj produkt eller redirect", "Tilføj produkt", "Ret sidelink eller synonym"],
+        "nr_action_other": "Gennemgå",
+        "nr_priorities":  ["Høj", "Høj", "Mellem", "Mellem", "Lav"],
+        "nr_priority_other": "Lav",
+        "sec_recoms":       "Anbefalinger",
+        "h1_recoms":        "Bokse,\nder sælger",
+        "lead_recoms":      "Hello Retail Recommendations placerer personaliserede produktbokse på tværs af butikken "
+                            "— forside, kategori-, produkt- og kurvsider. I perioden blev de aktive bokse vist "
+                            "<b>{views} gange</b>, fik <b>{clicks} klik</b> og skabte <b>{rev}</b> i tilskrevet omsætning.",
+        "kpi_impressions":  "Visninger",
+        "kpi_ctr":          "Klikrate",
+        "kpi_conv_rate":    "Konverteringsrate",
+        "kpi_aov":          "Gns. ordrestørrelse",
+        "recoms_note":      "{conv} konverteringer  ·  Kun LIVE-bokse rapporterer analytics; kladder vises ikke.{um}",
+        "recoms_unmanaged": "  ·  API-leverede anbefalinger bidrog med {rev} fra {views} visninger (ikke medregnet ovenfor)",
+        "h2_top_boxes":     "Bokse med størst omsætning",
+        "th_box":           "Boks",
+        "th_placement":     "Placering",
+        "th_impressions":   "Visninger",
+        "th_clicks":        "Klik",
+        "th_ctr_short":     "Klikrate",
+        "th_conv_rate":     "Konv.rate",
+        "th_revenue":       "Omsætning",
+        "note_boxes":       "Konverteringsrate er konverteringer pr. klik. En boks på produktsiden vises ved hver "
+                            "produktvisning, så dens visninger overskygger en forside- eller kurvboks — sammenlign "
+                            "bokse på klikrate og konverteringsrate, ikke på visninger.",
+        "callout_best_box_title": "Din mest indtjenende boks",
+        "callout_best_box": "<b>{name}</b> {place} skabte {rev} — {share} af al anbefalingsomsætning — "
+                            "med en klikrate på {ctr} og en konverteringsrate på {cr}.",
+        "callout_weak_title": "Mest overset placering",
+        "callout_weak":     "<b>{name}</b> {place} blev vist {views} gange, men fik kun klik i {ctr} af tilfældene — "
+                            "under halvdelen af gennemsnittet på {avg}. Gennemgå boksens placering på siden, dens "
+                            "design og dens anbefalingsstrategi; en boks så synlig bør tjene mere end {rev}.",
+        "placements": {
+            "Product page":  ("Produktside",   "på produktsiden"),
+            "Category page": ("Kategoriside",  "på kategorisiden"),
+            "Front page":    ("Forside",       "på forsiden"),
+            "Cart page":     ("Kurvside",      "på kurvsiden"),
+            "404 page":      ("404-side",      "på 404-siden"),
+            "Other":         ("Andet",         "i sin placering"),
+        },
+        "placement_other": "på {raw}",
+        "sec_pa":           "Product Agents",
+        "h1_pa":            "Klaviyo-kanalens\nresultater",
+        "lead_pa":          "Automatiserede e-mailflows drevet af Hello Retail Product Agents, som har leveret "
+                            "<b>{msgs} beskeder</b> gennem den aktive Klaviyo-kanal og skabt <b>{rev}</b> i perioden.",
+        "kpi_msgs":         "Sendte beskeder",
+        "kpi_open":         "Åbningsrate",
+        "kpi_click":        "Klikrate",
+        "kpi_conversions":  "Konverteringer",
+        "kpi_total_rev":    "Samlet omsætning",
+        "pa_note":          "Omsætning pr. besked: {rpm}  ·  Afmeldingsrate: {u}",
+        "h2_pa_agents":     "Resultater pr. agent",
+        "th_agent":         "Agent",
+        "th_messages":      "Beskeder",
+        "th_open":          "Åbningsrate",
+        "th_click":         "Klikrate",
+        "th_rev":           "Omsætning",
+        "th_rpm":           "Oms. / besked",
+        "callout_best_agent_title": "Agenten med højest omsætning pr. besked",
+        "callout_best_agent": "<b>{name}</b> skaber {rpm} pr. sendt besked — kanalens mest effektive agent. "
+                              "Overvej at udvide målgruppen eller sendefrekvensen.",
+        "callout_open_title": "Åbningsraten kan løftes",
+        "callout_open":     "Med {rate} samlet kan en A/B-test af emnelinjer på {name} løfte både rækkevidde og omsætning mærkbart.",
+        "sec_pages":        "Pages",
+        "h1_pages":         "Kategorisider,\nder sælger",
+        "lead_pages":       "Hello Retail Pages erstatter butikkens statiske kategori- og brandsider med "
+                            "personaliserede, merchandisede sider. I perioden fik de <b>{views} visninger</b> "
+                            "og skabte <b>{rev}</b> i tilskrevet omsætning.",
+        "kpi_pages_rev":    "Pages-omsætning (30 dage)",
+        "kpi_page_views":   "Sidevisninger",
+        "pages_note":       "Klikrate {ctr}  ·  {conv} konverteringer  ·  omsætningen er <b>{word} {pct}</b> "
+                            "i forhold til forrige periode. Kun LIVE-sider rapporterer analytics.",
+        "h2_top_pages":     "Sider med størst omsætning",
+        "th_page":          "Side",
+        "th_views":         "Visninger",
+        "th_conversions":   "Konverteringer",
+        "h2_top_urls":      "URL'er med størst omsætning",
+        "lead_urls":        "Én side kan betjene mange URL'er — her er de faktiske kategori- og brand-URL'er, "
+                            "der driver Pages-omsætningen.",
+        "th_url":           "URL",
+        "callout_best_page_title": "Din bedst præsterende side",
+        "callout_best_page": "<b>{name}</b> skabte {rev} med en konverteringsrate på {cr}. Brug dens layout og "
+                             "merchandising som skabelon for svagere kategorisider.",
+        "sec_steps":        "Anbefalede næste skridt",
+        "h1_steps":         "Fem tiltag,\nstørst først",
+    },
+}
+
+if LANG not in STRINGS:
+    raise SystemExit(f"LANG={LANG!r} is not supported — add it to STRINGS and LOCALES, "
+                     f"or use one of: {', '.join(STRINGS)}")
+T = {**STRINGS["en"], **STRINGS[LANG]}          # per-key fallback to English
+L = {**LOCALES["en"], **LOCALES.get(LANG, {})}
+
+_d    = date.today()
+TODAY = L["date"].format(d=_d.day, month=L["months"][_d.month - 1], y=_d.year)
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
+def fmt_dec(v, nd):
+    """Locale-aware number with nd decimals: 1234.5 → '1,234.5' (en) / '1.234,5' (da)."""
+    s = f"{v:,.{nd}f}"
+    return s.replace(",", "\x00").replace(".", L["decimal"]).replace("\x00", L["thousands"])
+
 def fmt_num(n):
-    return f"{int(round(n)):,}".replace(",", ".")
+    return fmt_dec(int(round(n)), 0)
 
 def fmt_pct(v):
-    return f"{v*100:.1f}%"
+    """Decimal ratio → percentage string: 0.622 → '62.2%' (en) / '62,2 %' (da)."""
+    return L["pct"].format(v=fmt_dec(v * 100, 1))
 
 def fmt_rev(v):
-    return f"{CURRENCY} {fmt_num(v)}"
+    return L["money"].format(cur=CURRENCY, num=fmt_num(v))
 
-def fmt_rpm(v):
-    return f"{v:.2f}".replace(".", ",")
+def fmt_money2(v):
+    """Money with two decimals — revenue per message and the like."""
+    return L["money"].format(cur=CURRENCY, num=fmt_dec(v, 2))
+
+def place_label(raw):
+    return T["placements"].get(raw, (raw, None))[0]
+
+def place_phrase(raw):
+    phrase = T["placements"].get(raw, (None, None))[1]
+    return phrase if phrase else T["placement_other"].format(raw=raw.lower())
 
 # ── Styles ────────────────────────────────────────────────────────────────────
 def make_styles():
@@ -298,7 +626,7 @@ def make_styles():
 
 # ── Page decorator ────────────────────────────────────────────────────────────
 class PageDec:
-    REPORT_TYPE = "Analytics Review"
+    REPORT_TYPE = T["report_type"]
 
     def __call__(self, c: canvas.Canvas, doc):
         c.saveState()
@@ -487,15 +815,13 @@ def build_report(output_path):
 
     # PAGE 1 — COVER
     story.append(Spacer(1, 52*mm))
-    story.append(Paragraph("Customer\nAnalytics\nReview", styles["cover_title"]))
+    story.append(Paragraph(T["cover_title"], styles["cover_title"]))
     story.append(Spacer(1, 4*mm))
-    story.append(Paragraph(
-        "On-site search, Recommendations, category Pages & Product Agent results\n"
-        "— plus the demand you're not yet capturing", styles["cover_sub"]))
+    story.append(Paragraph(T["cover_sub"], styles["cover_sub"]))
     story.append(Spacer(1, 14*mm))
-    story.append(Paragraph(f"Prepared for <b>{WEBSITE}</b>  ·  {CURRENCY}", styles["cover_meta"]))
-    story.append(Paragraph(f"Period: <b>{PERIOD}</b> vs <b>{CMP_PERIOD}</b>", styles["cover_meta"]))
-    story.append(Paragraph(f"Generated <b>{TODAY}</b>", styles["cover_meta"]))
+    story.append(Paragraph(T["cover_prepared"].format(site=WEBSITE, cur=CURRENCY), styles["cover_meta"]))
+    story.append(Paragraph(T["cover_period"].format(p=PERIOD, cp=CMP_PERIOD), styles["cover_meta"]))
+    story.append(Paragraph(T["cover_generated"].format(today=TODAY), styles["cover_meta"]))
     story.append(PageBreak())
 
     # PAGE 2 — EXECUTIVE SUMMARY
@@ -503,34 +829,31 @@ def build_report(output_path):
     chg = SEARCH["change_pct"]
     # Direction is carried by the WORD, never by hue (references/branding.md), and
     # never by an arrow glyph — Poppins ships no ▲/▼/↑/↓, so those drop silently.
-    chg_word = "down" if chg < 0 else "up"
+    chg_word = T["down"] if chg < 0 else T["up"]
 
     show_recoms = HAS_RECOMS and RECOM_BOXES
-    recoms_lead = (f" Recommendations added a further <b>{fmt_rev(RECOMS['revenue'])}</b> "
-                   f"across {len(RECOM_BOXES)} live boxes." if show_recoms else "")
-    story += section_block(next_sec(), "Executive Summary", "Search is your\nhighest-intent channel", styles,
-        lead_text=(f"Search on {WEBSITE} drove <b>{CURRENCY} {fmt_num(total_rev)}</b> in attributed revenue "
-                   f"over the last 30 days.{recoms_lead} This review shows what shoppers searched for, "
-                   f"what's working, and where dead-end searches point to quick wins."))
+    recoms_lead = (T["lead_summary_recoms"].format(rev=fmt_rev(RECOMS["revenue"]), n=len(RECOM_BOXES))
+                   if show_recoms else "")
+    story += section_block(next_sec(), T["sec_summary"], T["h1_summary"], styles,
+        lead_text=T["lead_summary"].format(site=WEBSITE, rev=fmt_rev(total_rev), recoms=recoms_lead))
     story.append(Spacer(1, 4*mm))
     summary_kpis = [
-        (fmt_num(total_rev),          CURRENCY, "Search-Assisted Revenue (30D)"),
-        (fmt_num(SEARCH["searches"]), "",       "Total Searches"),
-        (fmt_num(SEARCH["clicks"]),   "",       "Result Clicks"),
-        (fmt_num(TOP_SEARCHES[0][1]), "",       f'Top Query · "{TOP_SEARCHES[0][0].upper()}"'),
+        (fmt_rev(total_rev),          "", T["kpi_search_rev"]),
+        (fmt_num(SEARCH["searches"]), "", T["kpi_searches"]),
+        (fmt_num(SEARCH["clicks"]),   "", T["kpi_clicks"]),
+        (fmt_num(TOP_SEARCHES[0][1]), "", T["kpi_top_query"].format(q=TOP_SEARCHES[0][0].upper())),
     ]
     if show_recoms:
-        summary_kpis.insert(1, (fmt_num(RECOMS["revenue"]), CURRENCY, "Recommendations Revenue (30D)"))
+        summary_kpis.insert(1, (fmt_rev(RECOMS["revenue"]), "", T["kpi_recoms_rev"]))
     story.append(kpi_row(summary_kpis, styles))
     story.append(Spacer(1, 2*mm))
     story.append(Paragraph(
-        f"Search-assisted revenue = direct ({fmt_rev(SEARCH['direct_revenue'])}) "
-        f"+ indirect ({fmt_rev(SEARCH['indirect_revenue'])}). "
-        f"Volume is <b>{chg_word} {abs(chg):.1f}%</b> vs the prior period.",
+        T["summary_note"].format(d=fmt_rev(SEARCH["direct_revenue"]), i=fmt_rev(SEARCH["indirect_revenue"]),
+                                 word=chg_word, pct=fmt_pct(abs(chg) / 100)),
         styles["small"]))
     story.append(Spacer(1, 6*mm))
 
-    story.append(Paragraph("What stands out", styles["h2"]))
+    story.append(Paragraph(T["h2_standouts"], styles["h2"]))
     story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
     for bold_part, rest in STANDOUTS:
         dot_sz = 8
@@ -548,88 +871,74 @@ def build_report(output_path):
     story.append(PageBreak())
 
     # PAGE 3 — TOP SEARCHES
-    story += section_block(next_sec(), "Top Searches", "What converts", styles,
-        lead_text=("Highest-volume genuine queries in the last 30 days and how well they engage. "
-                   "These are your shoppers' clearest intent signals — and search is converting them efficiently."))
+    story += section_block(next_sec(), T["sec_top"], T["h1_top"], styles, lead_text=T["lead_top"])
     story.append(Spacer(1, 4*mm))
-    ts_rows = [[q, fmt_num(s), fmt_pct(c) if c <= 1 else f"{c*100:.1f}%", fmt_rev(r)]
-               for q, s, c, r in TOP_SEARCHES]
+    ts_rows = [[q, fmt_num(s), fmt_pct(c), fmt_rev(r)] for q, s, c, r in TOP_SEARCHES]
     story.append(data_table(
-        ["Query", "Searches", "Click-through Rate", "Direct Revenue"],
+        [T["th_query"], T["th_searches"], T["th_ctr"], T["th_direct_rev"]],
         ts_rows, col_widths=[0.35, 0.20, 0.22, 0.23], right_cols=[1, 2, 3]))
     story.append(Spacer(1, 2*mm))
-    story.append(Paragraph(
-        "CTR > 1.0 means shoppers click multiple results per search session — "
-        "a strong engagement signal for high-intent queries.", styles["small"]))
+    story.append(Paragraph(T["note_ctr"], styles["small"]))
     story.append(Spacer(1, 6*mm))
 
     if NO_RESULT:
-        story.append(Paragraph("No-result searches", styles["h2"]))
+        story.append(Paragraph(T["h2_noresult"], styles["h2"]))
         story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
-        story.append(Paragraph(
-            "Queries from the top 50 that returned zero results — direct evidence of demand "
-            "the site can't satisfy. These are the easiest revenue wins.", styles["lead"]))
+        story.append(Paragraph(T["lead_noresult"], styles["lead"]))
         story.append(Spacer(1, 3*mm))
-        action_texts = ["Add synonym or product category", "Check stock / add product",
-                        "Add product or redirect", "Add product", "Fix page link or synonym"]
-        priorities   = ["High", "High", "Medium", "Medium", "Low"]
+        action_texts = T["nr_actions"]
+        priorities   = T["nr_priorities"]
         nr_rows = []
         for i, row in enumerate(NO_RESULT):
             q, cnt = row[0], row[1]
-            action = row[2] if len(row) > 2 else (action_texts[i] if i < len(action_texts) else "Review")
-            prio   = row[3] if len(row) > 3 else (priorities[i]   if i < len(priorities)   else "Low")
+            action = row[2] if len(row) > 2 else (action_texts[i] if i < len(action_texts) else T["nr_action_other"])
+            prio   = row[3] if len(row) > 3 else (priorities[i]   if i < len(priorities)   else T["nr_priority_other"])
             nr_rows.append([q, fmt_num(cnt), action, prio])
         story.append(data_table(
-            ["No-result Query", "Searches", "Suggested Action", "Priority"],
+            [T["th_nr_query"], T["th_searches"], T["th_action"], T["th_priority"]],
             nr_rows, col_widths=[0.25, 0.15, 0.40, 0.20], right_cols=[1]))
     story.append(PageBreak())
 
     # PAGE — RECOMMENDATIONS (skipped if HAS_RECOMS is False)
     if show_recoms:
-        story += section_block(next_sec(), "Recommendations", "Boxes that\nsell", styles,
-            lead_text=(f"Hello Retail Recommendations place personalised product boxes across the shop — "
-                       f"front page, category, product and cart pages. Over the period the live boxes were shown "
-                       f"<b>{fmt_num(RECOMS['views'])} times</b>, drew <b>{fmt_num(RECOMS['clicks'])} clicks</b> "
-                       f"and drove <b>{fmt_rev(RECOMS['revenue'])}</b> in attributed revenue."))
+        story += section_block(next_sec(), T["sec_recoms"], T["h1_recoms"], styles,
+            lead_text=T["lead_recoms"].format(views=fmt_num(RECOMS["views"]), clicks=fmt_num(RECOMS["clicks"]),
+                                              rev=fmt_rev(RECOMS["revenue"])))
         story.append(Spacer(1, 4*mm))
         story.append(kpi_row([
-            (fmt_rev(RECOMS["revenue"]),         "", "Recommendations Revenue (30D)"),
-            (fmt_num(RECOMS["views"]),           "", "Impressions"),
-            (fmt_pct(RECOMS["ctr"]),             "", "Click-through Rate"),
-            (fmt_pct(RECOMS["conversion_rate"]), "", "Conversion Rate"),
-            (fmt_rev(RECOMS["avg_order_size"]),  "", "Avg Order Size"),
+            (fmt_rev(RECOMS["revenue"]),         "", T["kpi_recoms_rev"]),
+            (fmt_num(RECOMS["views"]),           "", T["kpi_impressions"]),
+            (fmt_pct(RECOMS["ctr"]),             "", T["kpi_ctr"]),
+            (fmt_pct(RECOMS["conversion_rate"]), "", T["kpi_conv_rate"]),
+            (fmt_rev(RECOMS["avg_order_size"]),  "", T["kpi_aov"]),
         ], styles))
         story.append(Spacer(1, 2*mm))
         unmanaged_note = ""
         if RECOMS_UNMANAGED:
             um_views, um_clicks, um_conv, um_rev = RECOMS_UNMANAGED
-            unmanaged_note = (f"  ·  API-served recommendations added {fmt_rev(um_rev)} "
-                              f"from {fmt_num(um_views)} impressions (not included above)")
+            unmanaged_note = T["recoms_unmanaged"].format(rev=fmt_rev(um_rev), views=fmt_num(um_views))
         story.append(Paragraph(
-            f"{fmt_num(RECOMS['conversions'])} conversions  ·  "
-            f"Only LIVE boxes report analytics; drafts serve nothing.{unmanaged_note}", styles["small"]))
+            T["recoms_note"].format(conv=fmt_num(RECOMS["conversions"]), um=unmanaged_note), styles["small"]))
         story.append(Spacer(1, 6*mm))
 
-        story.append(Paragraph("Top boxes by revenue", styles["h2"]))
+        story.append(Paragraph(T["h2_top_boxes"], styles["h2"]))
         story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
         by_revenue = sorted(RECOM_BOXES, key=lambda b: b[5], reverse=True)[:10]
-        bx_rows = [[name, place, fmt_num(v), fmt_num(clk), fmt_pct(ctr), fmt_pct(cr), fmt_rev(rev)]
+        bx_rows = [[name, place_label(place), fmt_num(v), fmt_num(clk), fmt_pct(ctr), fmt_pct(cr), fmt_rev(rev)]
                    for name, place, v, clk, conv, rev, ctr, cr in by_revenue]
         story.append(data_table(
-            ["Box", "Placement", "Impressions", "Clicks", "CTR", "Conv. Rate", "Revenue"],
+            [T["th_box"], T["th_placement"], T["th_impressions"], T["th_clicks"],
+             T["th_ctr_short"], T["th_conv_rate"], T["th_revenue"]],
             bx_rows, col_widths=[0.28, 0.14, 0.13, 0.10, 0.09, 0.11, 0.15], right_cols=[2, 3, 4, 5, 6]))
         story.append(Spacer(1, 2*mm))
-        story.append(Paragraph(
-            "Conversion rate is conversions per click. A box on the product page is shown on every "
-            "product view, so its impressions dwarf a front-page or cart box — compare boxes on CTR "
-            "and conversion rate, not on impressions.", styles["small"]))
+        story.append(Paragraph(T["note_boxes"], styles["small"]))
         story.append(Spacer(1, 6*mm))
 
         best_bx = by_revenue[0]
-        story.append(callout("Your top-earning box",
-            f"<b>{best_bx[0]}</b> on the {best_bx[1].lower()} drove {fmt_rev(best_bx[5])} — "
-            f"{fmt_pct(best_bx[5] / RECOMS['revenue']) if RECOMS['revenue'] else '0.0%'} of all recommendation "
-            f"revenue — at a {fmt_pct(best_bx[6])} click-through rate and {fmt_pct(best_bx[7])} conversion rate.",
+        share = fmt_pct(best_bx[5] / RECOMS["revenue"]) if RECOMS["revenue"] else fmt_pct(0)
+        story.append(callout(T["callout_best_box_title"],
+            T["callout_best_box"].format(name=best_bx[0], place=place_phrase(best_bx[1]), rev=fmt_rev(best_bx[5]),
+                                         share=share, ctr=fmt_pct(best_bx[6]), cr=fmt_pct(best_bx[7])),
             styles))
         story.append(Spacer(1, 4*mm))
 
@@ -641,41 +950,38 @@ def build_report(output_path):
         if busy and RECOMS["ctr"]:
             weakest = min(busy, key=lambda b: b[6])
             if weakest[6] < 0.5 * RECOMS["ctr"]:
-                story.append(callout("Most under-clicked placement",
-                    f"<b>{weakest[0]}</b> on the {weakest[1].lower()} was shown {fmt_num(weakest[2])} times "
-                    f"but clicked on {fmt_pct(weakest[6])} of them — under half the site average of "
-                    f"{fmt_pct(RECOMS['ctr'])}. Review its position on the page, its design and its "
-                    f"recommendation strategy; a box this visible should earn more than {fmt_rev(weakest[5])}.",
+                story.append(callout(T["callout_weak_title"],
+                    T["callout_weak"].format(name=weakest[0], place=place_phrase(weakest[1]),
+                                             views=fmt_num(weakest[2]), ctr=fmt_pct(weakest[6]),
+                                             avg=fmt_pct(RECOMS["ctr"]), rev=fmt_rev(weakest[5])),
                     styles))
         story.append(PageBreak())
 
     # PAGE — PRODUCT AGENTS (skipped if HAS_PA is False)
     if HAS_PA and PA_AGENTS:
-        story += section_block(next_sec(), "Product Agents", "Klaviyo channel\nperformance", styles,
-            lead_text=(f"Automated email flows powered by Hello Retail Product Agents, "
-                       f"delivering <b>{fmt_num(PA['messages_sent'])} messages</b> through the active Klaviyo channel "
-                       f"and generating <b>{fmt_rev(PA['revenue'])}</b> in the period."))
+        story += section_block(next_sec(), T["sec_pa"], T["h1_pa"], styles,
+            lead_text=T["lead_pa"].format(msgs=fmt_num(PA["messages_sent"]), rev=fmt_rev(PA["revenue"])))
         story.append(Spacer(1, 4*mm))
         story.append(kpi_row([
-            (fmt_num(PA["messages_sent"]), "", "Messages Sent"),
-            (fmt_pct(PA["open_rate"]),     "", "Open Rate"),
-            (fmt_pct(PA["click_rate"]),    "", "Click Rate"),
-            (fmt_num(PA["conversions"]),   "", "Conversions"),
-            (fmt_rev(PA["revenue"]),       "", "Total Revenue"),
+            (fmt_num(PA["messages_sent"]), "", T["kpi_msgs"]),
+            (fmt_pct(PA["open_rate"]),     "", T["kpi_open"]),
+            (fmt_pct(PA["click_rate"]),    "", T["kpi_click"]),
+            (fmt_num(PA["conversions"]),   "", T["kpi_conversions"]),
+            (fmt_rev(PA["revenue"]),       "", T["kpi_total_rev"]),
         ], styles))
         story.append(Spacer(1, 2*mm))
         story.append(Paragraph(
-            f"Revenue per message: {CURRENCY} {fmt_rpm(PA['rev_per_message'])}  ·  "
-            f"Unsubscribe rate: {fmt_pct(PA['unsub_rate'])}", styles["small"]))
+            T["pa_note"].format(rpm=fmt_money2(PA["rev_per_message"]), u=fmt_pct(PA["unsub_rate"])),
+            styles["small"]))
         story.append(Spacer(1, 6*mm))
 
-        story.append(Paragraph("Performance by agent", styles["h2"]))
+        story.append(Paragraph(T["h2_pa_agents"], styles["h2"]))
         story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
         ag_rows = [[name, fmt_num(msgs), fmt_pct(open_r), fmt_pct(click_r),
-                    fmt_rev(rev), f"{CURRENCY} {fmt_rpm(rev/msgs if msgs else 0)}"]
+                    fmt_rev(rev), fmt_money2(rev/msgs if msgs else 0)]
                    for name, msgs, rev, convs, open_r, click_r in PA_AGENTS]
         story.append(data_table(
-            ["Agent", "Messages", "Open Rate", "Click Rate", "Revenue", "Rev / Msg"],
+            [T["th_agent"], T["th_messages"], T["th_open"], T["th_click"], T["th_rev"], T["th_rpm"]],
             ag_rows, col_widths=[0.30, 0.13, 0.12, 0.12, 0.20, 0.13], right_cols=[1, 2, 3, 4, 5]))
         story.append(Spacer(1, 6*mm))
 
@@ -685,72 +991,65 @@ def build_report(output_path):
         if sending:
             best = max(sending, key=lambda x: x[2] / x[1])
             best_rpm = best[2] / best[1]
-            story.append(callout("Highest revenue-per-message agent",
-                f"<b>{best[0]}</b> generates {CURRENCY} {fmt_rpm(best_rpm)} per message sent — "
-                f"the most efficient agent in the channel. Consider expanding its audience or send frequency.", styles))
+            story.append(callout(T["callout_best_agent_title"],
+                T["callout_best_agent"].format(name=best[0], rpm=fmt_money2(best_rpm)), styles))
             story.append(Spacer(1, 4*mm))
 
         if PA["open_rate"] < 0.35:
             lowest_open = min(PA_AGENTS, key=lambda x: x[4])
-            story.append(callout("Open rate has room to grow",
-                f"At {fmt_pct(PA['open_rate'])} overall, a subject line A/B test on "
-                f"{lowest_open[0]} could meaningfully lift reach and revenue.", styles))
+            story.append(callout(T["callout_open_title"],
+                T["callout_open"].format(rate=fmt_pct(PA["open_rate"]), name=lowest_open[0]), styles))
         story.append(PageBreak())
 
     # PAGE — PAGES PERFORMANCE (skipped if HAS_PAGES is False)
     if HAS_PAGES and TOP_PAGES:
-        story += section_block(next_sec(), "Pages", "Category pages\nthat sell", styles,
-            lead_text=(f"Hello Retail Pages replaces the shop's static category and brand listings "
-                       f"with personalised, merchandised pages. Over the period they drew "
-                       f"<b>{fmt_num(PAGES['views'])} views</b> and drove <b>{fmt_rev(PAGES['revenue'])}</b> "
-                       f"in attributed revenue."))
+        story += section_block(next_sec(), T["sec_pages"], T["h1_pages"], styles,
+            lead_text=T["lead_pages"].format(views=fmt_num(PAGES["views"]), rev=fmt_rev(PAGES["revenue"])))
         story.append(Spacer(1, 4*mm))
         story.append(kpi_row([
-            (fmt_rev(PAGES["revenue"]),           "", "Pages Revenue (30D)"),
-            (fmt_num(PAGES["views"]),             "", "Page Views"),
-            (fmt_pct(PAGES["conversion_rate"]),   "", "Conversion Rate"),
-            (fmt_rev(PAGES["avg_order_size"]),    "", "Avg Order Size"),
+            (fmt_rev(PAGES["revenue"]),           "", T["kpi_pages_rev"]),
+            (fmt_num(PAGES["views"]),             "", T["kpi_page_views"]),
+            (fmt_pct(PAGES["conversion_rate"]),   "", T["kpi_conv_rate"]),
+            (fmt_rev(PAGES["avg_order_size"]),    "", T["kpi_aov"]),
         ], styles))
         story.append(Spacer(1, 2*mm))
         pg_chg = PAGES["revenue_change"]
-        pg_word = "down" if pg_chg < 0 else "up"
+        pg_word = T["down"] if pg_chg < 0 else T["up"]
         story.append(Paragraph(
-            f"Click-through rate {fmt_pct(PAGES['ctr'])}  ·  {fmt_num(PAGES['conversions'])} conversions  ·  "
-            f"revenue <b>{pg_word} {abs(pg_chg):.1f}%</b> vs the prior period. "
-            f"Only LIVE pages report analytics.", styles["small"]))
+            T["pages_note"].format(ctr=fmt_pct(PAGES["ctr"]), conv=fmt_num(PAGES["conversions"]),
+                                   word=pg_word, pct=fmt_pct(abs(pg_chg) / 100)),
+            styles["small"]))
         story.append(Spacer(1, 6*mm))
 
-        story.append(Paragraph("Top pages by revenue", styles["h2"]))
+        story.append(Paragraph(T["h2_top_pages"], styles["h2"]))
         story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
         pg_rows = [[name, fmt_num(v), fmt_num(clk), fmt_num(conv), fmt_pct(cr), fmt_rev(rev)]
                    for name, v, clk, conv, rev, cr in TOP_PAGES]
         story.append(data_table(
-            ["Page", "Views", "Clicks", "Conversions", "Conv. Rate", "Revenue"],
+            [T["th_page"], T["th_views"], T["th_clicks"], T["th_conversions"], T["th_conv_rate"], T["th_revenue"]],
             pg_rows, col_widths=[0.34, 0.13, 0.13, 0.15, 0.12, 0.13], right_cols=[1, 2, 3, 4, 5]))
         story.append(Spacer(1, 6*mm))
 
         if TOP_URLS:
-            story.append(Paragraph("Top URLs by revenue", styles["h2"]))
+            story.append(Paragraph(T["h2_top_urls"], styles["h2"]))
             story.append(HRFlowable(width=10*mm, thickness=2, color=PINK, spaceAfter=5, spaceBefore=0, hAlign="LEFT"))
-            story.append(Paragraph(
-                "One page can serve many URLs — these are the actual category and brand "
-                "URLs driving Pages revenue.", styles["lead"]))
+            story.append(Paragraph(T["lead_urls"], styles["lead"]))
             story.append(Spacer(1, 3*mm))
             url_rows = [[u, fmt_num(v), fmt_num(conv), fmt_pct(cr), fmt_rev(rev)]
                         for u, v, conv, rev, cr in TOP_URLS]
             story.append(data_table(
-                ["URL", "Views", "Conversions", "Conv. Rate", "Revenue"],
+                [T["th_url"], T["th_views"], T["th_conversions"], T["th_conv_rate"], T["th_revenue"]],
                 url_rows, col_widths=[0.44, 0.12, 0.15, 0.13, 0.16], right_cols=[1, 2, 3, 4]))
             story.append(Spacer(1, 6*mm))
 
         best_pg = max(TOP_PAGES, key=lambda x: x[4])
-        story.append(callout("Your best-performing page",
-            f"<b>{best_pg[0]}</b> drove {fmt_rev(best_pg[4])} at a {fmt_pct(best_pg[5])} conversion rate. "
-            f"Use its layout and merchandising as the template for weaker category pages.", styles))
+        story.append(callout(T["callout_best_page_title"],
+            T["callout_best_page"].format(name=best_pg[0], rev=fmt_rev(best_pg[4]), cr=fmt_pct(best_pg[5])),
+            styles))
         story.append(PageBreak())
 
     # LAST PAGE — RECOMMENDED NEXT STEPS
-    story += section_block(next_sec(), "Recommended Next Steps", "Five moves,\nbiggest first", styles)
+    story += section_block(next_sec(), T["sec_steps"], T["h1_steps"], styles)
     story.append(Spacer(1, 4*mm))
 
     for i, (title, body_text) in enumerate(STEPS, 1):
@@ -770,14 +1069,7 @@ def build_report(output_path):
         story.append(Spacer(1, 4*mm))
 
     story.append(Spacer(1, 6*mm))
-    story.append(Paragraph(
-        f"Prepared by Hello Retail · Customer Success. "
-        f"Figures from Hello Retail Search, Recommendations, Pages and Product Agent Analytics for {WEBSITE}, "
-        f"{PERIOD} vs {CMP_PERIOD}. Search revenue is search-attributed (direct + indirect); "
-        f"Recommendations revenue is attributed to purchases following a click on a LIVE recommendation box; "
-        f"Pages revenue is attributed to LIVE Hello Retail pages; "
-        f"Product Agent revenue attributed via Klaviyo conversion metric.",
-        styles["small"]))
+    story.append(Paragraph(T["footer_sources"].format(site=WEBSITE, p=PERIOD, cp=CMP_PERIOD), styles["small"]))
 
     # hello retail badge — PINK circle, WHITE text
     story.append(Spacer(1, 8*mm))

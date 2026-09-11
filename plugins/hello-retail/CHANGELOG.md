@@ -9,6 +9,26 @@ structure to follow.
 
 ## Unreleased
 
+### Added
+
+- `customer-analytics-report` can write the report in Danish as well as English: say "report in
+  Danish" / "rapport på dansk" and every heading, KPI label, table header, callout and footer comes
+  out in Danish, with Danish number, currency and date conventions (`1.234.567`, `62,2 %`,
+  `1.234.567 DKK`, `11. september 2026`); the insights and next steps are written in Danish too.
+  English stays the default. Adding a further language is one translation table in the template.
+
+### Changed
+
+- `customer-analytics-report` formats English reports with English number conventions —
+  `1,234,567` and `DKK 1,234,567` instead of the European `1.234.567` it used before, and a
+  consistent decimal point (`1.66` per message, not `1,66`).
+
+### Fixed
+
+- `customer-analytics-report` passes the Pages revenue trend through unchanged: the connector
+  returns it in percent units, so a -10.6% period is no longer at risk of being reported as
+  "down 1057%".
+
 ## 1.6.0 — 2026-09-11
 
 ### Added

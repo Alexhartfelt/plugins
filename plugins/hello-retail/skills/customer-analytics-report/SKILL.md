@@ -1,6 +1,6 @@
 ---
 name: customer-analytics-report
-description: Generate a branded Hello Retail PDF analytics report for a customer covering Search performance, Recommendations performance, Pages performance, and Product Agent (Klaviyo) results, using live data from the Hello Retail MCP. Trigger when someone says "analytics report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics PDF", "search report for [customer]", "recommendations report for [customer]", or "make a report for [websiteUuid]".
+description: Generate a branded Hello Retail PDF analytics report for a customer covering Search performance, Recommendations performance, Pages performance, and Product Agent (Klaviyo) results, using live data from the Hello Retail MCP. Trigger when someone says "analytics report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics PDF", "search report for [customer]", "recommendations report for [customer]", or "make a report for [websiteUuid]" — also when a language is named: "report in Danish", "rapport på dansk", "dansk analyserapport", "report in [language]".
 ---
 
 # Customer Analytics Report — Hello Retail
@@ -11,11 +11,12 @@ Each feature section is optional and self-omits when the customer has no data fo
 
 ## Trigger phrases
 
-"analytics report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics PDF", "search report for [customer]", "recommendations report for [customer]", "make a report for [websiteUuid]"
+"analytics report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics PDF", "search report for [customer]", "recommendations report for [customer]", "make a report for [websiteUuid]", "report in Danish", "rapport på dansk", "report in [language]"
 
 ## Required inputs
 
 - **websiteUuid** — the customer's Hello Retail website UUID (ask if not provided)
+- **language** — optional, default English. Supported: `en` (English), `da` (Danish). The operator names it ("in Danish", "på dansk"); do not infer it from the website's `language` field — a Danish shop may want an English report for a foreign owner, and the operator decides. Another language is not a reason to stop: see Notes → Languages for how to add one.
 - **period** — date range, default last 30 days (compute `startDate` = today minus 30 days, `endDate` = today, formatted as ISO dates YYYY-MM-DD). The comparison period is the same length, ending the day before `startDate`: `CMP_START` … `CMP_END`.
 
 ---
@@ -97,9 +98,8 @@ pages_getAnalyticsOverview(websiteUuid, startDate, endDate,
 
 Extract site-wide: `views`, `uniqueViews`, `clicks`, `conversions`, `revenue`,
 `clickThroughRate` (decimal), `conversionRate` (decimal), `averageOrderSize`,
-`revenueChangePercent`. Sanity-check the unit of the change figure the first time you see it
-for a customer — the search overview's `changePercent` is in percent units (see 2b), and if
-this one looks off by a factor of 100, compute it from the two periods' `revenue` yourself.
+`revenueChangePercent` — **already in percent units** like the search overview's `changePercent`
+(`-10.6` means -10.6%). Pass it through as-is; do not multiply by 100.
 
 **Only LIVE pages produce analytics — drafts serve nothing.** If the overview comes back
 all-zero / empty (no LIVE Pages), or the call fails with `PAGES is not part of the agreement`,
@@ -182,6 +182,8 @@ about a specific box.
 
 Before writing the script, derive these two lists analytically from the fetched data. Do NOT copy the example-shop.com examples — write genuine insights based on this customer's actual numbers.
 
+Write them **in the report language**. The same goes for every other string you author in the DATA SECTION: the `PERIOD` strings, the shortened Product Agent names, the no-result actions and priorities. Quote search queries and box names exactly as the shop's customers and staff wrote them — those are data, not prose, and are never translated. Numbers inside your prose follow the language's conventions too (English `1,234,567` / `62.2%` / `DKK 1,234,567`; Danish `1.234.567` / `62,2 %` / `1.234.567 DKK`) so they match the tables the template renders.
+
 ### STANDOUTS — "What stands out" bullets (4 items)
 
 Generate 4 bullet insights from the actual data. Each is a tuple of `(bold_intro, detail_text)`. Derive from:
@@ -227,8 +229,9 @@ Then edit the copy, replacing every placeholder between the `DATA SECTION` and
 
 | Name | Fill from |
 |---|---|
+| `LANG` | the requested language code — `"en"` (default) or `"da"` |
 | `WEBSITE`, `CURRENCY` | `website_getInfo` (2a) |
-| `PERIOD`, `CMP_PERIOD` | the requested range, and the same-length range immediately before it |
+| `PERIOD`, `CMP_PERIOD` | the requested range, and the same-length range immediately before it, written in the report language — en `"11 Aug – 10 Sep 2026"`, da `"11. aug. – 10. sep. 2026"` |
 | `SEARCH` | `search_getAnalyticsOverview` (2b) — `change_pct` is `changePercent` as-is (already percent units) |
 | `TOP_SEARCHES` | `search_getTopSearches` (2c) |
 | `NO_RESULT` | `search_getTopSearchesWithoutResults` (2d), with the action and priority you decided per query |
@@ -237,8 +240,9 @@ Then edit the copy, replacing every placeholder between the `DATA SECTION` and
 | `HAS_RECOMS`, `RECOMS`, `RECOM_BOXES`, `RECOMS_UNMANAGED` | `recoms_getAnalyticsTotals` and `recoms_getAnalyticsGrouped` (2h) — `HAS_RECOMS = False` when the MANAGED totals are all-zero or Recommendations is not on the agreement |
 | `STANDOUTS`, `STEPS` | the insights derived in Step 3 |
 
-Nothing below the `END DATA` banner should change. Rates stay decimals (`0.64`, not `64`);
-`change_pct` and `revenue_change` are plain numbers (`-2.29`, `12.4`).
+Nothing below the `END DATA` banner should change — the translated labels live there and are
+selected by `LANG`. Rates stay decimals (`0.64`, not `64`); `change_pct` and `revenue_change` are
+plain numbers in percent units (`-2.29`, `12.4`), passed through from the API unchanged.
 
 ---
 
@@ -265,5 +269,6 @@ never paste customer figures into a commit, a PR or any file inside the repo.
 - **Fonts are cached**: Playfair Display and Poppins download from Google Fonts to `~/.hr_report_fonts` on first run (~5 seconds) and are reused after that. The first run needs internet; later runs do not.
 - **Branding is not a per-customer decision**: colours and fonts come from `references/branding.md` and are already applied. Never introduce a raw hex, never signal good/bad with colour — cerise is the only brand hue and direction is stated in words ("up 12.4%", "down 2.3%"), never by a colour shift and never by an arrow glyph, which Poppins would silently drop.
 - **Currency**: Use whatever currency the customer's website is set to — displayed throughout without conversion.
-- **Period strings**: Format as "DD Mon YYYY", e.g. "14 Jun – 14 Jul 2026". Comparison period is the same duration immediately before the main period.
+- **Period strings**: English "14 Jun – 14 Jul 2026"; Danish "14. jun. – 14. jul. 2026" (day with a full stop, lower-case abbreviated month with a full stop). Comparison period is the same duration immediately before the main period.
+- **Languages**: the template carries every fixed string — headings, KPI labels, table headers, callouts, footer — in a `STRINGS` table keyed by language, plus a `LOCALES` table with the number, currency and date conventions (English `1,234,567` · `62.2%` · `DKK 1,234,567` · `11 September 2026`; Danish `1.234.567` · `62,2 %` · `1.234.567 DKK` · `11. september 2026`). `LANG` selects both; a key missing from a language falls back to English, so a partial translation still renders. Placement names from the recommendations API arrive in English and are translated by the template — keep them as returned in `RECOM_BOXES`. **Adding a language** is a change to the template, not to a report: add a `LOCALES` entry and a `STRINGS` entry to `references/report_template.py`, render a report in the new language to check every string fits its KPI box and table column, and ship it in a PR with a CHANGELOG entry — never as a one-off edit inside `output/`.
 - **STANDOUTS and STEPS**: Derive analytically from the real data — never copy the placeholder examples. Write genuine insights based on what the numbers actually show for this customer.
