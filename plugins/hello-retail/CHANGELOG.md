@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.6.0 — 2026-09-11
+
 ### Added
 
 - `customer-handoff` is a new skill: it writes one living hand-off document per website under the
