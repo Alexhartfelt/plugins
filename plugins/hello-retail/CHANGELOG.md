@@ -9,6 +9,8 @@ structure to follow.
 
 ## Unreleased
 
+## 1.7.0 — 2026-09-14
+
 ### Added
 
 - `customer-analytics-report` writes the report in whatever language the operator asks for —
