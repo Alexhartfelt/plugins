@@ -1,18 +1,17 @@
 ---
 name: newsletter-qa
 description: >
-  QA of a Hello Retail email design before handoff — a Newsletter Content product tile (Liquid
-  rendered server-side into one JPEG per product) and/or a Triggered Email design (base shell plus the four
-  trigger flows). Use whenever someone says
-  "newsletter QA", "QA the newsletter tile", "QA the email tile", "QA the triggered email", "QA the
-  abandoned cart email", "review the email design", or gives a website-uuid and asks whether the
-  design is ready. Runs a CODE pass (diff against the shared default, markers, translation,
-  renderer or email-client compatibility, data binding, Liquid gotchas) and a light RENDERED pass
-  — newsletter tiles through newsletterContent_renderDesign, triggered emails through a bundled
-  local Liquid harness — then compares with the shop's category-page tile on a "similar, not
-  pixel-perfect" bar. Read-only: never writes a design; fixes go through newsletter-developer /
-  triggered-email-developer. Trigger even on just "newsletter" or "abandoned cart" with a uuid or
-  URL. Not for on-site Search, Recoms or Pages — those are search-qa, recom-qa, pages-qa.
+  QA of a Hello Retail email design before handoff — a Newsletter Content product tile (rendered
+  server-side into one JPEG per product) and/or a Triggered Email design (base shell plus the four
+  trigger flows). Use whenever someone says "newsletter QA", "QA the newsletter tile", "QA the email
+  tile", "QA the triggered email", "QA the abandoned cart email", "review the email design", or
+  gives a website-uuid and asks whether the design is ready. Runs a CODE pass (diff against the
+  shared default, markers, translation, renderer or email-client compatibility, data binding, Liquid
+  gotchas) and a light RENDERED pass, then compares with the shop's category-page tile on a
+  "similar, not pixel-perfect" bar. Read-only: never writes a design; fixes go through
+  newsletter-developer / triggered-email-developer. Trigger even on just "newsletter" or "abandoned
+  cart" with a uuid or URL. Not for on-site Search, Recoms or Pages — those are search-qa, recom-qa,
+  pages-qa.
 ---
 
 # Hello Retail Newsletter & Triggered Email — QA Skill

@@ -1,6 +1,13 @@
 ---
 name: customer-analytics-report
-description: Generate a branded Hello Retail PDF analytics report for a customer covering Search performance, Recommendations performance, Pages performance, and Product Agent (Klaviyo) results, using live data from the Hello Retail MCP. Trigger when someone says "analytics report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics PDF", "search report for [customer]", "recommendations report for [customer]", or "make a report for [websiteUuid]" — also when a language is named: "report in Danish", "rapport på dansk", "dansk analyserapport", "report in [language]".
+description: >-
+  Generate a branded Hello Retail PDF analytics report for a customer covering Search
+  performance, Recommendations performance, Pages performance, and Product Agent (Klaviyo)
+  results, using live data from the Hello Retail MCP. Trigger when someone says "analytics
+  report for [customer/websiteUuid]", "generate a report for [domain]", "customer analytics
+  PDF", "search report for [customer]", "recommendations report for [customer]", or "make a
+  report for [websiteUuid]" — also when a language is named: "report in Danish", "rapport på
+  dansk", "dansk analyserapport", "report in [language]".
 ---
 
 # Customer Analytics Report — Hello Retail

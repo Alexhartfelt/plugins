@@ -130,6 +130,11 @@ description: >                # under 1 024 characters; ≥ 30 characters       
 ---
 ```
 
+Write `description` as a `>` block rather than a plain value: an unquoted YAML scalar cannot
+contain a colon followed by a space, and one that does drops *every* frontmatter field at load
+time — the skill then loads nameless and never fires. `npm run check` parses the block and fails
+on that, as well as on the two limits marked `CI` above.
+
 The `description` is the trigger text the model matches on, not documentation. It has four moves:
 what it does, the literal phrases people type, a low-bar trigger so it fires on partial input,
 and the boundary against the neighbouring skill. A weak description is the number-one reason a

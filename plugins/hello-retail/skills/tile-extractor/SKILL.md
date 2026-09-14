@@ -1,19 +1,16 @@
 ---
 name: tile-extractor
 description: >
-  Extract a customer's live product tile and convert it into a production-ready Hello
-  Retail Liquid template + JavaScript for an onboarding. Visits the live category page via
-  the Playwright MCP (Claude in Chrome is the fallback when it isn't available), detects the
-  platform (Shopify, Magento Luma/Breeze/Hyvä, DanDomain, Lightspeed, WooCommerce, Shopware,
-  Starweb, BigCommerce, Wikinggruppen, Viskan, Centra, PrestaShop), surveys every tile variation
-  (sale, sold-out, badges, ratings, swatches, hover images) including a label-vocabulary sweep of
-  the shop's dedicated New / Sale / Offers / Bestseller pages, maps each element to the HR feed
-  with a parity table, and returns the Liquid tile body plus ATC / rating / slider JS — never
-  CSS — in a fixed RESPONSE FORMAT the shell skills parse. Use whenever someone wants to build or
-  convert a Hello Retail product tile, a ".hr-product" tile, a dynamic tile template, or to turn a
-  live storefront card or static HTML tile into HR Liquid. This skill produces the tile BODY that
-  search-developer, recom-developer and pages-developer drop into their shells; they start it as a
-  background subagent while they run their own intake.
+  Extract a customer's live product tile and convert it into a production-ready Hello Retail Liquid
+  template + JavaScript for an onboarding. Visits the live category page via the Playwright MCP
+  (Claude in Chrome is the fallback when it isn't available), detects the platform (Shopify,
+  Magento, WooCommerce, Shopware, DanDomain, Lightspeed, PrestaShop and other webshop platforms),
+  surveys every tile variation (sale, sold-out, badges, ratings, swatches, hover images), maps each
+  element to the HR feed with a parity table, and returns the Liquid tile body plus ATC / rating /
+  slider JS — never CSS. Use whenever someone wants to build or convert a Hello Retail product tile,
+  a ".hr-product" tile, a dynamic tile template, or to turn a live storefront card or static HTML
+  tile into HR Liquid. This skill produces the tile BODY that search-developer, recom-developer and
+  pages-developer drop into their shells.
 model: sonnet
 ---
 

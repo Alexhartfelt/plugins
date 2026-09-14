@@ -6,7 +6,8 @@
  * Two layers:
  *   1. Repo-level checks Claude Code's validator does not cover: every plugin dir is
  *      listed in the marketplace, plugin name == directory, semver version, every skill
- *      has a SKILL.md whose frontmatter name == directory, all JSON parses, and no
+ *      has a SKILL.md whose frontmatter parses as YAML and whose name == directory and
+ *      description is within the length the model matches on, all JSON parses, and no
  *      forbidden files (customer output, secrets, OS noise) are tracked by git.
  *   2. `claude plugin validate --strict` on the marketplace and on each plugin.
  *
@@ -16,6 +17,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { load as parseYaml } from "js-yaml";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const PLUGINS_DIR = join(ROOT, "plugins");
@@ -29,6 +31,8 @@ const rel = (p) => relative(ROOT, p) || ".";
 
 const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const SEMVER = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/;
+// A skill description longer than this is truncated, taking part of the trigger text with it.
+const DESCRIPTION_MAX = 1024;
 
 // Paths that must never be tracked. Matched against `git ls-files` output.
 const FORBIDDEN_TRACKED = [
@@ -62,26 +66,30 @@ function listDirs(dir) {
     .sort();
 }
 
-/** Minimal YAML frontmatter reader: top-level `key: value` and `key: >|` block scalars. */
+/**
+ * Read a SKILL.md's YAML frontmatter with a real parser.
+ *
+ * This used to be a hand-rolled line reader, and it was too forgiving: it accepted a
+ * `description:` plain scalar containing ": ", which YAML rejects outright. The skill shipped
+ * with every frontmatter field silently dropped at load time — no name, no trigger text — and
+ * this script stayed green. Parse the way the runtime does, and fail on whatever it rejects.
+ *
+ * Returns `{ fm }`, `{ error }` if the block is there but malformed, or null if there is none.
+ */
 function readFrontmatter(path) {
   const text = readFileSync(path, "utf8");
-  if (!text.startsWith("---")) return null;
-  const end = text.indexOf("\n---", 3);
-  if (end === -1) return null;
-  const lines = text.slice(3, end).split("\n");
-  const fm = {};
-  let key = null;
-  for (const line of lines) {
-    const m = /^([A-Za-z_][\w-]*):\s*(.*)$/.exec(line);
-    if (m) {
-      key = m[1];
-      const v = m[2].trim();
-      fm[key] = v === ">" || v === "|" || v === ">-" || v === "|-" ? "" : v.replace(/^["']|["']$/g, "");
-    } else if (key !== null && /^\s+\S/.test(line)) {
-      fm[key] = (fm[key] ? fm[key] + " " : "") + line.trim();
-    }
+  const m = /^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/.exec(text);
+  if (!m) return null;
+  let fm;
+  try {
+    fm = parseYaml(m[1]);
+  } catch (e) {
+    return { error: `YAML frontmatter failed to parse — ${e.message.split("\n")[0]}` };
   }
-  return fm;
+  if (fm === null || typeof fm !== "object" || Array.isArray(fm)) {
+    return { error: "YAML frontmatter is not a mapping of key: value" };
+  }
+  return { fm };
 }
 
 function walkFiles(dir, out = []) {
@@ -159,10 +167,19 @@ for (const name of pluginDirs) {
       fail(`${sWhere}: missing SKILL.md — Claude Code only discovers skills/<name>/SKILL.md, so this directory loads nothing`);
       continue;
     }
-    const fm = readFrontmatter(skillMd);
-    if (!fm) { fail(`${sWhere}/SKILL.md: missing YAML frontmatter (--- name/description ---)`); continue; }
+    const parsed = readFrontmatter(skillMd);
+    if (!parsed) { fail(`${sWhere}/SKILL.md: missing YAML frontmatter (--- name/description ---)`); continue; }
+    if (parsed.error) {
+      fail(`${sWhere}/SKILL.md: ${parsed.error} — at runtime the skill loads with empty metadata, so it is never triggered`);
+      continue;
+    }
+    const fm = parsed.fm;
     if (fm.name !== skill) fail(`${sWhere}/SKILL.md: frontmatter name "${fm.name ?? ""}" must equal directory "${skill}"`);
-    if (!fm.description || fm.description.length < 30) fail(`${sWhere}/SKILL.md: description is missing or too short — it is the trigger the model matches on`);
+    const description = typeof fm.description === "string" ? fm.description : "";
+    if (description.length < 30) fail(`${sWhere}/SKILL.md: description is missing or too short — it is the trigger the model matches on`);
+    else if (description.length > DESCRIPTION_MAX) {
+      fail(`${sWhere}/SKILL.md: description is ${description.length} characters, over the ${DESCRIPTION_MAX} limit — trim it, keeping the phrases users actually say and the "not this skill, that one" clauses`);
+    }
   }
 
   // any JSON the plugin carries must parse (hooks, .mcp.json, agents, …)

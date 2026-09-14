@@ -1,18 +1,16 @@
 ---
 name: customer-handoff
 description: >
-  Write or update the customer's living hand-off document (local output/handoffs/ for now, one
-  file per website): platform (Shopify, Magento 2, WooCommerce, Shopware…), theme, script/API, the
-  ClickUp card with project owner, developer, CSM and dates, the stage plan derived from the sold
-  features, onboarding performance for management (per-stage ledger, running snapshot, closing
-  figures), the configuration per feature from the hello-retail MCP, every unique case and how it
-  was solved, decisions, open items, and anonymised learnings for the knowledge base. Use when
-  someone says "hand-off document for [domain]", "handoff doc", "handover for [customer]",
-  "document this onboarding", "record what we did for [customer]", "close the onboarding", "final
-  handoff", or ends a build / QA / feed task with "and write the handoff". Trigger with only a
-  domain or website-uuid. Also runs automatically, in record mode, at the end of every developer,
-  feed and QA skill. Read-only towards ClickUp and the dashboard. Does NOT build or QA — that is
-  the *-developer and *-qa skills.
+  Write or update the customer's living hand-off document, one file per website: platform and theme,
+  the ClickUp card with project owner, developer, CSM and dates, the stage plan derived from the
+  sold features, onboarding performance for management, the configuration per feature from the
+  hello-retail MCP, every unique case and how it was solved, decisions, open items, and anonymised
+  learnings for the knowledge base. Use when someone says "hand-off document for [domain]", "handoff
+  doc", "handover for [customer]", "document this onboarding", "record what we did for [customer]",
+  "close the onboarding", "final handoff", or ends a build / QA / feed task with "and write the
+  handoff". Trigger with only a domain or website-uuid. Also runs automatically, in record mode, at
+  the end of every developer, feed and QA skill. Read-only towards ClickUp and the dashboard. Does
+  NOT build or QA — that is the *-developer and *-qa skills.
 ---
 
 # Customer hand-off document
