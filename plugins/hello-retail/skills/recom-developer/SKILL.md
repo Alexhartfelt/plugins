@@ -244,7 +244,7 @@ Then **wait for explicit approval** → push (Step 7) → remind the operator to
 ## References (read on demand)
 
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/foundation-rules.md` — **the foundation rule**: extend with higher specificity, never rewrite the base CSS/Liquid/JS; how to ask for approval when the foundation must change
-- `references/mcp-flow.md` — `recoms_getDesign`/`recoms_updateDesign`, design-key resolution, shared-design caution, payload-spill handling, REVIEW-draft governance, verify-after-push, `recoms_copyDesign` title rule, box placement (`recoms_updateBoxPlacement`, volatile-selector guidance)
+- `references/mcp-flow.md` — `recoms_getDesign`/`recoms_updateDesign`, design-key resolution, shared-design caution, payload-spill handling, REVIEW-draft governance, verify-after-push, `recoms_copyDesign` title rule, box placement (`recoms_updateBoxPlacement`, volatile-selector guidance, and the hide-on-filter/sort pattern for category recom boxes — two generic options, placement selector vs JS guard; **ask the operator which to use**)
 - `references/slider-structure.md` — the slider variant, edit scope (banner branch, slot, empty CUSTOM_STYLING_BLOCK), swiper init tuning, the `afterInit` hook, the `loop: true` clone delegation gotcha, box-shell parity (container width, headline, mobile arrows), and the theme-CSS-scoping exception
 - `references/add-to-cart-js.md` — platform inference + in-slider ATC JS wiring (Shopify / Magento / Shopware / Starweb)
 - `tile-extractor` skill — produces the `{{ TILE_BODY }}` (invoked in Step 3)

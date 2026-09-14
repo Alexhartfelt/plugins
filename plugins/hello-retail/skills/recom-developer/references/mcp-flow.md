@@ -44,6 +44,24 @@ A design renders nothing until its **box** attaches somewhere. Placement has thr
 - **Shopify section IDs are volatile.** IDs like `shopify-section-template--26550883189082__slideshow_gzQ4aj` regenerate their numeric middle on every theme publish (and can differ between sessions) — an exact-ID selector will match today and silently never match again. Anchor on the **stable suffix** instead, tag-qualified for uniqueness: `section[id$="__slideshow_gzQ4aj"]`. Verify it matches exactly one element (`document.querySelectorAll(...)` — nested inner elements often share the suffix, which is what the tag qualifier is for).
 - **Verify the placement live after setting it** — reload the target page (fresh cache-busting query param), confirm the box appears at the intended spot, and confirm the selector still matches after a hard reload. `REPLACE` on a theme element destroys that element; prefer `BEFORE`/`AFTER` when placing next to native content that should survive.
 
+## Hiding a category recom while a filter or sorting is active
+
+A recurring customer ask for **category recom boxes only** (never front-page / PDP / cart boxes): the recom must not show while a product filter and/or a non-default sorting is active on the category page. Every theme signals that state differently, so the first step is always to survey the live category page and identify the signals — typically an active-filter element that exists only in the filtered state (a filter-chip row, a "clear filters" control, a body/container class) and/or the sort control's selected state, plus whatever `location.search` params the theme uses. Prefer server-rendered signals over JS-rendered ones, and confirm each signal is present in the target state and absent otherwise.
+
+There are two ways to build it, and the choice is not yours: **ask the operator which option to use before implementing — placement selector or JS.**
+
+**Option A — placement selector (no design code).** Prefix the box's selector with a condition on the identified DOM signal, so that in the filtered/sorted state the selector matches nothing and helloretail.js never injects the box (no empty gap, nothing to clean up). The generic shape, with the theme's own signals substituted in:
+
+```
+body:not(:has(<active-filter signal>)):not(:has(<active-sort signal>)) #hr-recom-<key>
+```
+
+The engine resolves selectors with plain `document.querySelectorAll` (when `jquery_enabled` is false), so modern CSS like `:has()` / `:not()` works — needs ~2023+ browsers. Preconditions to verify on the live theme before choosing this: every filter/sort change must be a **full page load** (`NORMAL` selectorMode evaluates once per load — an AJAX-filtering theme needs Option B), and the signal must exist **before** HR evaluates placement. Server-rendered signals are race-free; JS-rendered signals are normally safe because HR inserts only after its own network round-trips — but confirm empirically that the engine reports the element unmatched in the filtered state.
+
+**Option B — JS guard in the design (`templateCode`).** At the top of the design's script, detect the filtered/sorted state and bail: hide the box's outer wrapper and skip the swiper init. The race-free signal when filtering navigates is `location.search` — treat **any** query param as "filtered" except a benign allowlist (the sort param if sorting shouldn't hide, paging, `utm_*`, click-tracking ids); a DOM signal works too if it exists by the time the template script runs. This option also works for AJAX-filtering themes (hook the filter events). Two costs Option A doesn't have: the box still registers a served impression (suppression is client-side), and it needs a **page-specific design** — if the box shares its design with other pages, `recoms_copyDesign` a dedicated one first; never put a page-specific guard in a shared design.
+
+Whichever option the operator picks, verify all three rendered states on a live category via the staff widget: unfiltered → box shows; filter applied → gone; sorting applied → gone — with no empty gap left behind. Remember the box only serves where its own strategy conditions pass (e.g. a minimum-product-count context variable), so verify on a category where the box actually renders.
+
 ## Reads aren't gated on state
 
 Read whatever design the operator names — LIVE, DRAFT, internal review — `recoms_getDesign` returns it regardless. Don't branch on state before reading; just read, then modify in place.
