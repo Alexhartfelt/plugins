@@ -1,4 +1,8 @@
 # Magento 2
+
+**Scope:** this page and everything in this folder is **Magento 2** (Luma, Breeze, Hyvä).
+On a Magento 1 shop see [magento-1.md](./magento-1.md) — none of it applies.
+
 **Magento 2** (now Adobe Commerce) is the most "batteries-included" install in the Hello Retail suite — the dedicated Magento extension automatically handles:
 
 - Product feed

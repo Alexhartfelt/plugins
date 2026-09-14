@@ -1,4 +1,7 @@
-# Add-to-Cart — Magento
+# Add-to-Cart — Magento 2
+
+**Applies to:** Magento 2 — Luma / Breeze (jQuery) and Hyvä (Alpine) variants are both below. Magento 1 is legacy and is not covered — see [../../platforms/ecommerce-platforms.md](../../platforms/ecommerce-platforms.md).
+
 How to wire HR's `.aw-buy-form` into Magento's cart system. Magento is the trickiest of the bunch — three things happen:
 
 1. Bind submit handler via `mage/mage`'s `catalogAddToCart`.

@@ -1,4 +1,6 @@
-# Magento — Add to cart
+# Magento 2 — Add to cart
+
+**Applies to:** Magento 2 on a jQuery frontend (Luma, Breeze). Hyvä ships no jQuery — its variant is in [../../cheat-sheets/add-to-cart/magento.md](../../cheat-sheets/add-to-cart/magento.md). Magento 1 is legacy and is not covered here — see [../ecommerce-platforms.md](../ecommerce-platforms.md).
 
 Platform-specific ATC binding for Hello Retail tiles on Magento. Magento needs `uenc` +
 `form_key` injected into the form at runtime, then jQuery's `catalogAddToCart` to bind the submit.

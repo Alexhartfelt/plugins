@@ -1,4 +1,7 @@
-# Recoms — Magento
+# Recoms — Magento 2
+
+**Applies to:** Magento 2, all frontends — these snippets key off Magento's body classes and product-list markup, not the theme. Magento 1 is legacy and is not covered — see [../../platforms/ecommerce-platforms.md](../../platforms/ecommerce-platforms.md).
+
 Magento-specific Recommendations snippets. These rely on Magento's body class conventions (`.catalog-category-view`, `.catalog-product-view`) and Magento's product-list markup.
 
 For platform-agnostic snippets see [general.md](./general.md).

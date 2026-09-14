@@ -9,6 +9,16 @@ structure to follow.
 
 ## Unreleased
 
+### Changed
+
+- `hello-retail-knowledge` now covers Magento swatches on **Hyvä (Alpine)**, not just Luma/Knockout:
+  detection for both frontends, which theme functions to rely on and which to reimplement from the
+  feed, and the four runtime traps that make Hyvä swatches render nothing at all. Asking "how do
+  swatches work on Magento" now gets the answer for the frontend the shop actually runs.
+- The wiki now says which Magento version a page is about. Every Magento page is titled `Magento 2`
+  and opens with the frontends it applies to (Luma, Breeze, Hyvä, or all three), so an answer about
+  a Magento 1 shop no longer arrives dressed as a Magento 2 one. Magento 1 has its own short page
+  marking it legacy and pointing at the installation guide.
 ### Added
 
 - `recom-developer` covers the recurring ask that a category recom must not show while a product

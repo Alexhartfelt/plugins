@@ -29,7 +29,7 @@ During the category-page fetch and tile survey, also collect candidate trigger e
 3. **Platform-specific shapes:**
    - Shopify Dawn: `predictive-search input[type='search']`, `details-modal input[type='search']`, `.search-modal__form input[type='search']`
    - Magento (Luma / Hyvä): `#search`, `input.search-text-input`, `.block-search input#search`
-   - Magento 1 / older Luma: `#search_mini_form input[type='search']`
+   - Magento 2 Luma (older builds) — the same id also exists on legacy Magento 1: `#search_mini_form input[type='search']`
    - WooCommerce / Storefront: `.widget_product_search input[type='search']`, `.site-search input.search-field`
 4. **Mobile-specific** (when the desktop input is hidden ≤ 992 px and a separate mobile drawer takes over):
    - `.mobile-nav input[type='search']`, `.mobile-menu input[type='search']`
