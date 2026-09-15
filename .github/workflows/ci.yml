@@ -46,6 +46,18 @@ jobs:
       - run: npm ci
       - run: npm run lint:md
 
+  lint-wiki:
+    name: Lint wiki
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # Provenance frontmatter, links, orphans and customer-identifiable data under
+      # plugins/*/docs/wiki. markdownlint skips the wiki on purpose; this is its gate.
+      - run: npm run lint:wiki
+
   shellcheck:
     name: ShellCheck
     runs-on: ubuntu-latest

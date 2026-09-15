@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Retail Media
 
 ## What it is
@@ -9,43 +14,36 @@ Often abbreviated as **RM** internally.
 ## Two RM products
 
 1. **Sponsored Products** — paid product placements that appear contextually inside organic results.
-2. **Banners** — image-based campaigns placed in high-traffic areas (homepage, category headers, etc.). See the "Banners" support article.
-
-## Headline metrics
-
-- **+15%** revenue from shoppers who click banners vs. non-clickers.
-- **+50%** revenue from shoppers who click sponsored products vs. non-clickers.
-- Customers with **500k+ monthly views** can monetize at meaningful scale.
+2. **Banners** — image campaigns rendered inside the same placements as sponsored products (search results, recommendation sliders, Pages, Newsletter Content); the highest-scoring banner or product wins each reserved position. Sizes are set per solution (Settings → Banner Sizes); creatives are uploaded as PNG/JPG or AI-generated from a monthly allowance of 250 generation tokens. Every feature's template must be adapted to render `isBanner` results — see the "Banners" support article and the Banners API guide.
 
 ## Where RM lives
 
 | Surface | Notes |
 | --- | --- |
-| Search results | Sponsored product when it matches the search term + user preferences |
+| Search results | Campaign products that fit the query are lifted into reserved positions; hidden when the visitor sorts by anything other than relevance/popularity |
 | Recommendations | Sponsored slot inside an existing recommendation strip |
 | Pages | Sponsored placement on category pages |
 | Newsletter Content | Sponsored product inside personalized emails |
 
-## Why Hello Retail's RM is different from Criteo / Skai
+## Positioning
 
-The marketing site explicitly positions HR RM against enterprise retail media networks:
+The marketing site pitches RM to mid-market retailers ("beyond Amazon and Walmart"), not as an enterprise ad network:
 
-- **No ad-ops team required** — no SDK integration, no separate dashboard.
+- **No ad-ops team or developers needed** — campaigns are created in the existing Hello Retail dashboard (Retail Media → Campaigns).
 - **AI-powered placement** — Product Intelligence picks where ads fit naturally, no manual targeting rules required.
 - **Closed-loop measurement** — impression → conversion in one dashboard.
 
 ## Capabilities for retailers
 
 - Create + launch campaigns in minutes.
-- Daily and campaign-level budget caps.
+- A CPM value per campaign (its weight against competing campaigns) and optional impression or click goals that end the campaign automatically.
 - Schedule with start/end dates.
-- Category-level exclusions and brand-safety rules.
-- Performance-based optimization (margin, availability, brand deals).
+- Campaigns respect the account's global filters; reserved positions (placements) are set globally per device and can be overridden per campaign.
 - Native-feeling sponsored products that blend with organic results.
 
 ## Capabilities for brands / vendors
 
-- Reporting on impressions, conversions, revenue.
+- Per-campaign reporting the retailer can share with the brand: impressions (counted only when the item is lifted above its organic position), clicks and sold items (within 7 days of a click; needs item-level conversion tracking).
 - Strengthens vendor relationships by giving them visibility into spend → result.
 
 ## D&TS notes

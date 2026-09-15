@@ -1,14 +1,13 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Search
 
 ## What it is
 
-AI-powered, personalized site search for ecommerce. Combines semantic understanding, real-time personalization, and merchandiser controls in a single product — no custom dev required.
-
-## Headline metrics (per marketing)
-
-- **76%** better conversion with personalized results
-- **55%** reduced bounce rate
-- **100%** flexibility & control (merchandisers manage everything)
+AI-powered, personalized site search for ecommerce. Combines semantic understanding, real-time personalization, and merchandiser controls in a single product.
 
 ## What's under the hood
 
@@ -16,16 +15,16 @@ AI-powered, personalized site search for ecommerce. Combines semantic understand
 | --- | --- |
 | Semantic search | Understands shopper intent, not just keywords. Powered by Product Intelligence vectors. |
 | Typo tolerance | Built-in misspelling correction and AI Synonyms (auto-fixes zero-result searches). |
-| Personalization | Per-visitor ranking based on brand, category, size, style affinities and **price-affinity** (budget zones). |
-| Initial Content | Curated suggestions shown the moment the search bar is clicked — before any typing. |
-| Mobile-first | Responsive overlay/list/full/grid layouts. Mobile = 70%+ of site visits, 65%+ of orders by Q3 2024 (per marketing site). |
-| Retail Media | Sponsored listings can appear inside search results when contextually relevant. |
-| Analytics | Top queries, zero-results, CTR, revenue attribution, filter/sort usage. |
+| Personalization | Per-visitor ranking based on the visitor's affinity for brands, categories, sizes, colours, gender and any other product attribute; personalised boosts weight which signals count most. Personalized Search is available on the Professional and Enterprise Search plans. |
+| Initial Content | Recommendation blocks shown before the visitor types anything, and again when a query returns no relevant results. Each block = product count + optional title/subtitle + one of the standard recommendation algorithms (top products, retargeted, manual selection, …), with optional conditions and filters. |
+| Layouts | Four solutions: Overlay (full-screen, mobile-optimised), Instant (inline suggestions while typing — List or Grid style), Full (dedicated results page — Paged, Infinite or Responsive style) and Embedded (rendered inside a page section such as a category or landing page). |
+| Retail Media | Sponsored listings can appear inside search results when contextually relevant (see [Retail Media](../retail-media/retail-media.md)); sponsored items are not shown when the visitor changes the sorting. |
+| Analytics | Searchers vs non-searchers (conversion rate, AOV); all searches with count / conversions / CTR; top searches without results; non-converting searches; filter and sorting usage; CSV export. |
 
 ## Merchandiser controls
 
 - Boost, bury and pin products.
-- Custom ranking rules by category, brand, campaign.
+- Boost rules on brand, category (hierarchies), sale status (`isOnSale`) or any other feed field. Keep boost values low (1–2) — higher values hurt relevance; negative values bury.
 - Search Word Boosts (push specific products for specific queries).
 - Synonyms and AI Synonyms.
 - Stop Words.
@@ -35,21 +34,23 @@ AI-powered, personalized site search for ecommerce. Combines semantic understand
 
 ## Layouts / Integration patterns
 
-There are three Search layouts to test against during a launch — each with its own review article in the KB:
+The KB has three review articles (General Setup → Review and Testing) that together cover the four Search solutions:
 
-1. **List Search** — autocomplete dropdown under the search bar.
-2. **Grid / Full Search** — full results page.
-3. **Overlay Search** — full-screen overlay (mobile-first).
+1. **Review List Search** — Instant Search in List style: inline suggestions under the search bar while typing.
+2. **Review Grid & Full Search** — Instant Search in Grid style, plus the Full Search results page (Paged, Infinite or Responsive).
+3. **Review Overlay Search** — the full-screen overlay, mobile-optimised.
 
-For Shopify and Magento 2 there are dedicated "Setup your Search Page" guides that walk through replacing the platform's native search.
+Embedded Search (results rendered inside a category or landing page section) has no review article — use the Full Search checklist.
+
+For Magento 2 there is a dedicated "Setup your Search Page in Magento 2" guide that walks through replacing the native search page. Shopify has no equivalent article — use the Shopify Installation Guide plus the empty-page approach in the D&TS notes below.
 
 ## Indexed product fields
 
-Indexing the right fields is the #1 driver of Search quality. The KB article ["Website's Indexed product fields"](https://support.helloretail.com/general-setup/websites-indexed-product-fields/) lists what Hello Retail indexes by default plus how to add custom attributes.
+Indexing the right fields is the #1 driver of Search quality. The KB article ["Website's Indexed product fields"](https://support.helloretail.com/general-setup/websites-indexed-product-fields/) explains which fields are always indexed (marked "Always", cannot be unchecked), which cannot be indexed at all (no checkbox), why a field used by a filter or sorting cannot be un-indexed, and how to toggle indexing for the rest on the website's Product Fields page (Data Setup → Product Fields). A custom field must be indexed there before it can be used as a filter or sorting.
 
 ## Content (not just products)
 
-You can also index **content** (blog posts, guides, landing pages) and have it surfaced in Search alongside products. See ["Supplying Content Data"](https://support.helloretail.com/search/supplying-content-data/).
+You can also index **content** — categories, site pages, blog posts and brands — and surface it in Search alongside products. Each item needs at least a title and a unique URL (description, keywords and hierarchy are optional). Content comes from the platform integration (automatic category feeds on Magento, Shopify, WooCommerce, PrestaShop, DanDomain and others), a recurring XML/CSV/JSON feed, a shared Google Sheet, or a manual CSV upload — the manual upload replaces all existing content of that type. See ["Supplying Content Data"](https://support.helloretail.com/search/supplying-content-data/).
 
 ## D&TS notes
 
@@ -79,7 +80,7 @@ You can also index **content** (blog posts, guides, landing pages) and have it s
 
 ## Developer documentation
 
-- [Search SDK](https://developer.helloretail.com/sdk/search/)
+- [Search API introduction](https://developer.helloretail.com/sdk/search/) — REST endpoint, filter syntax, AI-synonym response fields; the JavaScript SDK page is linked from its sidebar.
 - Full developer reference: [developer.helloretail.com](https://developer.helloretail.com/)
 
 ## Sources

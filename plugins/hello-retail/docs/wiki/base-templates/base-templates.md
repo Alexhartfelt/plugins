@@ -1,3 +1,7 @@
+---
+source: index
+---
+
 # Base Templates
 
 > The **canonical starting files** D&TS works from when onboarding a new Hello Retail customer. One set of files for every platform. Edit in place when team conventions change — new customers inherit your edits.
@@ -22,7 +26,7 @@ base-templates/
 │       ├── recom.liquid              Base Liquid — same for every platform
 │       └── recom.css                 Base CSS — same for every platform
 ├── triggered-emails/                   ← Triggered Email template: base shell + per-trigger product-tile content (see triggered-emails/README.md)
-│   └── base.liquid                   Outer email shell — head, header, content slot, footer
+│   └── base-design.liquid            Outer email shell — head, header, content slot, footer
 └── newsletters/                        ← Newsletter product-tile design only, rendered server-side to an IMAGE (see references/)
     ├── newsletter-tile-default.liquid  Default email-safe product tile → HR renders it to an image
     ├── references/                     email-safe-rules.md · hr-feed-fields.md · inspection-and-verification.md
@@ -33,12 +37,8 @@ base-templates/
 
 Hello Retail has two email-related surfaces, and D&TS builds a **different thing** for each:
 
-- **Triggered Emails** — D&TS builds a full **email-friendly template**: a **base template** (`triggered-emails/base.liquid`, the outer email shell) plus a **product-tile template** (the per-trigger `content.liquid` product grid that fills `blocks.content`). The output is the HTML/Liquid Hello Retail sends as the email body.
+- **Triggered Emails** — D&TS builds a full **email-friendly template**: a **base design** (`triggered-emails/base-design.liquid`, the outer email shell) plus a **per-trigger content design** (`triggered-emails/abandoned-cart.liquid`, `price-drop.liquid`, `back-in-stock.liquid`, `post-conversion.liquid` — the product grid that fills `blocks.content`). The output is the HTML/Liquid Hello Retail sends as the email body.
 - **Newsletter (Newsletter Content)** — D&TS builds **only the product-tile design** (`newsletters/newsletter-tile-default.liquid`). Hello Retail renders that tile **server-side into an image**, and the customer drops that product-tile image into their own newsletter/ESP email. There is no email shell to build — just the tile.
-
-Future additions:
-- Search: `full-search/`, `instant-search/` — other Search layouts; each gets its own folder.
-- Recoms: `grid/`, `mobile/` — other recom layouts if a design needs to diverge from the responsive slider.
 
 Each product area documents its own slot model and conventions in its folder README:
 - Search: [search/README.md](./search/README.md)
@@ -86,7 +86,7 @@ The team uses **the same base files for every customer regardless of platform**.
 
 ## Tile styling gotchas
 
-Hard-won from real onboardings. See [client-scripts/](../client-scripts/) for worked examples.
+Hard-won from real onboardings. The reusable pieces live in the [cheat sheets](../cheat-sheets/README.md) and the [platform pages](../platforms/platforms.md).
 
 - **HR centers tile text.** The base rule `.hr-overlay-search { text-align: center }` cascades into every tile; native category tiles are usually left-aligned. Adding the customer's scoping ancestor to `.hr-products-container` (rule 6) normally pulls in the theme's own `text-align` and fixes it. Only if the theme has no such rule, add a minimal `text-align:left` override in `CUSTOM_STYLING_BLOCK`.
 - **Prefer ancestor-scoping over authored CSS.** Restoring the theme's own scoped rules (rule 6) is more faithful and lower-maintenance than re-writing them in `CUSTOM_STYLING_BLOCK`. Reach for the styling block only for gaps the theme genuinely can't cover.

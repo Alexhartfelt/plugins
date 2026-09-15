@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Magento 2
 
 **Scope:** this page and everything in this folder is **Magento 2** (Luma, Breeze, Hyvä).
@@ -20,7 +25,7 @@ This means **three of the first-steps tasks** are already done by installing the
 
 - [cheat-sheets/recoms/magento.md](../../cheat-sheets/recoms/magento.md) — `.catalog-category-view` hide-when-filtered
 - [cheat-sheets/pages/magento.md](../../cheat-sheets/pages/magento.md) — remove the customer's native product list when Pages renders
-- [cheat-sheets/add-to-cart/magento.md](../../cheat-sheets/add-to-cart/magento.md) — `mage/mage` binding, `x-magento-init`, `uenc` encoding, swatch-renderer pairing
+- [add-to-cart.md](./add-to-cart.md) — `mage/mage` binding, `x-magento-init`, `uenc` encoding, swatch-renderer pairing
 
 ---
 

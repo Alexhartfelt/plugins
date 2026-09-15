@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Pages — Magento 2
 
 **Applies to:** Magento 2, all frontends — these snippets key off Magento's body classes and product-list markup, not the theme. Magento 1 is legacy and is not covered — see [../../platforms/ecommerce-platforms.md](../../platforms/ecommerce-platforms.md).
@@ -27,7 +32,7 @@ Place this inside the Pages design's JavaScript (so `content` is in scope). The 
 
 ### _Related: add-to-cart on Magento_
 
-If the Pages template renders products with HR's `.aw-buy-form`, you'll likely also need the Magento add-to-cart bindings. See [../add-to-cart/magento.md](../add-to-cart/magento.md).
+If the Pages template renders products with HR's `.aw-buy-form`, you'll likely also need the Magento add-to-cart bindings. See [../../platforms/magento/add-to-cart.md](../../platforms/magento/add-to-cart.md).
 
 ---
 

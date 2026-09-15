@@ -1,10 +1,15 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Product Intelligence (PI)
 
 ## What it is
 
 Hello Retail's proprietary AI engine. The "AI backbone" sitting under every customer-facing module. Internally usually called **PI**.
 
-Launched at the **beginning of 2023**.
+In market since at least 2023 — the earliest Product Intelligence posts on helloretail.com date from August 2023.
 
 ## Core idea
 
@@ -37,7 +42,7 @@ PI is exposed via a **single GraphQL endpoint** for builders. Developers can int
 - A CDP
 - Any custom internal tool
 
-Developer docs: [docs.helloretail.com](https://docs.helloretail.com) / [developer.helloretail.com](https://developer.helloretail.com/).
+Developer docs: [Product Intelligence GraphQL API](https://developer.helloretail.com/api/graphQL/product-intelligence/) — endpoint `https://core.helloretail.com/pi/graphql`, queries `productInsight` and `topProducts`, API-key or dashboard-session auth ([authentication](https://developer.helloretail.com/api/graphQL/authentication/)). Currently a free beta; fields may change. Also exposed through the MCP tools ([product-intelligence](https://developer.helloretail.com/mcp/tools/product-intelligence/)).
 
 ## What PI powers in the platform
 
@@ -45,8 +50,8 @@ Developer docs: [docs.helloretail.com](https://docs.helloretail.com) / [develope
 | --- | --- |
 | Search | Semantic understanding, AI synonyms, price-affinity, relevance ranking. |
 | Recommendations | Cross-shop cold-start, similar products, "goes-with" relationships. |
-| Pages | Personalized category sorting, predicted intent ranking. |
-| Retail Media | Contextually-relevant ad placement, brand safety, native blending. |
+| Pages | Personalized product sorting on category and brand pages. |
+| Retail Media | Contextually-relevant ad placement and native blending, so sponsored products don't disrupt the shopping experience. |
 | Product Agents | Catalog-wide evaluation of every customer × product combination. |
 
 ## Vector database stats
@@ -63,7 +68,7 @@ Developer docs: [docs.helloretail.com](https://docs.helloretail.com) / [develope
 
 ## Developer documentation
 
-- [Product Intelligence GraphQL API](https://developer.helloretail.com/)
+- [Product Intelligence GraphQL API](https://developer.helloretail.com/api/graphQL/product-intelligence/)
 - Full developer reference: [developer.helloretail.com](https://developer.helloretail.com/)
 
 ## Sources

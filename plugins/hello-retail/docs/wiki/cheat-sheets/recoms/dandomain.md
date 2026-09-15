@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Recoms — DanDomain (Classic / Hostedshop)
 DanDomain Classic / Hostedshop / SmartWeb snippets. These rely on platform-specific selectors like `.webshop-showbasket` and `#Content_Productlist`.
 
@@ -18,7 +23,7 @@ document.querySelectorAll(".webshop-showbasket .product_price").forEach((item) =
     basketAmount += parseFloat(item.textContent.split("NOK").shift().trim());
 });
 
-var heading = jQuery(".aw-heading");
+var heading = jQuery("#hello-retail-{{ key }} h2");   // the base headline <h2> carries no class
 
 if( !isNaN(basketAmount) ) {
     if(basketAmount < 199) {
@@ -44,7 +49,7 @@ if( !isNaN(basketAmount) ) {
 The generic "STRECHED recom fix" lives in [general.md](./general.md). The DanDomain-typical parent element ID is `#Content_Productlist`, used in the example below. SmartWeb shops often share this ID.
 
 ```javascript
-document.querySelector('#aw-box-{{ key }}').style.width = document.querySelector("#Content_Productlist").offsetWidth + "px";
+document.querySelector('#hello-retail-{{ key }}').style.width = document.querySelector("#Content_Productlist").offsetWidth + "px";
 ```
 
 If the customer's theme uses a different parent (custom DanDomain Classic templates can vary), inspect the parent and swap the selector.

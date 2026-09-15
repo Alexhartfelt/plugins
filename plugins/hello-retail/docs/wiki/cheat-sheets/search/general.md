@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Search — General (platform-agnostic)
 Platform-agnostic Hello Retail Search snippets. These use HR's own `.hr-*` / `.aw-*` classes and template engine — they work on any platform once HR JS is installed.
 
@@ -69,14 +74,14 @@ Layout for the mobile overlay search so product tiles stack two-per-row with rou
 
 ### _Add redirects in grid search_
 
-The standard `search_redirects` module only attaches in overlay search by default. Use this to wire it into the grid search input as well.
+All three base variants already import `search_redirects` and call `search_redirects.match_and_go(...)` on keyup, so a base-derived design needs nothing. Use this only on a custom or legacy design that lacks it, and target that design's own input — the base has no `.aw-search-input`; the mobile overlay's input is `#hr-search-input`, the desktop overlay's is `.hr-search > input`.
 
 ```javascript
 // Add to the top
 import "search_redirects";
 
 // Add above engine_options
-document.querySelector(".aw-search-input").addEventListener('keyup', (event) => {
+document.querySelector("#hr-search-input" /* the design's own search input */).addEventListener('keyup', (event) => {
     search_redirects.match_and_go(event.target.value, key)
 });
 ```
@@ -552,6 +557,8 @@ if (pages_default_filters_to_sort != "") {
 
 ### _Hide / Show filter based on input_
 
+> Variants: desktop-overlay and mobile-overlay (`.hr-search > input`). The embedded variant has no `.hr-search` input of its own.
+
 Toggle a filter container based on whether the search input matches a trigger word. Place the snippet on the last line of the `load_more_results` function. Works with Overlay out of the box — rename `data-filter` and `TRIGGERWORD` as needed.
 
 ```javascript
@@ -570,6 +577,8 @@ if (document.querySelector(".hr-search > input").value.match(/.*TRIGGERWORD.*/i)
 ---
 
 ### _Collapse a long filter row behind a "More filters" toggle_
+
+> Variants: desktop-overlay and desktop-embedded only. The mobile overlay's filter UI is different markup.
 
 When a config has many facets (9+ is common once size / colour / brand / gender and a few custom fields are all indexed) the filter row eats the fold. Show the first N, hide the rest behind a toggle. The collapse is **CSS-driven** so the extra filters never flash before JS runs, and the button is **authored in the template** so it exists regardless of where the JS call site sits.
 
@@ -680,7 +689,7 @@ document.querySelectorAll(".aw-sorting-tag-list label").forEach(function(item){
 
 ---
 
-### _Remove customer's page scroll when Embedded search is open_
+### _Remove customer's page scroll when Embedded or Overlay search is open_
 
 Lock body scroll behind the embedded search overlay.
 
@@ -755,12 +764,12 @@ searchBtn.replaceWith(searchBtn.cloneNode(true));
 
 ### _Add hierarchy path to category content template_
 
-Renders breadcrumbs above content items in search results. Remove `limit : 1` to show all hierarchy levels.
+Every base template already renders this hierarchy inline next to the content title, behind the design toggle `{# boolean show_category_content_hierarchy = false #}` — set it to `true` first. Use the snippet below only for a design that has lost that block; the loop variable in the content loop is `ctnt`. Remove `limit : 1` to show all hierarchy levels.
 
 ```liquid
 <span class="hr-search-overlay-content-hierarchy-wrapper">
     {% for level in ctnt.hierarchy limit : 1 %}
-    {% if level != "" and level != current_content_item.title %}
+    {% if level != "" and level != ctnt.title %}
     <span class="hr-search-overlay-content-category-hierarchy-category">{{ level }}</span>
     {% unless forloop.last %}
     <span class="hr-search-overlay-content-hierarchy-divider">›</span>
@@ -809,6 +818,8 @@ Adapt `#header` to the customer's actual header selector. Common ones: `header.s
 ---
 
 ### _Highlight search term in category results_
+
+> Variants: desktop-overlay and mobile-overlay (`.hr-search input`). The embedded variant has no `.hr-search` input of its own.
 
 Wrap matches of the search term in `<strong>` inside HR's category content tiles. Must be defined **inside the `activate()` function** so `searcher.search_term` is in scope.
 
@@ -873,7 +884,7 @@ Every line it prints is a property to set back to the native value (scoped to `.
 - [ ] CSS-only — no markup/class/attribute changes — so the theme's (often delegated) JS bindings keep working.
 - [ ] Feature controls that need IDs (ATC, wishlist, Quick View) use an ID the **feed actually exposes** — verify, don't assume `productNumber` is the platform's numeric id.
 
-> Platform specifics: [lightspeed.md](./lightspeed.md) (grid-ancestor collapse, divider pseudos, SKU-vs-numeric-id), [shopify.md](./shopify.md). Real builds: [client-scripts](../../client-scripts/README.md).
+> Platform specifics: [lightspeed.md](./lightspeed.md) (grid-ancestor collapse, divider pseudos, SKU-vs-numeric-id), [shopify.md](./shopify.md).
 
 ---
 
@@ -888,7 +899,7 @@ Every line it prints is a property to set back to the native value (scoped to `.
 
 **Fix:** if the ask is "Category (or any content-feed type) needs to be its own separate tab," set `{# boolean show_vertical_link_content = true #}` in `resultTemplate` — no other template/JS change needed. Note this also changes how the content **links themselves** render inside the tab (vertical mode = full-width list rows with a hierarchy breadcrumb + chevron icon; horizontal mode = a horizontal-scrolling row of pill-shaped chips) — that's a visual trade-off to flag to the operator, not just a tab-visibility toggle.
 
-**Seen on:** store-B, 2026-08-25 (Overlay search mobile — EAA accessibility).
+**Seen on:** a mobile overlay search, 2026-08 (EAA accessibility onboarding).
 
 ---
 
@@ -898,4 +909,4 @@ Every line it prints is a property to set back to the native value (scoped to `.
 - 2026-06-04: Added _Tile CSS parity_ — why an empty CUSTOM_STYLING_BLOCK isn't safe, the native-vs-overlay computed-style diff method, and a pre-ship QA checklist (from a Lightspeed onboarding).
 - 2026-08-12: Added _Collapse a long filter row behind a "More filters" toggle_ — CSS-driven collapse + template-authored button, sorting-wrapper exclusion, state-across-rerender and specificity gotchas (source: desktop-embedded search onboarding).
 - 2026-08-20: Added _Mobile Grid Search_ Variant B — strict 2-column CSS grid on the product tab with the tab header lifted out of grid flow; legacy templates only, use the native grid option where the design offers one (field-proven list→grid conversion of a live mobile overlay search).
-- 2026-08-25: Added _`show_vertical_link_content` — required for a content-feed tab to actually behave as a separate tab_ (source: store-B EAA accessibility onboarding).
+- 2026-08-25: Added _`show_vertical_link_content` — required for a content-feed tab to actually behave as a separate tab_ (source: an EAA accessibility onboarding).

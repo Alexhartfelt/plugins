@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Shopify — Add to cart
 
 Platform-specific ATC for Hello Retail tiles on Shopify. Two implementation styles exist — pick one:
@@ -204,6 +209,25 @@ the `.js-quick-add` dialog trigger. Delegated, so it survives re-renders on its 
 })();
 ```
 
+> **Confirm the quick-add global on the live storefront before shipping this.** `window.QuickAddModal` stands in for whatever the theme actually exposes — often a `<quick-add-drawer>` element or a differently named global, sometimes nothing. An unconfirmed `else` branch turns every quick-add click into a page navigation. Check with `typeof window.<Global>` in the browser first; see `${CLAUDE_PLUGIN_ROOT}/skills/search-developer/references/tile-interactivity-js.md`.
+
+---
+
+## Quick View re-init (recom slider)
+
+Some web-component themes render a `<quick-view-button>` inside `[data-button-quick-view]`. HR injects the tiles after page load, so the component's `connectedCallback` never runs for them — call it yourself once the slider is built. Scope to the box (the base template's id is `#hello-retail-{{ key }}`) and run it from Swiper's `afterInit` so clones are covered too:
+
+```javascript
+function initQuickViewButtons() {
+    document.querySelectorAll("#hello-retail-{{ key }} [data-button-quick-view]").forEach(function (btn) {
+        btn.removeAttribute("data-initialized");
+        var el = btn.querySelector("quick-view-button");
+        if (el && typeof el.connectedCallback === "function") el.connectedCallback();
+    });
+}
+initQuickViewButtons();   // from afterInit
+```
+
 ---
 
 ## Notes
@@ -215,8 +239,14 @@ the `.js-quick-add` dialog trigger. Delegated, so it survives re-renders on its 
 - Shopify B2B / draft orders may need the Storefront API instead of `/cart/add.js`.
 
 **Related:**
-- Field-captured variants (Quick View, `swatch-renderer`) —
-  [../../cheat-sheets/add-to-cart/shopify.md](../../cheat-sheets/add-to-cart/shopify.md)
+- Cross-platform binding rules — [../add-to-cart.md](../add-to-cart.md)
 - Rating (Loox) — [./rating.md](./rating.md) · Platform install nuance — [Shopify overview](./README.md)
 
 **Source:** consolidated from the Search, Recom, and tile-extractor skill references, 2026-07-01.
+
+---
+
+## Timeline
+- 2026-05-21: Shopify add-to-cart and Quick View patterns documented from Shopify (Dawn) storefronts.
+- 2026-07-01: Approach A / B page consolidated from the Search, Recom and tile-extractor skill references.
+- 2026-09-14: Merged the cheat-sheet copy into this page. The Quick View re-init now targets `#hello-retail-{{ key }}`, the base template's box id, instead of the legacy `#aw-box-{{ key }}`.

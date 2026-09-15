@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Data Requirements
 
 Hello Retail needs three things from the customer to deliver high-quality personalization:
@@ -10,7 +15,7 @@ This file maps each requirement to the relevant KB article and lists the typical
 
 ## 1 · Product catalog
 
-### What it must include (per "Website's Indexed product fields")
+### What it must include (per "Setup and Data Synchronization Requirements")
 
 | Field | Notes |
 | --- | --- |
@@ -20,12 +25,12 @@ This file maps each requirement to the relevant KB article and lists the typical
 | **Currency** | Must match the storefront. |
 | **Availability / stock** | Drives availability filtering. |
 | **Category / hierarchy** | Drives category Pages, filters, and global hierarchy filters. |
-| **Brand** | Drives global brand filters. |
+| **Brand** | Drives global brand filters. Not in the base `productData` list — supply it as an extra field. |
 | **Image URL** | Used in widgets and emails. |
 | **Variants** | Variant relationships. |
-| **Custom attributes** | Size, color, material, etc. — exposed via `extraData` in search filters and used for affinity. |
+| **Custom attributes** | Size, color, material, etc. — `attributes` in the feed, indexed as `extraData` fields for filters, sorting and affinity. |
 
-See [Website's Indexed product fields](https://support.helloretail.com/general-setup/websites-indexed-product-fields/) for the full list of recognized fields.
+The full `productData` field list is in [Setup and Data Synchronization Requirements](https://support.helloretail.com/general-setup/setup-and-data-synchronization-requirements/); which of those fields are indexed for filters and sorting is controlled on the dashboard's Product Fields page — see [Website's Indexed product fields](https://support.helloretail.com/general-setup/websites-indexed-product-fields/).
 
 ### How it's delivered
 
@@ -39,19 +44,16 @@ Re-sync: [How to Re-Synchronize the Product Feed](https://support.helloretail.co
 
 ### Product grouping
 
-For products with variants, you tell HR how to group them. See [Website's Product Grouping](https://support.helloretail.com/general-setup/websites-product-grouping/).
+Variant relationships are carried in the feed's nested `variants` array. **Product Grouping** is a separate dashboard setting that de-duplicates results (default: same `title` + `imgUrl` → one result); adjust it on the Product Fields page if variants still show as duplicates. See [Website's Product Grouping](https://support.helloretail.com/general-setup/websites-product-grouping/).
 
 ## 2 · Behavior + Conversion Events
 
-### Captured by the JS automatically
+### Captured by the JS
 
-- Page views
-- Product views
-- Add to cart
-- Purchases
-- Other on-site interactions
+- Page views and product views — automatic once the script is on every page.
+- **Add to cart and purchases are not automatic.** On a manual install they must be pushed via `hrq` or DOM spans (cart on every cart change or page load; conversion on the confirmation page). Platform extensions and apps do this for you.
 
-Hello Retail's script handles these automatically once installed. For SPAs (Single Page Applications), tracking must be triggered on route changes — the mechanism is `hrq.push(["reload"])`, documented in [spa-tracking.md](./spa-tracking.md).
+Once the script is installed on every page the view tracking runs on its own. For SPAs (Single Page Applications), tracking must be triggered on route changes — the mechanism is `hrq.push("reload")` after each route change (the tracking article's form; the array form `hrq.push(["reload"])` is also seen in the wild), documented in [spa-tracking.md](./spa-tracking.md).
 
 ### Setup articles
 
@@ -64,10 +66,10 @@ Hello Retail's script handles these automatically once installed. For SPAs (Sing
 
 After checkout, HR needs:
 
-- Purchased products (IDs matching catalog feed)
-- Quantities
-- Order total
-- Currency
+- Order number
+- Order total (incl. VAT, excl. shipping; dot decimal, no currency symbol)
+- Per product: a canonical URL **or** a product id matching the feed, plus quantity and unit price
+- Customer email — optional, but needed for Triggered Emails
 
 Delivered either via the tracking script on the confirmation page, or via order feed export from the backend.
 
@@ -104,5 +106,5 @@ For customers who want their blog / guides / landing pages to appear in Search r
 ## Sources
 
 - [General Setup → General Settings and Setup category](https://support.helloretail.com/general-setup/general-settings-and-setup-category/)
-- [General Setup → Manual Setup category](https://support.helloretail.com/general-setup/manual-setup/)
+- [General Setup → Manual Setup category](https://support.helloretail.com/general-setup/manual-setup-category/)
 - [Introduction to feeds](https://support.helloretail.com/general-setup/introduction-to-feeds/)

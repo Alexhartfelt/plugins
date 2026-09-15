@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Magento 2 — Rating / reviews
 
 **Applies to:** Magento 2, all frontends (Luma, Breeze, Hyvä) — the rating is plain markup and CSS with no JS init, so it does not vary by frontend. Magento 1 is legacy and is not covered here — see [../ecommerce-platforms.md](../ecommerce-platforms.md).

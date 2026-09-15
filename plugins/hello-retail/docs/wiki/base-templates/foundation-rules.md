@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Foundation rules — extend the base, never rewrite it
 
 > **The rule:** unless the operator explicitly tells you to, **do not rewrite the existing CSS, Liquid/HTML, or JS foundation** of a base template. Add on top of it. If the request genuinely can't be satisfied without altering the foundation, **stop and ask the operator for approval first** — name what has to change and why, and offer the additive alternative.

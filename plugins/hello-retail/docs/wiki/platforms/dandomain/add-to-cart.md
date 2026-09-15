@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # DanDomain & Lightspeed — Add to cart
 
 DanDomain and Lightspeed (WebshopApp) commonly share the **dmws_perfect** plugin, so they share this

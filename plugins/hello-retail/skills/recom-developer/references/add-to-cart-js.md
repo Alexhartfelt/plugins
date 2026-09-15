@@ -23,7 +23,7 @@ You don't ask the operator for `platform`. Infer it from the surveyed storefront
 
 **Do not use feed shape as a platform signal** — it reflects HR feed configuration, not the e-commerce platform.
 
-Per-platform runtime detail lives in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/<platform>.md`.
+Per-platform runtime detail lives in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/<platform>/add-to-cart.md`.
 
 The per-platform `add_to_cart()` bodies live under `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/<platform>/add-to-cart.md`
 — each file has both the **Recom slider** block (use this) and the Search variant. What stays your
@@ -42,7 +42,7 @@ Form-level mutation can't be done by click delegation — it must run against th
 clones exist, so it goes in `afterInit`, idempotently. Code in
 `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` → *Recom slider* block.
 
-- `.mage('catalogAddToCart')` needs `mage/mage` loaded. If the theme doesn't expose it globally, wrap the bind in `require(['jquery','mage/mage'], function ($) { … })`, or register the form via the `x-magento-init` block in the Liquid (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md` Step 3) instead.
+- `.mage('catalogAddToCart')` needs `mage/mage` loaded. If the theme doesn't expose it globally, wrap the bind in `require(['jquery','mage/mage'], function ($) { … })`, or register the form via the `x-magento-init` block in the Liquid (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` Step 3) instead.
 - Leave `awuenc` / `uenc` as placeholders in the Liquid — the function fills them at runtime.
 - Swatches / size filters stay as **delegated** handlers — ATC and swatches are separate concerns.
 

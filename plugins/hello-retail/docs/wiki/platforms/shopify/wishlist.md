@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Shopify — Wishlist (Wishlist King app)
 
 **Detection:** `<wishlist-button-collection>` custom element wrapping a `<wk-button>` / `<wk-icon>` structure on the native tile; app script loaded page-wide (already present on the storefront, no import needed).
@@ -45,4 +50,4 @@ If a product's tile doesn't have a stable per-render anchor element to attach `w
 
 **Related:** ATC Step 0 (custom-element auto-upgrade) — `references/tile-interactivity-js.md` in the `search-developer` skill.
 
-**Source:** captured from store-D onboarding, 2026-08.
+**Source:** captured from a Shopify onboarding, 2026-08.

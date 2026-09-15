@@ -1,3 +1,7 @@
+---
+source: index
+---
+
 # Search — Base Templates
 
 D&TS-canonical starting templates for the three Search overlay variants D&TS commonly works with.

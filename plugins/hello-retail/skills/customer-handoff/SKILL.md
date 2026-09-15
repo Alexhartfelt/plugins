@@ -174,7 +174,7 @@ Rules that keep documents comparable across customers:
   how the customer works.
 - **§10 Learnings** — every reusable §5 case restated with **placeholders only** (`store-XX`,
   `example-shop.com`, no people, no UUIDs), tagged with platform and a proposed home (wiki platform
-  page, cheat-sheet, skill reference, `client-scripts` entry). Nothing else in the file is ever
+  page, cheat-sheet, skill reference). Nothing else in the file is ever
   lifted into the plugin.
 - **Task log** — append `### <YYYY-MM-DD> — <skill or task> · stage <stage> (<operator>)` with
   what / rounds / result / artefacts / cases added / stage status after this task.
@@ -238,5 +238,3 @@ front matter `closed` + `final: true`, §2 close date, and a task-log entry `sta
 - `../tile-extractor/SKILL.md` → *PLATFORM DETECTION* — the detection snippet.
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/onboarding/customer-onboarding-flow.md` — the lifecycle this
   document closes.
-- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/client-scripts/_TEMPLATE.md` — the entry shape a §10 learning of
-  type *script* is later lifted into.

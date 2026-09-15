@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # DanDomain — Rating / reviews
 
 DanDomain (and Lightspeed / WebshopApp) storefronts render stars with the **rateit** jQuery plugin.

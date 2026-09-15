@@ -1,6 +1,10 @@
+---
+source: index
+---
+
 # D&TS Onboarding
 
-> **Status:** Initial skeleton — built from the public KB only. The next pass will layer in our **internal onboarding code** and the playbooks we use day-to-day.
+> The background for an onboarding — lifecycle, methods, data, testing — paraphrased from the public knowledge base. The step-by-step procedures themselves are the plugin's skills, listed below.
 
 This folder is the D&TS playbook for taking a new customer from "deal closed" to "live with stable performance".
 
@@ -13,20 +17,19 @@ This folder is the D&TS playbook for taking a new customer from "deal closed" to
 - [review-and-testing.md](./review-and-testing.md) — review checklists used during launch QA.
 - [search-templates.md](./search-templates.md) — how to customize the Search Liquid/HTML/CSS/JS templates per customer.
 
-## Where the onboarding code will plug in
+## Where the procedures live
 
-The next iteration of this wiki will document the **internal onboarding code** we use. Likely additions:
+The skills in this plugin are the onboarding runbooks. In lifecycle order:
 
-- `internal-scripts.md` — what each script does, when to run it.
-- `customer-config-templates.md` — JSON / YAML config templates we reuse.
-- `runbooks/` — per-scenario runbooks (Shopify install, Magento 2 install, custom integration, ESP swap, etc.).
-- `qa-automation.md` — automated post-launch checks.
+| Stage | Skill |
+| --- | --- |
+| Product data | `feed-setup` (a new V2 feed), `feed-migration` (legacy crawlSpec → V2) |
+| Build | `tile-extractor` (the product tile), then `search-developer`, `recom-developer`, `pages-developer`, `newsletter-developer`, `triggered-email-developer` |
+| QA | `qa-checklists` (the master lists), `search-qa`, `recom-qa`, `pages-qa`, `newsletter-qa` |
+| Hand-off | `customer-handoff` (the living hand-off document) |
+| Success | `customer-analytics-report` (branded PDF from live data) |
 
-When that code is shared in the next step, we should:
-
-1. Drop the code into the workspace (likely under a sibling `code/` or `tools/` folder).
-2. Document each script's purpose, inputs, outputs in `runbooks/`.
-3. Cross-link from the Implementation method docs.
+`browser-login` sets up the Playwright browsers the QA skills use; `hello-retail-knowledge` answers questions from this wiki.
 
 ## Anchor support article
 

@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Pages — Shopify
 Shopify-specific Pages snippets. For platform-agnostic Pages snippets see [general.md](./general.md).
 

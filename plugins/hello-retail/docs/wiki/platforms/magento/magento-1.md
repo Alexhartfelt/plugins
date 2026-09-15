@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: never
+---
+
 # Magento 1 — legacy
 
 **Magento 1 reached end of life in June 2020** and gets no security patches. Hello Retail still

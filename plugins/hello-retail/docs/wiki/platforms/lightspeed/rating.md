@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Lightspeed — Rating / reviews
 
 Lightspeed / WebshopApp storefronts use the **rateit** jQuery plugin, identical to DanDomain.

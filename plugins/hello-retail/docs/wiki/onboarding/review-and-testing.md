@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Review & Testing
 
 The Review & Testing category in the KB has a checklist article per surface. D&TS should walk through these before flipping a customer live.

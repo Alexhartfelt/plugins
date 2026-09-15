@@ -1,3 +1,7 @@
+---
+source: index
+---
+
 # Platforms
 
 Hello Retail integrates with two categories of platform:
@@ -20,14 +24,15 @@ One folder per platform. Those with an overview page (install pattern + gotchas)
 
 - [Shopify](./shopify/README.md) · [Magento 2](./magento/README.md) *(Magento 1: [legacy](./magento/magento-1.md))* · [Shopware](./shopware/README.md) · [Starweb](./starweb/README.md) · [WooCommerce](./woocommerce/README.md) · [Viskan / Streamline](./viskan-streamline/README.md) · [Wikinggruppen](./wikinggruppen/README.md)
 
-DanDomain, Lightspeed, and BigCommerce have code files but no overview page yet — see *Per-platform code* below.
+DanDomain, Lightspeed and BigCommerce have per-feature code files only — see *Per-platform code* below.
 
 ## Per-platform code
 
-Platform-specific implementation snippets live in each platform's folder, one file per feature (each holds the Search-overlay and Recom-slider variants):
+Platform-specific implementation snippets live in each platform's folder, one file per feature (each holds the Search-overlay and Recom-slider variants). The cross-platform rules — platform inference, which hook to bind from per surface, the selector / API table — are in [add-to-cart.md](./add-to-cart.md).
 
-- **Add to cart:** [shopify](./shopify/add-to-cart.md) · [dandomain / lightspeed](./dandomain/add-to-cart.md) · [magento 2](./magento/add-to-cart.md) · [shopware](./shopware/add-to-cart.md) · [starweb](./starweb/add-to-cart.md) · [bigcommerce](./bigcommerce/add-to-cart.md)
-- **Rating / reviews:** [shopify (Loox)](./shopify/rating.md) · [dandomain (rateit)](./dandomain/rating.md) · [lightspeed (rateit)](./lightspeed/rating.md) · [magento 2 (native)](./magento/rating.md) · cross-platform: [Lipscore](../features/search/lipscore-ratings.md)
+- **Add to cart:** [shopify](./shopify/add-to-cart.md) · [dandomain / lightspeed](./dandomain/add-to-cart.md) · [magento 2](./magento/add-to-cart.md) · [shopware](./shopware/add-to-cart.md) · [starweb](./starweb/add-to-cart.md) · [bigcommerce](./bigcommerce/add-to-cart.md) · [viskan / streamline](./viskan-streamline/add-to-cart.md) · [wikinggruppen](./wikinggruppen/README.md)
+- **Feeds:** [viskan / streamline](./viskan-streamline/feeds.md)
+- **Rating / reviews:** [shopify (Loox)](./shopify/rating.md) · [dandomain (rateit)](./dandomain/rating.md) · [lightspeed (rateit)](./lightspeed/rating.md) · [magento 2 (native)](./magento/rating.md) · Search tiles on any platform: [Lipscore](../features/search/lipscore-ratings.md)
 - **Swatches:** [magento 2](./magento/swatches.md)
 - **Wishlist:** [shopify (Wishlist King)](./shopify/wishlist.md) · [lightspeed](./lightspeed/wishlist.md)
 - **Search-trigger quirks:** [dandomain (`#search-modal`)](./dandomain/search-trigger.md)

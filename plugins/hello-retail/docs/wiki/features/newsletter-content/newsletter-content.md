@@ -1,8 +1,13 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Newsletter Content
 
 ## What it is
 
-Automated, personalized product recommendation blocks rendered into the customer's marketing emails. Each recipient gets a unique email body based on their behavior in the webshop.
+Automated, personalized product recommendation blocks rendered into the customer's marketing emails. Each recipient gets a unique set of product tiles based on their behaviour in the webshop; unidentified recipients get default (non-personalised) content.
 
 Sometimes referred to internally as "NLC".
 
@@ -12,22 +17,15 @@ For Newsletter, D&TS builds **only the product-tile design** — not a full emai
 
 So the deliverable is the tile design alone — there is no base/email shell to build (that's the customer's ESP template). This is the key difference from [Triggered Emails](../triggered-emails/triggered-emails.md), where D&TS builds the whole email-friendly template (base shell + product-tile content block) that Hello Retail sends.
 
-See the [email-safe rules](../../base-templates/newsletters/references/email-safe-rules.md) and [HR feed fields for newsletter tiles](../../base-templates/newsletters/references/hr-feed-fields.md).
-
-## Headline metrics
-
-- **300%** click-through rate uplift with tailored content
-- **6×** better conversion than standard email marketing
-- **14%** increased revenue
+The tile is built from [base-templates/newsletters/newsletter-tile-default.liquid](../../base-templates/newsletters/newsletter-tile-default.liquid); the rendering rules and the feed fields a tile can use are in the `newsletter-developer` skill, and QA is `newsletter-qa`.
 
 ## Campaign types
 
 Newsletter Content supports several campaign archetypes:
 
 - **Manual Campaign** — one-off send, you compose around the recommendation block.
-- **Auto Campaign Configuration** — sends on a schedule with auto-curated content per recipient.
+- **Auto Campaign Configuration** — set up once; the snippet goes into the ESP's recurring template and every newsletter the customer sends becomes a new campaign with fresh per-recipient content. Needs a unique campaign name/ID per send (Klaviyo, Omnisend: at most one newsletter a day); fixed products apply to the first send only.
 - **Rolling Campaign** — a single template that continuously updates content based on the latest data and the recipient's profile.
-- **Templated** — the customer's ESP template is preserved; we plug into specific content slots.
 
 Each campaign type's article explains the trade-offs: see ["Understanding the Different Campaign Types"](https://support.helloretail.com/newsletter-content/understanding-the-different-campaign-types/).
 
@@ -42,16 +40,16 @@ Each campaign type's article explains the trade-offs: see ["Understanding the Di
 | Drip | [How to Add Newsletter Content to Drip](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-add-newsletter-content-to-drip/) |
 | HeyLoyalty | [How to Add Newsletter Content to HeyLoyalty](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-add-newsletter-content-to-heyloyalty/) |
 | Rule | [How to Integrate with Rule](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-integrate-with-rule/) |
-| MailerLite | [MailerLite Permission Guide](https://support.helloretail.com/platforms-and-newsletter-providers/mailerlite-permission-guide/) |
+| MailerLite | No dedicated Newsletter Content article — paste the generic snippet (see "How to Integrate Recommendations into your Newsletters"). The [MailerLite Permission Guide](https://support.helloretail.com/platforms-and-newsletter-providers/mailerlite-permission-guide/) is permission sync for Triggered Emails. |
 | Apsis One | [Apsis One — Newsletter Content](https://support.helloretail.com/platforms-and-newsletter-providers/apsis-one-newsletter-content/) |
 | Apsis (legacy) | [Apsis Auto Campaign Setup](https://support.helloretail.com/platforms-and-newsletter-providers/apsis-auto-campaign-setup/) |
 | BullSender | [How to Add the Newsletter Content to Bullsender](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-add-the-newsletter-content-to-bullsender/) |
-| MailCamp | [Integrate Newsletter Content into MailCamp](https://support.helloretail.com/platforms-and-newsletter-providers/integrate-newsletter-content-into-mailcamp/) + [How to Get MailCamp API Credentials](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-get-mailcamp-api-credentials/) |
+| MailCamp | [Integrate Newsletter Content into MailCamp](https://support.helloretail.com/platforms-and-newsletter-providers/integrate-newsletter-content-into-mailcamp/) — the [MailCamp API credentials](https://support.helloretail.com/platforms-and-newsletter-providers/how-to-get-mailcamp-api-credentials/) article is for permission sync (Triggered Emails), not for the snippet |
 | MarketingPlatform | [Rolling Campaign on MarketingPlatform](https://support.helloretail.com/platforms-and-newsletter-providers/rolling-campaign-on-marketingplatform/) |
 
 ## Analytics
 
-Newsletter Content has its own analytics pane with opens, clicks per block, revenue attribution. UTM parameters are supported for cross-attribution into Google Analytics.
+Newsletter Content has its own analytics (Emails → Newsletter Content → Analytics): opens, clicks and orders per campaign; CTR split between personalised content (recipient identified) and default content (not identified); per-product views, clicks and direct/indirect conversions. UTM parameters are added automatically (source `helloretail`, medium `email`, campaign = campaign ID); medium and campaign can be overridden in the Code snippet step — never on Auto campaigns, or all auto-created campaigns collapse into one GA campaign.
 
 ## Locate Template ID for Auto Campaigns
 
@@ -64,7 +62,7 @@ Retail Media sponsored products can be placed inside Newsletter Content blocks �
 ## D&TS notes
 
 - During onboarding, **the ESP integration is usually the longest pole**. Permissions, API keys and template selection need the customer's marketing manager involved.
-- For most ESPs, the integration follows the same shape: Hello Retail gets API access → identifies the recipient → renders a personalized HTML block at send-time → tracks clicks back via UTM.
+- For most ESPs the integration is the same shape: paste Hello Retail's HTML snippet (one `<a><img>` tile per product; the image URLs carry the ESP's e-mail merge tag) into the template → the ESP fills in the recipient's e-mail at send → Hello Retail renders each tile image for that recipient on open and locks the selection after the first open → clicks go through `core.helloretail.com/serve/tile/click` with UTM parameters. No API key is needed for the content itself; keys are for permission sync (Triggered Emails) and a few auto-campaign hookups.
 - For Mailchimp specifically, the customer must **invite Hello Retail as a user** — easy to miss in the kickoff checklist.
 - Always confirm the customer's **identifier strategy** — Hello Retail needs a stable identifier (usually email) that maps between site tracking and ESP sends.
 

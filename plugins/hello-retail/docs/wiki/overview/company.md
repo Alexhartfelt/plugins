@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Company
 
 ## Snapshot
@@ -7,7 +12,6 @@
 | Name | Hello Retail |
 | Founded | 2013 |
 | HQ | Copenhagen, Denmark |
-| Co-founders | Brian Petersen, Kasper Refskou Jensen (CEO) |
 | Mission | "Inspire and innovate for the next-level customer journey, making every shopping experience personalized." |
 | Tagline | "We help ecommerce teams run better stores." |
 | Public website | [helloretail.com](https://helloretail.com/) |
@@ -22,19 +26,12 @@
 
 AI-powered personalization for ecommerce — recommendations, search, pages, retail media, and email — sitting on top of the proprietary **Product Intelligence** engine. Hello Retail describes it as a "personalization platform" rather than a single-feature tool.
 
-The company began as a recommendations / search vendor in 2013 and in early 2023 launched **Product Intelligence**, the AI backbone that now powers every product on the platform.
-
-## Reference customers (visible on marketing site)
-
-BioPack, Luxplus, Makeupmekka, Munk Store, Mustigroup (Musti), PenStore, DPJ Workspace, Smoke It, Legeakademiet, Pixizoo, avXperten, Hjem.dk, Beslag Online.
-
-These show up frequently in case studies on the marketing site — useful as proof points in EBRs and pitches.
+The company began as a recommendations / search vendor in 2013 and later launched **Product Intelligence**, the AI backbone that now powers every product on the platform.
 
 ## Why this matters for D&TS
 
-- We are positioned as a **managed, flexible** platform — not a bare widget. The site explicitly says: "We take responsibility for how our tools run on your webshop. Our team can assist with implementation, monitoring, and adjustments." That promise rolls down to D&TS.
-- The company has chosen a **suite play**, not a point solution — when onboarding a customer for one product (say Search), the long-term goal is to layer the other modules over time.
-- **Privacy-aware** is part of the company narrative — Product Intelligence "tracks products, not people" and the platform supports GDPR / CCPA / consent management. This is a real selling point in EU markets and a regular customer question during onboarding.
+- Hello Retail sells itself as a **managed** platform: implementation, monitoring and adjustments are part of the offer, so D&TS owns how the tools run on the customer's shop.
+- **Privacy**: Product Intelligence tracks products, not people, and the platform supports GDPR / CCPA / consent management. Expect the question during onboarding.
 
 ## Sources
 

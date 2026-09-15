@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Wikinggruppen (WGO)
 
 Wikinggruppen is a Nordic ecommerce platform used by Swedish/Nordic merchants. It is not in Hello Retail's officially supported platform list — treat it as a custom integration using the [General Guide](https://support.helloretail.com/platforms-and-newsletter-providers/general-guide-for-hello-retail-integration-with-third-party-platforms/).
@@ -105,7 +110,7 @@ document.addEventListener('click', function(e) {
 
 ## CSS padding reset
 
-The HR overlay resets `padding-inline-start: 0` on all descendants via:
+The desktop-overlay and desktop-embedded base CSS reset `padding-inline-start: 0` on all descendants (the mobile overlay does not) via:
 
 ```css
 .hr-overlay-search * { padding-inline-start: 0; }
@@ -130,4 +135,4 @@ Any element that relies on `padding-left` (e.g. badges, icon buttons) will lose 
 ---
 
 ## Timeline
-- 2026-06-22: Page created from store-SE-7 (WGO) Search onboarding. ATC AJAX endpoint confirmed by XHR interception.
+- 2026-06-22: Page created from a Wikinggruppen Search onboarding. ATC AJAX endpoint confirmed by XHR interception.

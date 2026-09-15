@@ -1,3 +1,8 @@
+---
+source: field
+verified: never
+---
+
 # Magento 2 — Swatches
 
 **Applies to:** Magento 2 — both frontends, split by section below. Magento 1 is legacy and is not covered here — see [../ecommerce-platforms.md](../ecommerce-platforms.md).
@@ -20,7 +25,7 @@ those alone do not tell you which you are on. Check for `ko` / `x-magento-init` 
 
 This section holds the **tile swatch markup**; the runtime **swatch-renderer init +
 `getMatchingLabels` size-filtering** is the heavy, ATC-coupled part and lives with the cart wiring —
-see [../../cheat-sheets/add-to-cart/magento.md](../../cheat-sheets/add-to-cart/magento.md) Steps 4–5.
+see [add-to-cart.md](./add-to-cart.md) Steps 4–5.
 
 ### Swatch markup
 
@@ -64,7 +69,7 @@ Configurable swatches need Magento's `swatch-renderer` initialised per card, and
 `getMatchingLabels` to hide sizes with no stock. That code is intertwined with the ATC observer —
 don't fork it here. Use it from:
 
-- [../../cheat-sheets/add-to-cart/magento.md](../../cheat-sheets/add-to-cart/magento.md) **Step 4** — combined ATC + swatch observer (search overlay)
+- [add-to-cart.md](./add-to-cart.md) **Step 4** — combined ATC + swatch observer (search overlay)
 - **Step 5** — `x-magento-init` swatch-renderer per card + `getMatchingLabels` size filtering
 
 ---
@@ -299,8 +304,9 @@ matching the string, so it stays language-independent:
 
 ## Notes
 
-- **Configurable products can't ATC from the tile** — the button navigates to the PDP; swatches are
-  for preview only on the tile. See [./add-to-cart.md](./add-to-cart.md).
+- **Configurable products add from the tile only when the tile carries the swatch selection**
+  (Steps 4–6 in [add-to-cart.md](./add-to-cart.md)). A tile with the preview-only swatches above keeps the
+  native button that navigates to the PDP.
 - Generic, feed-driven **image colour-swatches** (`extraDataList.swatchIMG` + hover image-swap) are
   cross-platform tile markup, not Magento-specific — they stay in the tile-extractor skill.
 - `jsonConfig` can be large (tens of KB per product when `optionPrices` carries a full tier-price

@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Recoms — Magento 2
 
 **Applies to:** Magento 2, all frontends — these snippets key off Magento's body classes and product-list markup, not the theme. Magento 1 is legacy and is not covered — see [../../platforms/ecommerce-platforms.md](../../platforms/ecommerce-platforms.md).
@@ -29,7 +34,7 @@ Magento adds `.catalog-category-view` to the `<body>` on category pages and `.fi
 
 The cart-binding patterns (`mage/mage` requirement, `x-magento-init`, `uenc` encoding, swatch-renderer) live in their own file because they apply to Search AND Recoms equally:
 
-→ **[../add-to-cart/magento.md](../add-to-cart/magento.md)** — read this for any Magento install that needs working add-to-cart from HR product cards.
+→ **[../../platforms/magento/add-to-cart.md](../../platforms/magento/add-to-cart.md)** — read this for any Magento install that needs working add-to-cart from HR product cards.
 
 ---
 

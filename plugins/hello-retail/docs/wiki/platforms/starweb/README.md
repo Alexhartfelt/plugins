@@ -1,11 +1,16 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Starweb
 Starweb is a Nordic ecommerce platform. Hello Retail supports it via the [Starweb Installation Guide](https://support.helloretail.com/platforms-and-newsletter-providers/starweb-installation-guide/).
 
-**Add-to-cart specifics:** Starweb ships a `quickShop` global. Calling `quickShop.init()` after HR renders products wires up add-to-cart. See [../cheat-sheets/add-to-cart/starweb.md](../../cheat-sheets/add-to-cart/starweb.md).
+**Add-to-cart specifics:** Starweb ships a `quickShop` global. Calling `quickShop.init()` after HR renders products wires up add-to-cart. See [add-to-cart.md](./add-to-cart.md).
 
-**Cheat sheets:**
+**Code:**
 
-- [cheat-sheets/add-to-cart/starweb.md](../../cheat-sheets/add-to-cart/starweb.md) — `quickShop.init()`
+- [add-to-cart.md](./add-to-cart.md) — `quickShop.init()`
 
 ---
 

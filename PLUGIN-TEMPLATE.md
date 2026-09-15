@@ -43,14 +43,15 @@ plugins/README.md                 one-table index of the plugins in this repo   
 scripts/validate.mjs              structural checks + `claude plugin validate --strict`    (copy; review FORBIDDEN_TRACKED)
 scripts/bump-version.mjs          bumps changed plugins' versions after merge              (copy)
 scripts/changelog.mjs             rolls `## Unreleased` → `## <version>`, reads it back    (copy)
-.github/workflows/ci.yml          validate · markdown lint · shellcheck · secret scan · version preview  (copy)
+scripts/wiki-lint.mjs             docs/wiki gate: provenance frontmatter, links, orphans, customer data  (copy)
+.github/workflows/ci.yml          validate · markdown lint · wiki lint · shellcheck · secret scan · version preview  (copy)
 .github/workflows/release.yml     on main: bump → roll changelog → commit → tag → GitHub Release        (copy; adapt the marketplace name in the release body)
 .github/CODEOWNERS                who reviews what                                         (adapt)
 .github/dependabot.yml            monthly grouped updates for actions and npm tooling      (copy)
 .github/pull_request_template.md  the PR checklist                                         (copy)
 package.json / package-lock.json  Node tooling only: validate, lint, check, version:*      (adapt `name`)
 .nvmrc                            Node 22                                                  (copy)
-.markdownlint-cli2.jsonc          lenient lint for model-facing prose; ignores wiki + changelogs  (copy)
+.markdownlint-cli2.jsonc          lenient lint for model-facing prose; ignores wiki, changelogs, gitignored output  (copy)
 .editorconfig                     utf-8, LF, 2-space indent, final newline                 (copy)
 .gitattributes                    LF everywhere; binary fixtures; lockfile marked generated (copy)
 .gitignore                        node_modules, OS noise, secrets, QA/, output/, browser state  (copy; review the secret filenames)
@@ -330,7 +331,10 @@ folders in the operator's working directory — `QA/<customer>/`, `QA/screenshot
   H1s are allowed because skill bodies are prose for a model. Headings, lists, tables and fences
   still need blank lines around them. **CI**
 - `docs/wiki/**`, `skills/*/references/wiki/**` and every `CHANGELOG.md` are excluded from lint —
-  imported knowledge and release notes are not reformatted to satisfy a linter.
+  imported knowledge and release notes are not reformatted to satisfy a linter. The wiki has its own
+  gate instead, `scripts/wiki-lint.mjs`: every page opens with `source` / `verified` frontmatter, every
+  relative link resolves, no page is orphaned, and nothing customer-identifiable (UUIDs, e-mails, shop
+  domains, images) is present. **CI**
 
 ## 7. Skill best practices
 

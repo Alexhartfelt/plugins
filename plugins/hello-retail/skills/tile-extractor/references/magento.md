@@ -8,7 +8,7 @@ writing the price box, dynamic ids, the CTA or the swatch markup.
 Tile patterns live here; platform knowledge lives in the wiki — `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/README.md`
 (extension, attribute discovery via `awext/info`, why a field "missing" from the feed is often an
 `extraAttributes` gap), `add-to-cart.md`, `rating.md`, `swatches.md`, and the Luma-vs-Hyvä plumbing in
-`${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md` (Step 0).
+`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` (Step 0).
 
 ### Detection — Luma, Breeze, Hyvä
 
@@ -108,7 +108,7 @@ Tell a configurable from a simple product in the DOM: the native tile has a `.sw
 (navigation) instead of a `<form action="…/checkout/cart/add/…">`. Simple products post to the cart;
 configurable products (multiple sizes/colours) navigate to the PDP so the visitor picks options —
 **unless** the storefront renders in-tile swatches with a size filter, in which case the Magento
-cheat-sheet's swatch + ATC block applies (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md` Step 6). Mirror whatever the native tile does. For the navigation case keep the `<button>` tag exactly — do not change it to `<a>`. No JS ATC handler is needed.
+cheat-sheet's swatch + ATC block applies (`${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` Step 6). Mirror whatever the native tile does. For the navigation case keep the `<button>` tag exactly — do not change it to `<a>`. No JS ATC handler is needed.
 
 ```liquid
 <button class="action tocart toproduct primary"

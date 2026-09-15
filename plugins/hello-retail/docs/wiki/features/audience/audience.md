@@ -1,17 +1,22 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Audience *(free)*
 
 ## What it is
 
 Customer segmentation tool. Build endlessly-customizable segments based on behavior, preferences and purchase history, then export them as Facebook custom audiences (or pull them into an ESP).
 
-Included free with any paid Hello Retail subscription.
+Marketed as a free tool on helloretail.com; it is not a separately priced product on the pricing page.
 
 ## Capabilities
 
-- Segment customers by lifetime value, average order size, brand affinity, recency, and so on.
+- Segment customers by **purchased products with attributes** (e.g. brand, with an optional time window) and by **previous-order count**; the underlying data is product views plus order date, size, amount and products.
 - Get insights into customer behavior: LTV, AOV per segment, loyalty correlation.
 - Identify lapsed buyers (e.g. "customers who haven't purchased in 90 days").
-- Export segments to Facebook as custom audiences — works with as few as **20 customers**.
+- Export segments to Facebook as custom audiences.
 - Export to ESPs (Mailchimp example in KB).
 
 ## Where it fits
@@ -25,7 +30,7 @@ Audience sits at the marketing layer — it's the bridge between Hello Retail's 
 
 ## Email and permissions
 
-Audience honors email permission state (subscribed / unsubscribed / pending) — see "Audience: Email Addresses and Permissions". Always confirm permission handling before exporting to a marketing channel.
+Audience only exposes addresses Hello Retail holds **permission** for. Permissions are synced from the customer's newsletter platform (auto-sync guides under Platforms & Newsletter Providers) or uploaded manually; addresses without permission are masked as anonymous in the Audience and left out of the "Download emails" file. Confirm the permission sync is in place before exporting to a marketing channel.
 
 ## D&TS notes
 

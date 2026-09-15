@@ -1,26 +1,25 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Pages
 
 ## What it is
 
-Dynamic, personalized category and brand pages. Replaces the static, manually-sorted category page with one that adapts per-visitor based on behavior, affinity and predicted intent, while giving merchandisers explicit override controls.
-
-## Headline metrics
-
-- Up to **55%** lower bounce rate on category pages
-- Personalized product discovery for each customer
-- Advanced features: boostings and fixed products
+Dynamic, personalized category and brand pages. Replaces the static, manually-sorted category page with one that adapts per visitor based on behaviour and affinity (personalised boosts), while giving merchandisers explicit override controls.
 
 ## Why customers buy it
 
-The pitch (paraphrased from a published DPJ Workspace quote on the marketing site): a 300-category, 6,000-SKU store used to **manually** sort the position of each product in each category — an impossible operation. Pages takes that over while still giving merchandisers control.
+Category pages are normally sorted once, by hand, and never again. Pages sorts every category per visitor (relevancy plus personalised boosts) and gives merchandisers overrides — boosts, product conditions, pinned products — instead of manual ordering. The public pitch is one line: "Dynamic category pages that adapt to each visitor."
 
 ## Capabilities
 
 - Per-visitor personalization driven by Product Intelligence + behavior.
 - Boostings (push categories of products up).
-- Fixed products (pin specific products at specific positions).
+- Product Overrides — per path/URL: pin products to the top in a chosen order, or switch a page to "Only Manual Products".
 - Pages Analytics — see what categories/brands perform vs. need a boost.
-- Retail Media slots inside category pages.
+- Retail Media slots inside category pages (see [Retail Media](../retail-media/retail-media.md); sponsored items disappear when the visitor changes the sorting).
 
 ## Integration modes
 
@@ -66,5 +65,5 @@ Pages output is themable to match the shop. See "Pages Design Customizations".
 
 ## Sources
 
-- [helloretail.com/en/pages](https://helloretail.com/en/pages/)
+- [helloretail.com — "Category & Brand Pages" card on the homepage](https://helloretail.com/en/pages/) (the standalone Pages page no longer exists; the URL redirects to the homepage)
 - [support.helloretail.com/pages](https://support.helloretail.com/pages/)

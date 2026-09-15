@@ -89,7 +89,7 @@ handle_live_update();
 
 **Scope every selector to `.hr-overlay-search`** so you only bind HR's tiles, never the storefront's own product grid. (For `desktop-embedded`, scope to the embedded container class the variant uses instead.)
 
-Source of truth per platform: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/<platform>.md`.
+Source of truth per platform: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/<platform>/add-to-cart.md`.
 
 ## Shopify — `.hr-form` submit to `/cart/add.js`
 
@@ -105,7 +105,7 @@ Magento needs jQuery. **Add `import "jquery";` at the very top of `search.js`** 
 
 - `uenc` is the base64 URL-safe encoding of the current page (`+`→`-`, `/`→`_`, `=`→`,`). HR's Liquid ships the placeholder `awuenc` in the form action — **don't replace it in the template**, the function swaps it at runtime.
 - `form_key` is Magento's CSRF token; read once from `#maincontent` per render.
-- Alternative to `.mage('catalogAddToCart')`: the `x-magento-init` block in the Liquid (see `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md` Step 3) — use whichever the theme expects, not both.
+- Alternative to `.mage('catalogAddToCart')`: the `x-magento-init` block in the Liquid (see `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` Step 3) — use whichever the theme expects, not both.
 - **Swatches/size-filter for configurable products** are not part of plain ATC — handle them under *Other interactivity* below (analyze → plan → discuss → execute → capture), not here. Wire plain ATC in this section.
 
 ## Shopware — re-init the buy widget via PluginManager
@@ -154,8 +154,8 @@ If a behavior is **undocumented and the binding can't be clarified**, leave the 
 
 Field-captured extras (loading states, Quick View, `swatch-renderer` / `getMatchingLabels` for configurable-product swatches):
 
-- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/shopify.md`
-- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md`
+- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/shopify/add-to-cart.md`
+- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md`
 
 **Ratings / reviews** — per-platform widget markup + re-init:
 

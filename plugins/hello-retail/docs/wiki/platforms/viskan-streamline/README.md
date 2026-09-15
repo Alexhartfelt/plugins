@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Viskan / Streamline
 
 Viskan is a Nordic enterprise ecommerce platform. The storefront layer is called **Streamline** — a React/Redux SPA bundled with webpack and served from `/build/chunks/`.

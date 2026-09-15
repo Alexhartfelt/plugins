@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Search — Lightspeed eCom (SEOshop / webshopapp)
 
 Lightspeed eCom storefronts (formerly SEOshop / webshopapp). **Tell-tale signal:** image and asset URLs on `cdn.webshopapp.com/shops/<id>/…`; product tiles are `li.data-product` inside `ul.list-collection`.

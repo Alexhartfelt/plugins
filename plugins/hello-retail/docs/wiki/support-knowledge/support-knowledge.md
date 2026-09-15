@@ -1,6 +1,11 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Support Knowledge — Curated Index
 
-Hello Retail's support documentation site ([support.helloretail.com](https://support.helloretail.com/)) is organized into 11 top-level categories. This file is a curated index from a D&TS perspective — the articles you'll actually open most often, grouped sensibly.
+Hello Retail's support documentation site ([support.helloretail.com](https://support.helloretail.com/)) is organized into 12 top-level categories. This file is a curated index from a D&TS perspective — the articles you'll actually open most often, grouped sensibly.
 
 ## 1. General Setup
 
@@ -47,7 +52,7 @@ See [../onboarding/review-and-testing.md](../onboarding/review-and-testing.md).
 ### Documentation and API
 - [Activities Log](https://support.helloretail.com/general-setup/activities-log/)
 - [Using CloudFlare / Rocket Loader and Hello Retail](https://support.helloretail.com/general-setup/using-cloudflare-rocket-loader-and-hello-retail/)
-- [Setup a custom integration](https://support.helloretail.com/general-setup/setup-a-custom-integration/)
+- [Set up a custom integration](https://support.helloretail.com/general-setup/setup-a-custom-integration/)
 - [Hello Retail API](https://support.helloretail.com/general-setup/hello-retail-api/)
 - [Queue Product Feed Runs Via API](https://support.helloretail.com/general-setup/queue-product-feed-runs-via-api/)
 
@@ -67,7 +72,7 @@ See [../features/search/search.md](../features/search/search.md) for the curated
 
 See [../features/product-recommendations/product-recommendations.md](../features/product-recommendations/product-recommendations.md). Full root: [support.helloretail.com/product-recommendations](https://support.helloretail.com/product-recommendations/).
 
-**16 articles.**
+**17 articles** in three subcategories: General and Setup, Global Filters, Integrations (Sleeknote).
 
 ## 4. Pages
 
@@ -75,7 +80,9 @@ See [../features/pages/pages.md](../features/pages/pages.md). Full root: [suppor
 
 **10 articles.**
 
-## 5. Platforms & Newsletter Providers
+## 5. Platforms and Newsletter Providers
+
+Root: [support.helloretail.com/platforms-and-newsletter-providers](https://support.helloretail.com/platforms-and-newsletter-providers/)
 
 The biggest "external integration" category — see [../platforms/](../platforms/platforms.md).
 
@@ -115,7 +122,7 @@ See [../features/retail-media/retail-media.md](../features/retail-media/retail-m
 
 See [../features/product-agents/product-agents.md](../features/product-agents/product-agents.md). Full root: [support.helloretail.com/product-agents](https://support.helloretail.com/product-agents/).
 
-**8 articles** — Intro, Klaviyo setup, Email templates, Available Agents, Scheduling, Billing, Upgrading, Price Drop Potential Dashboard.
+**13 articles** — Intro & Getting Started, Setting up Klaviyo, Customising Your Email Templates, Restyle Your Product Agent Emails with an AI Assistant, Available Agents and Use Cases, Product Filters for Product Agents, Message Scheduling and Prioritisation, Automatic Follow-ups, Billing, Credits & Usage, Upgrading Your Subscription, Price Drop Potential Dashboard, Understanding your Product Agent Analytics.
 
 ## 12. Other (Cookies / Legal / GDPR)
 

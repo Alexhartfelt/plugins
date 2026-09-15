@@ -1,3 +1,8 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Glossary
 
 Terms, acronyms and product-specific jargon used in Hello Retail.
@@ -12,7 +17,7 @@ Terms, acronyms and product-specific jargon used in Hello Retail.
 | **RM** | Retail Media. |
 | **NLC** | Newsletter Content (informal). |
 | **TE** | Triggered Emails (informal). |
-| **PA** | Product Agents (Winter 2026 release). |
+| **PA** | Product Agents. |
 | **EBR** | Executive Business Review — periodic CSM-led review with the customer. |
 | **CSM** | Customer Success Manager. |
 | **KAM** | Key Account Manager. |
@@ -20,8 +25,8 @@ Terms, acronyms and product-specific jargon used in Hello Retail.
 | **Activities Log** | The audit log inside my Hello Retail. |
 | **Initial Content** | Curated suggestions shown in the search bar before the user types anything. |
 | **Boosting** | Pushing certain products up in Search / Pages / Recs rankings. |
-| **Word Boost** | Specific to Search — boost a product when a specific word is in the query. |
-| **Pinned Product** | A product locked to a specific position across all recommendation boxes / search results. |
+| **Word Boost** | Specific to Search — for a given search term, pin products to the top in a set order, hide irrelevant ones, or boost matching attributes. |
+| **Pinned Product** | A product placed at the top of a specific recommendation box, ahead of the algorithm's results (set per box). In Search, per-query pinning is done through Word Boosts. |
 | **Fixed Product** | A product forced into a specific recommendation box. |
 | **Strategy** | The algorithm + steps a recommendation box uses to pick products. |
 | **Box** | A configurable recommendation widget instance. |
@@ -57,17 +62,15 @@ Terms, acronyms and product-specific jargon used in Hello Retail.
 
 | Term | Context |
 | --- | --- |
-| **Klaviyo** | Primary ESP partner; required for Product Agents. |
+| **Klaviyo** | The only ESP supported by Product Agents; also has Newsletter Content and permission-sync integrations. |
 | **Mailchimp** | Common ESP; auto-sync supported. |
 | **Omnisend, ActiveCampaign, Drip, HeyLoyalty, Rule, MailerLite, MailCamp, Apsis, Brevo, MarketingPlatform, BullSender, Ubivox, Get A Newsletter, Campaign Monitor** | Other supported ESPs (various coverage levels). |
 | **Sleeknote** | DK popup tool; HR recommendations can render inside Sleeknote modals. |
-| **Swiipe Plus-sell** | DK upsell tool with documented coexistence. |
+| **Swiipe Plus-sell** | Order-confirmation upsell tool that pulls products from an HR recommendation box via API; documented for WooCommerce and Magento. |
 | **CloudFlare Rocket Loader** | Optimization feature that can interfere with HR's async loading. |
 | **DanDomain / SmartWeb / ScanNet / Shoporama / Wannafind / Starweb / Lightspeed / Centra / Norce / Abicart / Textalk / Shopware** | EU/Nordic ecommerce platforms. |
 | **Shopify, Magento (1 & 2), WooCommerce, PrestaShop, BigCommerce, Salesforce Commerce Cloud, Miva** | Global ecommerce platforms. |
-| **Clarify, Bluemint, Dtails, Segmento** | Klaviyo specialist agencies partnered with HR on Product Agents. |
 | **G2** | Review platform where HR collects customer reviews. |
-| **Beslag Online, Hjem.dk, DPJ Workspace, avXperten, Smoke It, Pixizoo, Legeakademiet, BioPack, Luxplus, Makeupmekka, Munk Store, Mustigroup, PenStore** | Reference customers visible on the marketing site. |
 
 ## Sources
 

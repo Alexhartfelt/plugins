@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # BigCommerce (Stencil) — Add to cart
 
 Platform-specific ATC for Hello Retail tiles on BigCommerce Stencil themes (Cornerstone and
@@ -48,23 +53,29 @@ helper is **not** exposed on `window` in a typical Cornerstone build, so don't r
 yourself, and do not set a `Content-Type` header on the request (letting the browser set the
 `multipart/form-data` boundary from the `FormData` object is required).
 
-### Search overlay — bound via the tile's existing per-render hook
+### Search overlay — `fix_links`-bound
 
-Scope to `.hr-overlay-search`, guard per-tile (reuse whatever idempotent hook the shell already
-calls after each render — e.g. a `productsLoaded()`-style function keyed off a `loaded` attribute
-on the tile), and bind on the tile's own form rather than delegating from `document`, since the
-form is unique per tile.
+Scope to `.hr-overlay-search` and call the binding after **every** `fix_links` call-site (initial
+render and `load_more_results`), like every other platform. Bind on each tile's own form rather than
+delegating from `document`, and guard the form with a `data-*` flag so re-renders don't double-bind:
+
+```js
+function add_to_cart() {
+    document.querySelectorAll(".hr-overlay-search .hr-search-overlay-product").forEach(bind_add_to_cart);
+}
+```
 
 ```js
 function bind_add_to_cart(product) {
     var form = product.querySelector("form[data-cart-item-add-from-card]");
-    if (!form) return;
+    if (!form || form.dataset.hrBound) return;             // idempotent — re-render / clone safe
+    form.dataset.hrBound = "true";
 
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
         var button = form.querySelector(".button--cardAdd");
-        var popup = form.querySelector(".add-card-popup"); // already emitted by the tile skill
+        var popup = form.querySelector(".add-card-popup"); // optional status element — add one to the tile if the theme has none; showPopup() tolerates null
         var originalValue = button ? button.value : null;
         var waitMessage = button ? button.dataset.waitMessage : null;
 
@@ -116,9 +127,17 @@ function showPopup(popup, message, status) {
 }
 ```
 
-Call `bind_add_to_cart(product)` for each tile from the shell's existing per-render/per-tile hook
-(alongside whatever else it already does per tile), not from a separate `fix_links` call-site —
-one bind per tile, guarded by the same "already processed" flag the shell already uses.
+### Recom slider — `afterInit`-bound
+
+Run the same binding over the slides from Swiper's `afterInit`, so clones are bound too; the
+`data-hrBound` guard keeps re-inits idempotent.
+See `${CLAUDE_PLUGIN_ROOT}/skills/recom-developer/references/add-to-cart-js.md`.
+
+```js
+function add_to_cart(root) {
+    root.querySelectorAll(".swiper-slide").forEach(bind_add_to_cart);
+}
+```
 
 ### Cart-count badge refresh
 

@@ -12,6 +12,9 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
   truth, not a copy), `docs/browser-login.md`, `.mcp.json`, `hooks/hooks.json`, `AUTHORING.md`,
   `CHANGELOG.md` (the release notes — see below).
 - `scripts/validate.mjs` — the checks CI runs. Run `npm run check` before proposing a PR.
+- `scripts/wiki-lint.mjs` — content checks for `docs/wiki/`: provenance frontmatter on every page, links,
+  orphans, customer-identifiable data. Part of `npm run check`; its `LEVELS` table records which checks
+  are still warnings while the wiki cleanup is in progress.
 - `PLUGIN-TEMPLATE.md` — the canonical plugin layout, file templates and conventions. Scaffold
   a new plugin from it, and keep it current when a structural convention changes.
 - `scripts/changelog.mjs` — rolls and reads `CHANGELOG.md` for the Release workflow. Never

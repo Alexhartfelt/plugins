@@ -20,6 +20,9 @@
   "globs": ["**/*.md"],
   "ignores": [
     "**/node_modules/**",
+    "QA/**",
+    "output/**",
+    "internal/**",
     ".claude/**",
     "plugins/*/docs/wiki/**",
     "plugins/*/skills/*/references/wiki/**",

@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # UI Translations (QA team)
 
 Canonical translations for Hello Retail **Search**, **Recommendations**, and **Pages** UI strings, provided by the QA team. Use these **first** whenever you need to translate or change a UI string in a template; only fall back to your own knowledge for strings this file doesn't cover (and make sure the result reads naturally for the locale).

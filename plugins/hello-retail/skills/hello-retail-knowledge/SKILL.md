@@ -9,7 +9,7 @@ Answer Hello Retail questions **wiki-first** from the bundled copy at `${CLAUDE_
 
 ## Lookup procedure
 
-1. Start at `${CLAUDE_PLUGIN_ROOT}/docs/wiki/WIKI.md` — the audience-grouped index. Part 1 = technical/daily reference (onboarding, base templates, features, platforms, cheat-sheets, glossary); Part 2 = business/company context.
+1. Start at `${CLAUDE_PLUGIN_ROOT}/docs/wiki/README.md` — its Quick Index maps every folder, and each folder's index page lists its pages. Every page opens with `source` (public-docs / field / index) and `verified` frontmatter; say so in the answer when a page is `verified: never`.
 2. Follow the index to the right page, or grep across `${CLAUDE_PLUGIN_ROOT}/docs/wiki/` for specific terms (SKUs, field names, acronyms, error strings).
 3. Read the full page before answering — pages cross-link; follow links when the first page defers to another.
 4. **Always cite the wiki path** in the answer, e.g. `features/product-agents/product-agents.md`.

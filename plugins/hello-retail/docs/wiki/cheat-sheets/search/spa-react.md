@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Search — SPA / React storefronts (client-side routing)
 
 Custom React (or Vue/Next/etc.) storefronts navigate with `history.pushState` instead of full page loads. Our init code runs **once**, but the page lives on "forever" — so every flag, node reference, and listener it sets up must survive route changes. **Tell-tale signal:** clicking nav links changes the URL without a document reload; `window.next`, `__NUXT__`, or a root `<div id="root">/<div id="app">` that owns the whole body.
@@ -71,7 +76,7 @@ window.addEventListener("hr:routechange", function() {
 	overlay_active = false;                  // ← THE bug: leaving this true blocks keyup re-activation
 	triggers.forEach(function(t) { t.value = ""; });   // stale term otherwise lingers in the header input
 	var current = overlay.querySelector(".hr-results");
-	if (current && default_results) {        // default_results is null until first render completes
+	if (current && default_results) {        // default_results: your own clone of .hr-results, taken in the initial_render callback — the base keeps none
 		current.replaceWith(default_results.cloneNode(true));
 	}
 	setTimeout(bind_triggers, 300);          // in case THIS route remounted the header

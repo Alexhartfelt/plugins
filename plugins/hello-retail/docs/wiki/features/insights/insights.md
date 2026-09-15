@@ -1,14 +1,19 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Insights *(free)*
 
 ## What it is
 
-Simple analytics layer that surfaces trends and key findings about the customer's store performance and the wider ecommerce market. Free with any paid Hello Retail plan.
+Simple analytics layer that surfaces trends and key findings about the customer's store performance and the wider ecommerce market. Part of the My Hello Retail dashboard; not marketed or priced as a separate product — the support article is its only public documentation.
 
 ## What it shows
 
 - Store-level trends and performance signals.
-- Cross-store / market-level patterns (where allowed by privacy).
-- Key findings — e.g. categories trending up, products with rising velocity.
+- **Informational** insights: recent e-commerce trends, customer behaviour, revenue and other signals for the store.
+- **Actionable** insights: an issue or opportunity in the shop with a suggested action you can perform directly from the insight (e.g. add a search synonym).
 
 This is a lighter-weight analytics layer separate from per-feature analytics (Search Analytics, Pages Analytics, Recommendations Analytics, Triggered Emails Analytics, etc.) — Insights is more about "what's happening in your store overall".
 

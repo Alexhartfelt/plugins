@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Viskan / Streamline — Feeds
 
 Feed setup notes for Viskan customers. Read alongside the `feed-setup` skill, which owns the

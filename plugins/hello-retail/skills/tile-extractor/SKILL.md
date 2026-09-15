@@ -204,7 +204,7 @@ run returns nothing.
 | `cdn11.bigcommerce.com/s-…/stencil/`, `csrf-protection-header-*.js`, `[data-cart-item-add-from-card]` | **BigCommerce** (Stencil)            |
 | `/ajax/?action=cart-additem`, `.js-product-item-add[data-cid]`, `.js-favorites-flip` | **Wikinggruppen**                    |
 | `window.prestashop` global, `/modules/ps_…/`, `body#category` | **PrestaShop**                       |
-| `typeof window.require === 'undefined'` **and** `[x-data]` present on a Magento DOM | **Magento 2 Hyvä** (Alpine, no jQuery — see `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md` Step 0) |
+| `typeof window.require === 'undefined'` **and** `[x-data]` present on a Magento DOM | **Magento 2 Hyvä** (Alpine, no jQuery — see `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md` Step 0) |
 
 Run this once on the homepage; it evaluates every row above and returns the matches:
 
@@ -491,7 +491,7 @@ reference files point to the exact files):
 - **DanDomain** (`generator = DanDomain`) → `references/dandomain.md` — detection; code: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/dandomain/{add-to-cart,search-trigger,rating}.md`
 - **Lightspeed / WebshopApp** (`cdn.webshopapp.com`, `.dmws_perfect-*`) → `references/dandomain.md` — shares the dmws_perfect ATC with DanDomain; code: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/lightspeed/{rating,wishlist}.md` + the shared DanDomain add-to-cart
 - **Centra** (headless, `/api/centra/`) → `references/centra.md` — MUI/Emotion class-name handling, read the live form (no canned ATC — inspect the real markup)
-- **Magento 2** (Luma / Breeze / Hyvä) → `references/magento.md` — frontend detection, `itemNumber` ids, price box, configurable-vs-simple CTA, swatches; platform knowledge: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/{README,add-to-cart,rating,swatches}.md` and the Luma-vs-Hyvä plumbing in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/magento.md`.
+- **Magento 2** (Luma / Breeze / Hyvä) → `references/magento.md` — frontend detection, `itemNumber` ids, price box, configurable-vs-simple CTA, swatches; platform knowledge: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/{README,add-to-cart,rating,swatches}.md` and the Luma-vs-Hyvä plumbing in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/magento/add-to-cart.md`.
 - **Viskan / Streamline** (`window.viskan`, `window._streamline`, `#Streamline` root) → no `references/` file; code + platform quirks: `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/viskan-streamline/{README,add-to-cart,feeds}.md`. Key quirks: the HR overlay is injected **outside** `#Streamline`, so every Viskan delegated click handler (CMS components) is dead inside the overlay — ATC goes through the `window.viskan.cart` API instead, which does not rely on bubbling; and **wishlist / favourite buttons are not supported** on Viskan — omit the `.CMS-ArticleFavorite-icon` star from the tile and say so in the response (rule 6 exception), never wire a substitute.
 - **Shopware** (`form.buy-widget[data-add-to-cart]`, `PluginManager`) → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/shopware/{README,add-to-cart}.md`. The tile keeps the theme's `buy-widget` form; the shell re-inits it.
 - **Starweb** (`window.quickShop`) → `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/starweb/{README,add-to-cart}.md`. Keep the quick-shop markup verbatim; `quickShop.init()` scans for it.

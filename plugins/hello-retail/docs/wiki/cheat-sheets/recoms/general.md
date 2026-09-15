@@ -1,9 +1,16 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Recoms — General (platform-agnostic)
 Platform-agnostic Hello Retail Recommendations snippets — work anywhere HR JS is installed.
 
 For Shopify (`.money`), Magento (`.catalog-category-view`), and DanDomain (`.webshop-showbasket`, `#Content_Productlist`) variants, see the sibling files.
 
 ---
+
+> **Box id.** The base template's recom box is `#hello-retail-{{ key }}`; older designs used `#aw-box-{{ key }}` — check the design before pasting a selector.
 
 ### _ForLoop for sizes in stock_
 
@@ -29,10 +36,10 @@ document.querySelectorAll(".af_filter_content ul li input[type='checkbox']").for
     item.addEventListener("click",function(e){
         setTimeout(function(){
             if(window.location.href.includes("?")){
-                document.querySelector("#aw-box-{{ key }}").style.display='none';
+                document.querySelector("#hello-retail-{{ key }}").style.display='none';
             }
             else {
-                document.querySelector("#aw-box-{{ key }}").style.display='block';
+                document.querySelector("#hello-retail-{{ key }}").style.display='block';
             }
         }, 500)
     })
@@ -72,7 +79,7 @@ _.util.swiper_slider("11.2.10", "#slider-{{ key }}", {
 });
 ```
 
-- **`cssMode: true` is the preferred route** — the wrapper gets `overflow-x: auto` + `scroll-snap-type: x mandatory`, i.e. the *same mechanism* the theme's own carousels use, so trackpad/wheel/touch behaviour matches natively and vertical page scrolling is never hijacked. Field-verified on HR recoms at [store-SE-2](https://store-SE-2/) (front page) and store-D.
+- **`cssMode: true` is the preferred route** — the wrapper gets `overflow-x: auto` + `scroll-snap-type: x mandatory`, i.e. the *same mechanism* the theme's own carousels use, so trackpad/wheel/touch behaviour matches natively and vertical page scrolling is never hijacked. Field-verified on live HR recoms on two shops.
 - The alternative, Swiper's `mousewheel: true` module, also works but hijacks the wheel while the cursor is over the slider — vertical scrolling stalls there unless you also set `mousewheel: { forceToAxis: true }`. Prefer `cssMode` unless you specifically need mousewheel-module features.
 - `cssMode` requires **`loop: false`**. Upside: no slide clones, so the clone-related event-delegation and duplicate-`id` gotchas disappear. Downside: the slider stops at the last product instead of wrapping — with few products and a fractional `slidesPerView` the row can underfill, so make sure the box returns enough products (fallback strategy / product count in the dashboard).
 - `slidesPerView` accepts fractional values (`2.33`, `5.5`) — the standard way to show a partial "peek" tile matching the storefront's own carousel. Measure the native carousel (container width ÷ tile pitch) rather than guessing.
@@ -85,7 +92,7 @@ _.util.swiper_slider("11.2.10", "#slider-{{ key }}", {
 Visual hint that the slider continues.
 
 ```css
-.aw-slider-{{ key }} .swiper-slide.swiper-slide-next + .swiper-slide + .swiper-slide {
+#slider-{{ key }} .swiper-slide.swiper-slide-next + .swiper-slide + .swiper-slide {
     opacity: .2;
 }
 ```
@@ -100,7 +107,7 @@ If the URL has a `?p=...` parameter (e.g. pagination), hide the recommendation.
 var searchParams = new URLSearchParams(window.location.search);
 console.log(typeof searchParams.get('p'));
 if (searchParams.get('p') !== null){
-    document.querySelector("#aw-box-{{ key }}").style.display="none"
+    document.querySelector("#hello-retail-{{ key }}").style.display="none"
 }
 ```
 
@@ -120,11 +127,11 @@ if (sessionStorage.getItem("buyButtonClicked")) {
             document.querySelector("#slider-{{ key }}").style.overflow = "visible";
             if (viewportWidth.matches) {
                 document.querySelector("#slider-{{ key }}").style.height = "660px";
-                document.querySelector("#{{ key }}").style.height = "715px";
+                document.querySelector("#hello-retail-{{ key }}").style.height = "715px";
             }
             else {
                 document.querySelector("#slider-{{ key }}").style.height = "680px";
-                document.querySelector("#{{ key }}").style.height = "820px";
+                document.querySelector("#hello-retail-{{ key }}").style.height = "820px";
             }
             sessionStorage.setItem("buyButtonClicked", "false");
         }, 1000);
@@ -173,7 +180,7 @@ If the recom box renders narrower than the parent product list, force it to matc
 > - `.products.wrapper` (Magento)
 
 ```javascript
-document.querySelector('#aw-box-{{ key }}').style.width = document.querySelector("#Content_Productlist").offsetWidth + "px";
+document.querySelector('#hello-retail-{{ key }}').style.width = document.querySelector("#Content_Productlist").offsetWidth + "px";
 ```
 
 ---
@@ -295,7 +302,7 @@ if (grandTotalNode !== null) {
 
 ## Timeline
 - 2026-05-19: Initial import from the team's Recoms cheat sheet (Notion export).
-- 2026-05-21: Added Price-formatting conventions (Front #27465945156) and Free-Shipping-with-shipping-subtraction skeleton.
+- 2026-05-21: Added Price-formatting conventions and Free-Shipping-with-shipping-subtraction skeleton.
 - 2026-06-02: Documented Swiper version upgrade via `_.util.swiper_slider(version, selector, options)` — bump the first arg (e.g. `"6.5.6"` → `"11.2.10"`).
 - 2026-08-06: Added Free-Shipping re-run-on-cart-update MutationObserver (AJAX/drawer carts where the total changes without a page reload).
-- 2026-08-20: Added Mousewheel/touchpad-scroll section (store-D onboarding): `cssMode: true` (+ `loop: false`) as the preferred native-scroll route, `mousewheel: true` + `forceToAxis` as the alternative; fractional `slidesPerView` for the native "peek" look; arrow-hiding guidance; field references store-SE-2 + store-D.
+- 2026-08-20: Added Mousewheel/touchpad-scroll section (from an onboarding): `cssMode: true` (+ `loop: false`) as the preferred native-scroll route, `mousewheel: true` + `forceToAxis` as the alternative; fractional `slidesPerView` for the native "peek" look; arrow-hiding guidance.

@@ -1,6 +1,11 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Customer Onboarding Flow
 
-> Drawn from the public KB ("First Steps as a Hello Retail User", "Getting Started with Hello Retail") plus the Implementation & Support page. This is the **public-facing flow**; internal D&TS additions (templates, checklists, code) will be layered in next.
+> Stages 1–3 and 5 follow the public KB ("First Steps as a Hello Retail User", "Getting Started with Hello Retail") and the Implementation & Support page; stage 4 and the items marked (D&TS) are D&TS practice. The step-by-step procedures are the plugin's skills — see [onboarding.md](./onboarding.md).
 
 ## End-to-end stages
 
@@ -13,21 +18,21 @@
 ## 1 · Account & Kickoff
 
 - Customer creates a business account at [my.helloretail.com/company/signup.html](https://my.helloretail.com/company/signup.html).
-- Implementation specialist is assigned.
+- Implementation specialist is assigned (D&TS).
 - Confirm scope: which features are in the deal (Search, Recs, Pages, Newsletter, Triggered, Retail Media, Product Agents, Audience).
 - Confirm platforms: ecommerce + ESP.
-- Confirm timeline (public site mentions "Live in 6-8 weeks with dedicated onboarding support" for Search).
+- Confirm timeline (helloretail.com quotes "live in 6-8 weeks" with the pre-built integrations — platform-wide, not per feature).
 - Capture: company details, primary technical contact, marketing contact, dev contact, ESP admin contact.
 
 ## 2 · Install the Hello Retail JavaScript
 
-The JS is the prerequisite for **everything**. Loads asynchronously, served from a CDN, gzip-compressed, browser-cached by URL — does not block page render.
+The JS is the prerequisite for **everything**. It goes in the `<head>` of every page with the `async` attribute, so it loads early without blocking render.
 
 Use the platform-specific guide. Common patterns:
 
-- **Shopify** → theme editor + Hello Retail app.
+- **Shopify** → custom app (Dev Dashboard) for data sync + two `theme.liquid` snippets + a Customer Events pixel for cart and conversion tracking; remove old scripts first.
 - **Magento 2** → Magento extension (also handles feeds + tracking).
-- **WooCommerce / PrestaShop / Lightspeed** → plugin or theme include.
+- **WooCommerce / PrestaShop** → plugin / module. **Lightspeed** → paste the two scripts under Settings > Web extras.
 - **DanDomain / SmartWeb / ScanNet / Shoporama / Wannafind** → platform-native admin.
 - **Headless / custom** → manual JS include + custom integration setup.
 
@@ -109,15 +114,9 @@ Other QA checks:
 - Schedule first **EBR (Executive Business Review)** with the CSM (typically 30/60/90 days post-launch).
 - Customer's CSM picks up ongoing strategy, opportunities for new features, and EBR cadence.
 
-## D&TS placeholder
+## Where the step-by-step procedures live
 
-> *To be expanded with internal scripts, templates, and runbooks once the onboarding code is shared.*
-
-Likely additions to this file:
-
-- Default config templates per platform.
-- Internal pre-flight checklist (DNS, SPF, JS, feed URL, conversion script).
-- Common gotchas not covered in the public KB.
+The plugin's skills are the runbooks for each stage; [onboarding.md](./onboarding.md) maps them to the lifecycle above.
 
 ## Sources
 

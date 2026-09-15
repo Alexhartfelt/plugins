@@ -252,6 +252,6 @@ Then **wait for explicit approval** → push (Step 7) → remind the operator to
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/recoms/slider/` — base `recom.liquid` / `recom.css`
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/recoms/README.md` — variant + slot model
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/recoms/` — `general.md` (price formatting, swiper version, free-shipping), `magento.md`, `shopify.md`, `dandomain.md`, `layout-troubleshooting.md`
-- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/cheat-sheets/add-to-cart/` — `shopify.md`, `magento.md`, `shopware.md`, `starweb.md` (runtime cart wiring)
+- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/<platform>/add-to-cart.md` — shopify, magento, shopware, starweb, viskan-streamline, dandomain, bigcommerce (runtime cart wiring); the binding-per-surface rules and platform inference are in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/platforms/add-to-cart.md`
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/product-recommendations/product-recommendations.md` — product context
 - `hello-retail` MCP (`https://core.helloretail.com/mcp`) — requires the server registered + OAuth-authorized

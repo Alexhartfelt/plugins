@@ -1,3 +1,7 @@
+---
+source: index
+---
+
 # Crawler Helpers
 Hello Retail's **Crawler** is an alternative to product / category / content feeds — instead of the customer pushing data to us, we crawl their site and pull it. Used when the customer can't expose a feed (or doesn't want to). Less common than feed-based setups.
 

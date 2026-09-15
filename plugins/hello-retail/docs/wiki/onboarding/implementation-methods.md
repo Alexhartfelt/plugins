@@ -1,17 +1,22 @@
+---
+source: public-docs
+verified: 2026-09-15
+---
+
 # Implementation Methods
 
 Hello Retail offers two implementation methods. The choice usually drives 50% of the onboarding effort, so pick deliberately at kickoff.
 
 ## Method 1 — Script-based (recommended default)
 
-> "Quick to implement, minimal coding, best for standard integrations with managed templates." — Platform overview page
+Managed templates configured in the dashboard, placed with generated snippets; minimal coding, fastest for platforms with a pre-built integration.
 
 ### What it looks like
 
 - Customer adds the Hello Retail JS to their shop.
 - For most platforms, an extension/plugin/app does the install.
 - Configurations live in [my.helloretail.com](https://my.helloretail.com/), not in customer code.
-- Hello Retail manages the rendering templates server-side.
+- Hello Retail hosts the rendering templates (Liquid) and the script renders them into the page.
 
 ### When to choose
 
@@ -22,13 +27,13 @@ Hello Retail offers two implementation methods. The choice usually drives 50% of
 
 ### Where it lives in the KB
 
-- [Manual Setup category](https://support.helloretail.com/general-setup/manual-setup/) — when no platform extension exists.
+- [Manual Setup category](https://support.helloretail.com/general-setup/manual-setup-category/) — when no platform extension exists.
 - [Installing the JavaScript](https://support.helloretail.com/general-setup/installing-the-javascript/) — generic.
 - Per-platform install guides in [Setup of Platforms](https://support.helloretail.com/platforms-and-newsletter-providers/setup-of-platforms-category/).
 
 ## Method 2 — API
 
-> "Offers maximum flexibility and control, suitable for custom solutions and complex requirements." — Platform overview page
+Direct calls to the REST endpoints (`core.helloretail.com/serve/search`, `/serve/recoms`, `/serve/pages/{key}`) and the GraphQL API, for full control over rendering and for non-storefront use.
 
 ### What it looks like
 
@@ -49,7 +54,7 @@ Hello Retail offers two implementation methods. The choice usually drives 50% of
 - [Hello Retail API](https://support.helloretail.com/general-setup/hello-retail-api/)
 - [Setup a custom integration](https://support.helloretail.com/general-setup/setup-a-custom-integration/)
 - [developer.helloretail.com](https://developer.helloretail.com/) — full API reference + guides.
-- [docs.helloretail.com](https://docs.helloretail.com/) — Product Intelligence GraphQL docs.
+- [Product Intelligence GraphQL API](https://developer.helloretail.com/api/graphQL/product-intelligence/) — endpoint `core.helloretail.com/pi/graphql`, queries `productInsight` and `topProducts`.
 
 ## Hybrid (common in practice)
 
@@ -76,7 +81,7 @@ This is fine — start with the script and add API integration where needed.
 
 - **Always start the conversation with Script-based** and only move to API if the customer's setup or requirements force it.
 - For **API customers**, set expectations on dev hours up-front — these projects can stretch 2–3× longer than script installs.
-- For **Magento 2** specifically, the extension handles feeds, tracking, and the empty search page automatically — it's the fastest install in the suite.
+- For **Magento 2** specifically, the extension handles the feeds and tracking; the empty search page is still a manual CMS page (see the Magento 2 search-page guide). Still the fastest install in the suite.
 
 ## Sources
 

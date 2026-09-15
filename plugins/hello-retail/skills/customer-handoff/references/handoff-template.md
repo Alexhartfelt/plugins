@@ -210,7 +210,7 @@ Placeholders only — `store-XX`, `example-shop.com`, no people, no UUIDs. One r
 
 | # | Platform | Pattern (one sentence, generic) | Proposed home | From case |
 |---|---|---|---|---|
-| 1 | `<Shopify>` | `<e.g. "Horizon's <predictive-search> leaks on typing; full capture-phase suppression needed">` | `docs/wiki/platforms/<platform>/…` · `docs/wiki/cheat-sheets/<feature>/…` · `skills/<skill>/references/…` · `docs/wiki/client-scripts/<usecase>/` | Case 1 |
+| 1 | `<Shopify>` | `<e.g. "Horizon's <predictive-search> leaks on typing; full capture-phase suppression needed">` | `docs/wiki/platforms/<platform>/…` · `docs/wiki/cheat-sheets/<feature>/…` · `skills/<skill>/references/…` | Case 1 |
 
 ---
 

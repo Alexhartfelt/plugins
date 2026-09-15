@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Lipscore Ratings in HR Search
 
 > **Audience:** D&TS, when a customer uses **Lipscore** for product reviews and wants the star rating to appear on Hello Retail Search result tiles (and Initial Content tiles).
@@ -10,7 +15,7 @@ Lipscore renders stars + vote counts client-side. To get them on HR Search tiles
 There are two pieces:
 
 1. **Widget markup** inside the tile Liquid.
-2. **Init call** in the Search JS, in a post-render hook (`afterPage` / `afterRender`).
+2. **Init call** in the Search JS, right after each `fix_links` call — in the `initial_render` callback and in `load_more_results` (section 3).
 
 ## 1. Widget — which one to use
 
@@ -86,7 +91,7 @@ In the Search JS, that means **two places** in the overlay setup:
 1. Inside the `searcher.initial_render(function(template) { ... })` callback — fires once when the overlay opens. Init here so the Initial Content tiles get stars.
 2. Inside the `searcher.yield_template(function(template, state) { ... })` callback in `load_more_results` — fires on every keystroke, filter change, sort change, and infinite-scroll page. Init here so search-result tiles get stars on every render.
 
-Call it right after `ui_utility.fix_links(overlay, "ps")` in both spots:
+Call it right after `ui_utility.fix_links(overlay, "ps")` in both spots. The mobile overlay has no `ui_utility` alias — there the call is `ui_utility_vanilla.fix_links(overlay, "ps")`:
 
 ```javascript
 ui_utility.fix_links(overlay, "ps");

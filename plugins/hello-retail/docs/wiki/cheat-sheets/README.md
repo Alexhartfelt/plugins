@@ -1,5 +1,11 @@
+---
+source: index
+---
+
 # Cheat Sheets
 Code snippets D&TS uses repeatedly during implementation. Organized **by product** then **by platform**. Use these as starting points — copy, then adapt to the customer.
+
+Platform-specific **cart wiring** is not a cheat sheet — it lives with the platform, starting at [../platforms/add-to-cart.md](../platforms/add-to-cart.md).
 
 ## Layout
 
@@ -18,11 +24,6 @@ cheat-sheets/
 │   ├── general.md          ← test-div, hide-filters, REST API endpoints…
 │   ├── shopify.md          ← theme insert location, auto-sort newest
 │   └── magento.md          ← remove native product list
-├── add-to-cart/            ← cross-cutting cart-integration (used by Search + Recoms)
-│   ├── shopify.md          ← /cart/add.js, quick-view re-init
-│   ├── magento.md          ← mage/mage, x-magento-init, uenc encoding, swatch-renderer
-│   ├── shopware.md         ← PluginManager.initializePlugins
-│   └── starweb.md          ← quickShop.init()
 └── crawler/                ← HR Crawler config helpers (when feeds aren't an option)
     └── helpers.md          ← .fns(), .asHierarchy(), hierarchies, page-title
 ```
@@ -34,7 +35,6 @@ cheat-sheets/
 | **search** | Snippet is specific to Hello Retail Search (overlay, grid, list, full). |
 | **recoms** | Snippet renders inside a recommendation box / slider. |
 | **pages** | Snippet is for Pages (category / brand). Includes Pages REST API examples. |
-| **add-to-cart** | Snippet wires HR's `.aw-buy-form` into the customer's cart. **Cross-cutting** — applies to both Search and Recoms. |
 | **crawler** | Snippet is for HR's crawler config (an alternative to feeds). |
 
 ## Convention for adding new snippets
@@ -57,15 +57,16 @@ If a snippet is **truly generic** (no platform-specific selectors), put it in `g
 
 If a snippet is **mostly generic but with one platform tweak**, put the generic version in `general.md` and add a "Platform notes" subsection that points to the platform file with the override.
 
+A **whole script or HTML file** from an onboarding belongs here too: a section in the matching feature × platform file, code inline, anonymised (placeholders only, no customer or staff names). There is no separate scripts library.
+
 ## Adding a new platform
 
-If a new platform shows up (e.g. WooCommerce, PrestaShop, Centra), just create `cheat-sheets/<product>/<platform>.md` with the same structure as the existing files. No registry to update.
+If a new platform shows up (e.g. WooCommerce, PrestaShop, Centra), create `cheat-sheets/<product>/<platform>.md` with the same structure as the existing files and add it to that folder's README.
 
 ## Related
 
-- Products: [../products/search.md](../features/search/search.md) · [../products/product-recommendations.md](../features/product-recommendations/product-recommendations.md)
-- Platforms: [../platforms/](../platforms)
-- Full search KB: [features/search.md](../features/search/search.md)
+- Features: [search](../features/search/search.md) · [product-recommendations](../features/product-recommendations/product-recommendations.md) · [pages](../features/pages/pages.md)
+- Platforms: [../platforms/](../platforms/platforms.md)
 
 ---
 

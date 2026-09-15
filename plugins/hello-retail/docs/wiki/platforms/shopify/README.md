@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # Shopify
 **Shopify** is the global SaaS ecommerce platform — the most common new install for Hello Retail.
 
@@ -18,7 +23,7 @@
 - [cheat-sheets/search/shopify.md](../../cheat-sheets/search/shopify.md) — instant grid search wired to `/pages/search-results`
 - [cheat-sheets/recoms/shopify.md](../../cheat-sheets/recoms/shopify.md) — `.money` cart-total free shipping, dynamic currency via product `.json`
 - [cheat-sheets/pages/shopify.md](../../cheat-sheets/pages/shopify.md) — where to insert the Pages div, auto-sort newest
-- [cheat-sheets/add-to-cart/shopify.md](../../cheat-sheets/add-to-cart/shopify.md) — `/cart/add.js` Ajax binding, Quick View web-component re-init
+- [add-to-cart.md](./add-to-cart.md) — `/cart/add.js` Ajax binding, Quick View web-component re-init
 
 Related: [runbooks/customer-onboarding.md](../../onboarding/customer-onboarding-flow.md)
 

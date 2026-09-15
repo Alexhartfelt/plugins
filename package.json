@@ -16,7 +16,8 @@
     "validate": "node scripts/validate.mjs",
     "lint:md": "markdownlint-cli2",
     "lint:md:fix": "markdownlint-cli2 --fix",
-    "lint": "npm run lint:md",
+    "lint:wiki": "node scripts/wiki-lint.mjs",
+    "lint": "npm run lint:md && npm run lint:wiki",
     "check": "npm run validate && npm run lint",
     "version:preview": "node scripts/bump-version.mjs --dry-run",
     "version:bump": "node scripts/bump-version.mjs"

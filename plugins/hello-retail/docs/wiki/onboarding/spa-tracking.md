@@ -1,3 +1,8 @@
+---
+source: field
+verified: 2026-09-15
+---
+
 # SPA page tracking — `hrq.push(["reload"])`
 On a normal storefront every navigation is a document load: the Hello Retail partner script boots
 again, tracks the page view, and re-injects everything HR manages. On a **single-page application**
