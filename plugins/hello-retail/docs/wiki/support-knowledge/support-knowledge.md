@@ -7,6 +7,11 @@ verified: 2026-09-15
 
 Hello Retail's support documentation site ([support.helloretail.com](https://support.helloretail.com/)) is organized into 12 top-level categories. This file is a curated index from a D&TS perspective — the articles you'll actually open most often, grouped sensibly.
 
+> **Triage first:** when a Bug/Task says Hello Retail "is not working" — Search, recoms or tracking
+> gone or not showing — start at
+> [script-not-loading.md](./script-not-loading.md): check whether `helloretail.js` loads on the
+> reported page before looking at any design, feed or configuration.
+
 ## 1. General Setup
 
 The biggest category. Subdivided into:
@@ -157,6 +162,7 @@ changed a config and what the shop's integration is actually sending, without a 
 
 ## D&TS notes
 
+- **A "nothing is working" ticket is a script-loading question until proven otherwise** — [script-not-loading.md](./script-not-loading.md) is the walk, and most of them end at the shop's cookie-consent categories.
 - **Recently popular articles** (per the support homepage) — Product Agents, Banners, Retail Media, Product Lookup. Worth being fluent in.
 - For **EU enterprise prospects**, the GDPR + Sub-Processors articles come up almost every kickoff.
 - For **developers / technical contacts**, point them at [developer.helloretail.com](https://developer.helloretail.com/) and the **Custom Integration** article first, not the platform-specific ones.

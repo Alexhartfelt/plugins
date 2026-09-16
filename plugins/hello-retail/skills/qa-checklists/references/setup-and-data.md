@@ -226,8 +226,20 @@ Background — which changes need a re-index at all, and which are live on save:
 - [ ] Analytics — do we receive any data?
 - [ ] API case: API log — is everything set up?
 
-## HR panel
+## HR script and HR panel
 
 *(Rendered — check on the live storefront.)*
 
 - [ ] HR panel not shown = check the script
+- [ ] **Script loading — the first check whenever "Hello Retail is not working"**: nothing HR
+      renders can appear if `helloretail.js` never runs, so before grading any design, feed or
+      configuration item, confirm on the reported page that the `<head>` snippet is in the source
+      and that the Network tab shows `helloretail.js` returning 200 plus the `scripts/…` module
+      assets and the `core.helloretail.com` calls. A missing or blocked script is work on the
+      customer's shop (consent category, ad blocker, a JS-deferring optimizer such as Rocket
+      Loader, a theme update that dropped the snippet) and makes every check below it meaningless
+      — report it as one finding and stop. When the snippet is missing outright, the action is to
+      ask the customer to install it in the global `<head>`, then re-verify once they confirm.
+      The full walk, including what to put in the ticket, is
+      `${CLAUDE_PLUGIN_ROOT}/docs/wiki/support-knowledge/script-not-loading.md` (bundled in this
+      plugin).

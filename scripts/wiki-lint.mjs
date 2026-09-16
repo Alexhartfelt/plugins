@@ -73,6 +73,7 @@ const SOURCES = ["public-docs", "field", "index"];
 // customer domain.
 const DOMAIN_ALLOWLIST = [
   "helloretail.com", "helloretailmail.com", // the second is Hello Retail's own sending domain for triggered emails
+  "helloretailcdn.com", // the CDN that serves helloretail.js and its module assets
   // placeholders
   "example.com", "example-shop.com", "example.dk", "example-shop.dk", "siteurl.com", "your-shop.com",
   // ecommerce platforms and their CDNs
