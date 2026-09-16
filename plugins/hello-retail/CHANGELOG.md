@@ -10,6 +10,139 @@ fragments into the version it publishes.
 
 ## Unreleased
 
+## 1.8.0 — 2026-09-16
+
+### Added
+
+- `pages-developer` now also builds and edits **page configs**, not just designs: which products a
+  page selects (product filters, including the INPUT filters that let one config serve a whole set
+  of categories), how they are ordered (product and personalized boosts), out-of-stock handling and
+  which design a page renders with. Pages can be created from scratch or copied, including onto
+  another website of the same company; everything still lands as a draft for you to publish.
+- `hello-retail-knowledge` answers "why does search return these products?" — a page on the
+  relevance model behind Search: engines versus configs, search steps and their fallback order,
+  engine-wide boosts/elevates/excludes versus per-query rules, synonyms, stop words and
+  personalization, and why a boost on a value that isn't the indexed one does nothing.
+- `hello-retail-knowledge` answers "is my change live yet?" — a page on the three publishing
+  models. Some edits wait for you to publish, some are serving the moment they are saved (search
+  engines, query rules, Product Agents), and some are saved instantly but invisible until the
+  catalog re-indexes (synonyms, field indexing).
+- `hello-retail-knowledge` answers "who changed this?" and "why is the integration slow?" — a page
+  on the per-website audit log and API log, including the rule that switching API logging on records
+  shoppers' personal data and the customer has to be told before you do it.
+- `qa-checklists` has an Indexing section in Setup & Data. Check the product and content re-index
+  status before filing a data-shaped FAIL: a filter value or synonym missing from the storefront
+  right after a change is usually a pending re-index, which is a wait rather than a defect.
+- `support-debugging` covers the rest of the MCP surface: Pages design and config creation and
+  copying (the route to edit an archived design), the supervisor-only request-log and Product Agent
+  credit tools, and the field vocabularies needed to read a tool's response. Its hand-back list now
+  also names content-item lookup, running a search query, creating or deleting recommendation
+  boxes, queuing a feed run, Audience and Insights, and billing.
+- `support-debugging` carries the traps that cost real support cycles — an empty feed list meaning
+  "no V2 feed" rather than no feed, and "content isn't showing in search" being three separate
+  problems of which only the last is a hand-back.
+- `support-debugging` debugs a Hello Retail support ticket and answers it from evidence. It gates
+  the ticket first — confirming the website and the feature, which arrive unverified and are
+  routinely wrong — then reads the live configuration, reproduces the symptom on the storefront,
+  and proposes only the fix the evidence supports, cited to the config, the reproduction or the
+  knowledge base. Causes outside what the MCP can reach are handed back in the first line rather
+  than investigated around.
+- `recom-developer` covers the recurring ask that a category recom must not show while a product
+  filter or a non-default sorting is active. It surveys the theme's own filter and sort signals and
+  offers the two ways to build it — a conditional placement selector, or a guard in the design's
+  script — then asks which one you want before implementing.
+
+### Changed
+
+- `search-developer` now recognises relevance requests — "wrong products come back", "this brand
+  should rank higher", "hide this product", "add a synonym" — and hands them off instead of
+  touching the design. It also warns why they are not a design edit: the search engine has no draft
+  and no publish step, and one engine normally serves every search surface on the site.
+- `newsletter-developer` picks the canvas from Hello Retail's built-in starter templates when there
+  is no existing design and you haven't given dimensions, so a tile is built for the layout the
+  customer's newsletter actually uses. It reads a starter for the renderer's idiom when the shared
+  default doesn't show it.
+- `newsletter-developer` offers to copy a design before editing it when live campaigns render it.
+  A newsletter design has no draft, and an edit re-renders the images in mail already in inboxes —
+  copying lets someone switch the campaign over at a moment they choose.
+- `support-debugging` proposes the fix and stops. It makes no MCP writes, not even drafts, unless
+  the operator asks for them.
+- `support-debugging` names one of four outcomes in the first line of its reply — solve, ask, hand
+  back, or cannot solve — instead of after a long investigation.
+- `support-debugging` reads a pasted ticket as a brief rather than a diagnosis: the reported
+  feature is the surface the customer noticed, not where the cause lives, and anything attributed
+  as evidence is a claim to test. It reads the thread background before asking the customer
+  anything, and quotes error strings from the customer's verbatim message rather than the
+  translated summary.
+- `hello-retail-knowledge` no longer names reference customers or case-study shops; the wiki keeps no
+  customer-identifiable data.
+- `hello-retail-knowledge` pages now open with `source` (public-docs / field / index) and `verified`
+  (a date, or never), so the provenance of an answer is visible at the top of the page it cites.
+- `hello-retail-knowledge` starts its lookup at the wiki README's Quick Index and says when the page it
+  cites is `verified: never`; the separate index page it used to open was a five-line stub and is gone.
+- `hello-retail-knowledge` feature and overview pages no longer quote marketing statistics or price lists;
+  pricing questions point at the pricing page on helloretail.com, and pages describe how each feature works.
+- `hello-retail-knowledge` names roles instead of people, and its cheat-sheet notes no longer cite ticket
+  numbers or anonymised shop codes as sources.
+- `customer-handoff` proposes a cheat sheet, a platform page or a skill reference as the home for a
+  reusable learning; the separate client-scripts library is gone.
+- `hello-retail-knowledge` keeps one add-to-cart recipe per platform under `platforms/`; the duplicate
+  cheat-sheet copies are merged into them and the folder is gone. Where the two copies disagreed the page
+  now says which is right: Magento reads `form_key` theme-agnostically and fires `contentUpdated`
+  immediately, configurable products add from the tile only when it carries the swatch selection, Shopware
+  re-binds after every render behind a per-form guard, and the Shopify Quick View re-init targets
+  `#hello-retail-{{ key }}`. `search-developer`, `recom-developer` and `tile-extractor` point at the merged pages.
+- `hello-retail-knowledge` now covers Magento swatches on **Hyvä (Alpine)**, not just Luma/Knockout:
+  detection for both frontends, which theme functions to rely on and which to reimplement from the
+  feed, and the four runtime traps that make Hyvä swatches render nothing at all. Asking "how do
+  swatches work on Magento" now gets the answer for the frontend the shop actually runs.
+- The wiki now says which Magento version a page is about. Every Magento page is titled `Magento 2`
+  and opens with the frontends it applies to (Luma, Breeze, Hyvä, or all three), so an answer about
+  a Magento 1 shop no longer arrives dressed as a Magento 2 one. Magento 1 has its own short page
+  marking it legacy and pointing at the installation guide.
+- `tile-extractor`, `newsletter-qa` and `customer-handoff` have shorter trigger text; each was over
+  the length a skill description may be, which put the tail at risk of being cut — including the
+  clauses that send you to the right sibling skill instead. The phrases you say to start them are
+  unchanged; internal procedure detail came out in their place.
+
+### Fixed
+
+- `support-debugging` no longer treats every MCP write as a safe draft. Search engines, boosts,
+  elevates, excludes, personalization, query rules and Product Agents are live the moment they are
+  saved, with no review step and no undo — and one engine normally serves every search surface on
+  the website. The skill now checks which of the three publishing models a write lands in before
+  calling it, and reports the blast radius.
+- `hello-retail-knowledge` pages were checked against their sources for the first time and every page now carries
+  a `verified` date. Public-docs pages were compared claim by claim with helloretail.com, support.helloretail.com and
+  developer.helloretail.com: Product Agents lists seven agents and its webhook and generic-ESP developer channels;
+  recommendation filters and pinned products are described per box rather than account-wide; Retail Media, Newsletter
+  Content, Triggered Emails, Search, Audience, Insights and the platform tables no longer claim capabilities, campaign
+  types, regions or procedures the sources do not support; the dead `docs.helloretail.com` links point at the
+  Product Intelligence GraphQL API on developer.helloretail.com. Field pages were checked against the base templates:
+  snippets that named hooks, classes, ids or template variables the base does not have (`.aw-heading`,
+  `.aw-slider-{{ key }}`, a bare `#{{ key }}`, `current_content_item`, `ui_utility` on the mobile overlay) are
+  corrected, and variant-specific snippets say which variants they apply to.
+- `hello-retail-knowledge` wiki indexes now point at every page that exists — DanDomain, BigCommerce,
+  Viskan and Wikinggruppen add-to-cart, the Viskan feed notes, the Klaviyo integration page, the
+  Triggered Email base templates — and no longer list pages that were never written.
+- `hello-retail-knowledge` onboarding pages point at the plugin's skills instead of promising internal
+  onboarding code "in the next pass", and Product Agents is no longer described as new or dated to a
+  release season.
+- `hello-retail-knowledge` names the real re-init point for Lipscore ratings (after each `fix_links` call)
+  instead of hooks that do not exist, ships the `.hr-hidden` rule the Viskan add-to-cart page relies on, and
+  binds BigCommerce add-to-cart from `fix_links` and `afterInit` like every other platform. Recom snippets
+  target the base template's `#hello-retail-{{ key }}` box id instead of the legacy `#aw-box-{{ key }}`.
+- `customer-analytics-report` is triggerable again. Its trigger text failed to load, so asking for
+  "an analytics report for [domain]" or "a report in Danish" did not start the skill; you had to
+  invoke it by name.
+
+### Removed
+
+- The empty `client-scripts` wiki library. A reusable one-off script from an onboarding goes straight into
+  the matching cheat sheet or platform page, anonymised.
+- The `tools/generate-tile` wiki folder. No skill read it and it described files that do not exist;
+  `tile-extractor` and `search-developer` carry its rules.
+
 ## 1.7.0 — 2026-09-14
 
 ### Added
