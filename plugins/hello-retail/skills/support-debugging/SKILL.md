@@ -2,14 +2,16 @@
 name: support-debugging
 description: >
   Debug a Hello Retail support ticket and answer it from evidence — gate it first (confirm the
-  website and the feature, check what the MCP can actually reach, rule out the known false
-  positives, widen the scope), then read the live configuration, reproduce on the storefront via
+  website and feature, check what the MCP can reach, rule out false positives, widen the scope),
+  then read the live configuration, reproduce on the storefront via
   Playwright (Claude in Chrome as the fallback), and propose the fix the evidence supports — cited
-  to the config, the reproduction, or the bundled knowledge base. Use when someone pastes a support
-  spec ("look into this Hello Retail support issue and debug it"), or says "debug this ticket",
+  to the config, the reproduction, or the knowledge base. Use when someone pastes a support
+  ticket ("Resolve this Hello Retail support ticket. Run the hello-retail:support-debugging
+  skill"), or says "debug this ticket",
   "triage this support issue", "customer says search is broken", "the recom box is gone on
-  [domain]", or hands over a ClickUp support card. Trigger even when only the mail body is pasted
-  with no customer id. Ends in a draft fix, a hand-back, or a request for what's missing. Does NOT
+  [domain]", or hands over a ClickUp card. Trigger even when only the mail body is pasted
+  with no customer id. Names one of four outcomes early — solve, ask, hand back, cannot solve — and
+  proposes the fix rather than writing it unasked. Does NOT
   run a pre-handoff QA walk (search-qa / recom-qa / pages-qa) or build a design (*-developer).
 ---
 
@@ -27,8 +29,9 @@ sources: **the live configuration** read through the MCP, **a reproduction** in 
 **a cited page** in the bundled knowledge base. If a proposed fix rests on none of those, it does
 not go in the reply — see *The grounding rule*.
 
-It ends in one of three answers: **a fix made as a draft**, **a hand-back** when the cause is
-outside what the MCP can reach, or **a request for what's missing**.
+It ends in one of **four named outcomes** — SOLVE, ASK, HAND IT BACK, CANNOT SOLVE — and it says
+which one **early**, not after a long investigation. The deliverable is the diagnosis and the
+proposed fix: no MCP writes, not even drafts, unless the operator asks.
 
 **But a pasted support spec is not a mandate to investigate.** Run the gate first — all four checks
 take under a minute, and skipping them is what turns a well-understood ticket into a wasted cycle.
@@ -45,6 +48,36 @@ take under a minute, and skipping them is what turns a well-understood ticket in
 
 If the customer id is missing, ask for it and stop — reply template **B**. Never substitute a
 guess, a similarly-named customer, or an unverifiable value.
+
+## The brief — what it is, and what it is not
+
+A ticket pasted from the Support Inbox opens by naming this skill, and the body under it is a
+**brief, not a diagnosis**. It was extracted from the customer's mail by a model that has never
+seen this customer's configuration.
+
+- **It carries no diagnosis.** No root cause, no affected layer, no suggested steps, no capability
+  verdict. Take none of those from it — establish them yourself against the live system.
+- **`Observed` / `Expected` / `Asked for` are a faithful report of what the customer *said*.**
+  Nothing more.
+- **Anything attributed in `Evidence` is a claim to test, never a finding to transcribe** — the
+  customer's own theory ("we think it's the price import"), a colleague's note. Test it, and
+  generate at least one alternative before committing to it.
+- **`Feature:` is the reported surface, not the causal one.** A sale price missing in a recom
+  slider is classified `recommendations` even when the cause turns out to be the feed. Re-scoping
+  is this skill's job, not the brief's.
+
+Three sections repay reading closely:
+
+| Section | What to do with it |
+|---|---|
+| `Asked for:` | What the customer wants *us* to do, in their words. The actual deliverable — check your fix answers this, not just the symptom |
+| `Background (earlier in the thread):` | Attributed, dated facts harvested from older messages ("2026-07-11, our reply: feed mapping changed to use oldPrice"). **This is usually where "is this a regression?" is already answered. Read it before asking the customer anything** |
+| `Open questions:` | Deliberately scoped to what **only the customer** can answer. Anything the MCP or the storefront could settle was excluded on purpose — so this is not the investigation plan, and answering these is not the job |
+
+**Quote from the verbatim block, not the brief.** The customer's own message travels unmodified at
+the end of the payload under `--- The customer's own message, verbatim ---`. The brief above it is
+an English translation and will have normalised error strings, URLs, SKUs and UI labels. Take those
+from the verbatim text.
 
 ## Browser backend — Playwright first, Claude in Chrome second
 
@@ -166,8 +199,23 @@ Read the relevant `${CLAUDE_PLUGIN_ROOT}/docs/wiki/` pages for the feature and p
 writing the fix — platform nuance (Shopify vs Magento vs custom) changes the answer, and the
 knowledge base is the point of this skill. Cite the page in the reply.
 
-Then show the change before making it: read the current value, show the diff, get approval, write
-it as a draft, and verify by reading it back. One write per approval.
+**Then propose the fix and stop there.** Make no MCP writes — *not even drafts* — unless the
+operator asks for them. The default deliverable is the diagnosis plus the concrete change you
+would make, named down to the tool and the field.
+
+When the operator does ask, check which publishing model the write lands in
+(`references/mcp-capability-matrix.md` §2.0) **before** calling it:
+
+- **Model A (draft)** — safe. Read the current value, show the diff, write, read it back to verify.
+- **Model B (live on save)** — search engines, boosts, elevates, excludes, personalization, query
+  rules, Product Agents. **No draft, no undo, serving the next request**, and one engine normally
+  serves every search surface on the site. Say that out loud and get an explicit yes for *that*
+  write; read `usedByConfigKeys` first so the blast radius is in the reply.
+- **Model C (after re-index)** — synonyms, stop words, field indexing. Saved at once, invisible to
+  shoppers until the catalog re-indexes; say so, so nobody reports it as not working.
+
+Several writes replace the **entire** list rather than patching it — `get*` first and send the
+complete set back, or you silently disable everything you omitted. One write per approval.
 
 ### Step 5 — Reply
 
@@ -198,7 +246,7 @@ what to do with it:
 
 | Header says | It means | What you do |
 |---|---|---|
-| `Domain: UNRESOLVED` / `NOT LOOKED UP`, with a `Customer Id` filled in | The site list could not be fetched at analysis time | Run `website_listForCompany` yourself. **Never ask "which website?" while holding the id and the tool** |
+| `Domain: UNRESOLVED` / `NOT LOOKED UP`, with a `Customer Id` filled in | The site list could not be fetched at analysis time | Run `website_listForCompany` yourself. One site matches the mail → propose it and ask for a one-line confirmation. Several or none → show the shortlist and ask. **Never ask "which website?" while holding the id and the tool, and never infer one from the mail text alone** |
 | `Domain: UNRESOLVED — multiple websites (…)` | The list was fetched and nothing in the mail picked one | Match the list against subject, body, screenshots and To/Cc; one hit → propose it; otherwise the shortlist question |
 | `Domain: X — named in the mail and verified as one of the customer's websites` | Verified against the site list | State it, ask a one-line confirmation, continue |
 | `Domain: X — resolved from the sender's email / support account domains` | A fallback that lands on the wrong site for agency and forwarded mail | Full confirmation, as in check 1 |
@@ -253,9 +301,18 @@ Always **plumbing → payload → presentation**. Most failed tickets inverted t
 | **Integration / API** calls not landing | `apiLog_getStats` → `apiLog_getEntries`. Recording is off by default; **get the customer's agreement before switching it on** — see *Hard rules* |
 | **Nothing is tracking** | Not MCP-visible. Clean session first, then hand back — §4 |
 
-## Reply templates
+## Reply templates — the four outcomes
 
-### A · Not possible via the MCP — hand back
+Name the outcome in the **first line** of the reply, before any investigation narrative:
+
+| Outcome | When | Template |
+|---|---|---|
+| **SOLVE** | You worked the procedure through to a verified root cause and a concrete fix | **C** |
+| **ASK** | The brief leaves the ask genuinely ambiguous, or a mandatory input is missing | **B** |
+| **HAND IT BACK** | The root cause sits behind a tool or surface you cannot reach — say *which*, in the first reply, rather than investigating around it | **A** |
+| **CANNOT SOLVE** | Reachable in principle, but the evidence does not support any fix you can stand behind | **D** |
+
+### A · Not possible via the MCP — HAND IT BACK
 
 Lead with the verdict. Do not bury it under an investigation.
 
@@ -282,7 +339,7 @@ Swap the bolded cause for whichever §4 row applies. Always keep the four parts:
 could confirm → operator steps → questions for the customer.** The "what I can confirm" part is
 what makes a hand-back useful rather than a shrug — get it from §3 of the matrix.
 
-### B · Blocked on missing information
+### B · Missing information or an ambiguous ask — ASK
 
 > I need one thing before I can start: **the Hello Retail company id or website UUID**. Paste any
 > my.helloretail.com URL for this website and I'll take both ids out of it. Without one there's no
@@ -293,22 +350,43 @@ what makes a hand-back useful rather than a shrug — get it from §3 of the mat
 
 Never pair this with a speculative diagnosis. One ask, no filler.
 
-### C · Actionable — proceed
+### C · Actionable — SOLVE
 
 State the capability verdict in one line anyway, so the reader knows the boundary was checked:
 
-> This is MCP-actionable: the fix is in the search config's link content, which I can edit as a
-> draft. Publishing to LIVE stays a dashboard step.
+> SOLVE. This is MCP-actionable: the fix is in the search config's link content, which I can edit
+> as a draft — publishing to LIVE stays a dashboard step. Say the word and I'll make the change;
+> I've not written anything yet.
 
-Then investigate, propose the concrete change, **make it as a draft**, verify by reading it back,
-and end with what the operator must do by hand.
+Then investigate, propose the concrete change — named down to the tool and the field — and
+**stop there**. Make no writes unless the operator asks; when they do, follow the publishing-model
+check in *Step 4* first. End with what the operator must do by hand.
+
+### D · Reachable, but not solvable on this evidence — CANNOT SOLVE
+
+Use this instead of shipping a guess. It is a correct outcome, not a failure.
+
+> I can reach this one, but I can't land a fix I'd stand behind. Here's where it stops:
+>
+> **What I established:** [the config read, the reproduction, the wiki page — with the tool calls].
+>
+> **What doesn't add up:** [the specific contradiction — the config looks correct and the symptom
+> still reproduces; the feed carries the right value and the tile still renders the old one].
+>
+> **What would settle it:** [the check you can't make — a supervisor-level lookup, a value only the
+> customer's platform can confirm, a reproduction you can't trigger].
+
+Some causes are also legitimately not ours — third-party platform behaviour, customer
+infrastructure (a WAF rule blocking the feed reader), internal platform mechanics. Name the owner
+and stop; that is a correct outcome too.
 
 ## Closing every reply
 
 Regardless of outcome, finish with three blocks:
 
-- **What was changed** — as a draft, with the config/design key, verified by reading it back.
-  Nothing goes to LIVE.
+- **What I propose to change** — the tool, the config/design key, the field and the new value,
+  plus which publishing model it lands in (draft / live on save / after re-index). If the operator
+  approved a write, say what was written and that it was read back to verify. Nothing goes to LIVE.
 - **What the operator must do manually** — publishing, plus any §4 items.
 - **What to ask the customer** — every unverified assumption becomes a question, not a guess.
 
@@ -316,8 +394,11 @@ Regardless of outcome, finish with three blocks:
 
 - **Ground every claim.** The live config, a reproduction, or a cited wiki page — and say which.
   No fix proposed from general e-commerce intuition. See *The grounding rule*.
-- **Draft only.** Never publish, activate, archive or delete. Publishing to LIVE is a person's
-  step in the My Hello Retail dashboard, on every ticket, without exception.
+- **Propose, don't write.** No MCP writes, not even drafts, unless the operator asks. When they
+  do, check the publishing model first — **not every write is a draft**: search engines, boosts,
+  query rules and Product Agents are live on save with no undo, and one engine serves every search
+  surface on the site. Never publish, activate, archive or delete; publishing to LIVE is a person's
+  step in the dashboard, on every ticket, without exception.
 - **Show the change before making it.** Read the current value, show the diff, get approval, then
   write. One write per approval.
 - **No dashboard automation.** Never drive a browser into my.helloretail.com — dashboard reads and
