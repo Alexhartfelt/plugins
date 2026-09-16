@@ -2,8 +2,8 @@
 name: support-debugging
 description: >
   Debug a Hello Retail support ticket and answer it from evidence — gate it first (confirm the
-  website and feature, check what the MCP can reach, rule out false positives, widen the scope),
-  then read the live configuration, reproduce on the storefront via
+  customer, website and feature and wait, check what the MCP can reach, rule out
+  false positives, widen the scope), then read the live configuration, reproduce on the storefront via
   Playwright (Claude in Chrome as the fallback), and propose the fix the evidence supports — cited
   to the config, the reproduction, or the knowledge base. Use when someone pastes a support
   ticket ("Resolve this Hello Retail support ticket. Run the hello-retail:support-debugging
@@ -33,8 +33,26 @@ It ends in one of **four named outcomes** — SOLVE, ASK, HAND IT BACK, CANNOT S
 which one **early**, not after a long investigation. The deliverable is the diagnosis and the
 proposed fix: no MCP writes, not even drafts, unless the operator asks.
 
-**But a pasted support spec is not a mandate to investigate.** Run the gate first — all four checks
-take under a minute, and skipping them is what turns a well-understood ticket into a wasted cycle.
+**But a pasted ticket is not a mandate to investigate.** Run the gate first — all four checks take
+under a minute, and skipping them is what turns a well-understood ticket into a wasted cycle.
+
+## The first reply — settle who and where, then wait
+
+Everything below happens in the **first** reply, before any investigation, and then you **wait for
+the operator's answer**. It is the whole reply; there is no investigation narrative under it.
+
+1. **Settle who, where and what** — the customer id, the website and the feature. All three, on
+   every ticket, *including* when the ticket already states them: they are produced upstream by a
+   model and by an automatic lookup, and none of them is verified. Gate check 1 does this.
+2. **Ask for every gap in the same message.** A header line marked `UNRESOLVED` is a genuine gap in
+   what we know, not a formatting quirk. Ask for all of them at once, so the operator answers once.
+3. **Name the outcome** — SOLVE, ASK, HAND IT BACK, CANNOT SOLVE — in the first line. Early, not
+   after a long investigation. A hand-back names *which* tool or surface is out of reach instead of
+   investigating around it.
+
+Never substitute a guess, a similarly-named customer, or a value you cannot verify for a missing
+one. The customer id is the only entry point into this customer's live configuration: without it,
+stop — reply template **B**.
 
 ## What you need before starting
 
@@ -46,8 +64,7 @@ take under a minute, and skipping them is what turns a well-understood ticket in
 | The storefront domain in scope | `example-shop.com` | Also unverified — see check 1 |
 | ClickUp card, if one exists | `https://app.clickup.com/t/…` | Its **title carries the scope** — see the prefix table below |
 
-If the customer id is missing, ask for it and stop — reply template **B**. Never substitute a
-guess, a similarly-named customer, or an unverifiable value.
+Ask for whatever is missing in the first reply — *The first reply*, above.
 
 ## The brief — what it is, and what it is not
 
@@ -109,11 +126,15 @@ plugin's hook blocks it and the storefront is the only site these tools visit.
 
 Stop at the first one that fires.
 
-### 1 · Confirm the domain and the feature — on every ticket
+### 1 · Settle the customer, the domain and the feature — on every ticket
 
-Not only when they are marked `UNRESOLVED`. Both are resolved automatically upstream and
-**neither is verified**, so a stated value is a starting point, not a fact:
+Not only when they are marked `UNRESOLVED`. All three arrive from an upstream model or an
+automatic lookup, and **none of them is verified**, so a stated value is a starting point, not a
+fact:
 
+- **Customer id** — mandatory, and the only entry point into this customer's live configuration.
+  Missing → ask for it and investigate nothing until it is in. Never substitute a similarly-named
+  customer.
 - **Domain** — the resolver falls back to the sender's email domain and the support account's
   domain list, which pick the wrong site for an agency's mail, a forwarded thread, or a customer
   writing from a corporate address they do not sell on. Multi-market customers run one website
@@ -124,8 +145,9 @@ Not only when they are marked `UNRESOLVED`. Both are resolved automatically upst
 
 **Narrow the question before asking it.** With a customer id in hand, `website_listForCompany`
 turns "which domain?" into a shortlist to pick from, and usually into a single proposed answer.
-State what you have, ask for a one-line confirmation, and **wait** — then ask for everything else
-marked `UNRESOLVED` in the same breath, so the operator answers once.
+**Never pick a website yourself, and never infer one from the mail text** — show the list and let
+the operator choose. State what you have, ask for a one-line confirmation, and **wait** — then ask
+for everything else marked `UNRESOLVED` in the same breath, so the operator answers once.
 
 ### 2 · Is the root cause outside what the MCP can reach?
 
