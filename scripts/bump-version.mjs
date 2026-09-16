@@ -6,6 +6,12 @@
  * Runs on every push to main from .github/workflows/release.yml; the workflow commits
  * the result and tags it. Locally: `npm run version:preview` (dry run against origin/main).
  *
+ * The range is measured from the plugin's own last release tag (<plugin>-v<version>), not
+ * from the previous push. In normal operation those are the same commit. They diverge when a
+ * release was skipped or failed — and then only the tag gives the right answer, because the
+ * changelog being published covers every unreleased merge, so the version has to as well.
+ * Without this, four unreleased merges containing two `feat:` ones would ship as a patch.
+ *
  * Bump level comes from the commit messages in the range (squash-merge titles):
  *   major — "feat!:" / "fix!:" / any "type!:" prefix, "BREAKING CHANGE", or "[bump major]"
  *   minor — "feat:" / "feat(scope):", or "[bump minor]"
@@ -18,7 +24,7 @@
  *       GITHUB_OUTPUT  when set, writes `bumped`, `plugins` and `summary` outputs
  */
 import { execFileSync } from "node:child_process";
-import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -40,13 +46,21 @@ if (!tryGit("rev-parse", "--verify", `${base}^{commit}`)) {
 const mergeBase = tryGit("merge-base", base, "HEAD") ?? base;
 
 // ---------------------------------------------------------------- level
-const messages = git("log", "--format=%s%n%b", `${mergeBase}..HEAD`);
 function levelFrom(text) {
   if (/\[bump major\]/i.test(text) || /BREAKING[ -]CHANGE/i.test(text) || /^[a-z]+(\([^)]*\))?!:/m.test(text)) return "major";
   if (/\[bump minor\]/i.test(text) || /^feat(\([^)]*\))?:/m.test(text)) return "minor";
   return "patch";
 }
-const level = levelFrom(messages);
+
+/**
+ * Where this plugin's unreleased history starts: its own most recent release tag, or the
+ * push range when it has never been released. A tag that is not an ancestor of HEAD (a
+ * release cut on another branch) is ignored — git describe only reports reachable ones.
+ */
+function baseFor(name) {
+  const tag = tryGit("describe", "--tags", "--abbrev=0", "--match", `${name}-v*`, "HEAD");
+  return tag ?? mergeBase;
+}
 
 function bump(version, lvl) {
   const [maj, min, pat] = version.split(/[.-]/).map(Number);
@@ -56,8 +70,18 @@ function bump(version, lvl) {
 }
 
 // ---------------------------------------------------------------- changed plugins
-const changed = git("diff", "--name-only", `${mergeBase}..HEAD`).split("\n").filter(Boolean);
-const plugins = [...new Set(changed.map((f) => /^plugins\/([^/]+)\//.exec(f)?.[1]).filter(Boolean))].sort();
+// A plugin is in play if it changed since the push base OR since its own last release —
+// the second catches a plugin whose release failed and never got its tag.
+const changedIn = (from) =>
+  git("diff", "--name-only", `${from}..HEAD`).split("\n").filter(Boolean);
+const pluginsIn = (files) =>
+  new Set(files.map((f) => /^plugins\/([^/]+)\//.exec(f)?.[1]).filter(Boolean));
+
+const everyPlugin = readdirSync(join(ROOT, "plugins"), { withFileTypes: true })
+  .filter((d) => d.isDirectory()).map((d) => d.name);
+const plugins = everyPlugin
+  .filter((name) => pluginsIn(changedIn(mergeBase)).has(name) || pluginsIn(changedIn(baseFor(name))).has(name))
+  .sort();
 
 const manifestAt = (ref, name) => {
   const raw = tryGit("show", `${ref}:plugins/${name}/.claude-plugin/plugin.json`);
@@ -69,7 +93,13 @@ const bumped = [];
 const lines = [];
 for (const name of plugins) {
   const path = join(ROOT, "plugins", name, ".claude-plugin", "plugin.json");
-  const before = manifestAt(mergeBase, name);
+  const from = baseFor(name);
+  // Only commits that touched this plugin decide its level, so a `feat:` on another plugin
+  // does not give this one a minor bump.
+  const level = levelFrom(
+    git("log", "--format=%s%n%b", `${from}..HEAD`, "--", `plugins/${name}/`),
+  );
+  const before = manifestAt(from, name);
   let after;
   try { after = JSON.parse(readFileSync(path, "utf8")); } catch { after = null; }
 
@@ -78,7 +108,8 @@ for (const name of plugins) {
   if (before.version !== after.version) { lines.push(`${name}: ${before.version} → ${after.version} (set by hand — kept)`); continue; }
 
   const next = bump(after.version, level);
-  lines.push(`${name}: ${after.version} → ${next} (${level}${DRY ? ", dry run" : ""})`);
+  const since = from === mergeBase ? "no release tag yet" : `since ${from}`;
+  lines.push(`${name}: ${after.version} → ${next} (${level}, ${since}${DRY ? ", dry run" : ""})`);
   bumped.push({ name, from: after.version, to: next });
   if (!DRY) {
     const raw = readFileSync(path, "utf8");
@@ -90,7 +121,7 @@ for (const name of plugins) {
 }
 
 if (plugins.length === 0) lines.push("No plugin files changed — nothing to bump.");
-console.log(`Range ${mergeBase.slice(0, 7)}..HEAD, bump level from commits: ${level}`);
+console.log(`Push range ${mergeBase.slice(0, 7)}..HEAD; each plugin measured from its own last release tag.`);
 for (const l of lines) console.log(`  ${l}`);
 
 if (process.env.GITHUB_OUTPUT) {
