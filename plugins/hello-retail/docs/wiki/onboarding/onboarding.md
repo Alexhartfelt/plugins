@@ -14,6 +14,7 @@ This folder is the D&TS playbook for taking a new customer from "deal closed" to
 - [implementation-methods.md](./implementation-methods.md) — Script vs API; which to pick when.
 - [data-requirements.md](./data-requirements.md) — what data the customer must provide and in what shape.
 - [spa-tracking.md](./spa-tracking.md) — SPA / client-side-routing storefronts: `hrq.push(["reload"])`, what one call does, DOM timing, multi-regional `websiteUuid`.
+- [when-changes-go-live.md](./when-changes-go-live.md) — the three publishing models (draft, immediate, after re-index), what each object uses, and the checks before editing on a live store.
 - [review-and-testing.md](./review-and-testing.md) — review checklists used during launch QA.
 - [search-templates.md](./search-templates.md) — how to customize the Search Liquid/HTML/CSS/JS templates per customer.
 

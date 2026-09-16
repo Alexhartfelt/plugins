@@ -59,6 +59,33 @@ Many ESPs need a template ID for auto campaigns to render correctly. The KB has 
 
 Retail Media sponsored products can be placed inside Newsletter Content blocks — the campaign appears where shoppers are already looking and adapts to the recipient.
 
+## Starting a design
+
+The dashboard's "New design" page offers a set of built-in **starter templates**, and the same
+set is readable through the MCP — name, the width and height each was authored for, and the full
+Liquid/HTML source. They are worked examples of the idiom the renderer actually honours: CSS 2.1
+table/float/absolute layout, fixed-height overflow-hidden text boxes, design markers for the
+tunable values, and a sale / full-price branch. The names describe the newsletter layout they
+suit, so the Mailchimp ones are sized for 2, 3 or 4 tiles per row.
+
+Start from a starter rather than a blank page, and adjust name, width and height as you copy it.
+The plugin's `newsletter-developer` skill does this before it writes anything.
+
+## Editing a design live campaigns use
+
+A Newsletter Content design has **no draft**. An edit reaches manual and rolling campaigns only
+when someone re-saves them, reaches auto campaigns at once, and — because tile images are
+addressed by a hash of the template — re-renders the pictures in mail already sitting in
+recipients' inboxes wherever it does reach a campaign.
+
+So for a design live campaigns already render, **copy it, edit and render the copy, and point
+the campaign at the copy** in the dashboard. Copying carries the uploaded image assets across,
+so `asset://` references keep resolving. The full timing model is on
+[when a change reaches visitors](../../onboarding/when-changes-go-live.md).
+
+A design Hello Retail staff have configured to render at 1x instead of the standard 2x retina
+size cannot be edited or copied outside the dashboard; it can still be read and rendered.
+
 ## D&TS notes
 
 - During onboarding, **the ESP integration is usually the longest pole**. Permissions, API keys and template selection need the customer's marketing manager involved.

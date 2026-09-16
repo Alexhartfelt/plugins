@@ -125,6 +125,25 @@ HR panel.
 - [ ] Strange/questionable data
 - [ ] Fetches no data
 
+## Indexing
+
+> **MCP-verifiable** — `productData_getReindexStatus` and `contentData_getReindexStatus`.
+> Products and content are separate catalogs with a status call each.
+
+**Run this before filing any data-shaped FAIL.** A saved change reaches shoppers only once the
+catalog is re-indexed, so a filter value, a synonym or a newly indexed field can be correct in
+the configuration and absent on the storefront simply because a run is pending. That is a wait,
+not a defect — report it as "pending re-index", not FAIL.
+
+- [ ] Product catalog status is `IDLE` (nothing pending). `SCHEDULED` = queued, `INDEXING` = under way
+- [ ] Content catalog status is `IDLE`, when the customer uses content search
+- [ ] `rerunRequested` is false — true means a change saved mid-run is already booked into a follow-up
+- [ ] If a run is pending, note what was changed and when, and re-check the affected items afterwards
+      rather than raising them
+
+Background — which changes need a re-index at all, and which are live on save:
+`${CLAUDE_PLUGIN_ROOT}/docs/wiki/onboarding/when-changes-go-live.md`.
+
 ## Order feed
 
 > **OPERATOR** — the whole section. Order feeds have **no MCP coverage**; setup, runs, history

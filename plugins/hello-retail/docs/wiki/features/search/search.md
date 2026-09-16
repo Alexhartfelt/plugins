@@ -23,6 +23,10 @@ AI-powered, personalized site search for ecommerce. Combines semantic understand
 
 ## Merchandiser controls
 
+How these are modelled — engines vs configs, search steps, which edits skip review, and where
+the values come from — is on [search relevance and merchandising](./search-relevance.md). Read
+it before touching a live engine: engine edits have no draft and serve immediately.
+
 - Boost, bury and pin products.
 - Boost rules on brand, category (hierarchies), sale status (`isOnSale`) or any other feed field. Keep boost values low (1–2) — higher values hurt relevance; negative values bury.
 - Search Word Boosts (push specific products for specific queries).
@@ -61,6 +65,7 @@ You can also index **content** — categories, site pages, blog posts and brands
 
 ## Third-party widgets on Search tiles
 
+- [Search relevance and merchandising](./search-relevance.md) — engines, search steps, boosts, elevates, excludes, query rules, synonyms, stop words and personalization.
 - [Lipscore ratings in HR Search](./lipscore-ratings.md) — widget choice, data attributes, the product-ID gotcha, and the `initWidgets()` post-render hook.
 
 ## Key support articles

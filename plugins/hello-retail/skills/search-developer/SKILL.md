@@ -29,7 +29,9 @@ A Search design is a **product tile** sitting inside an **overlay shell**. This 
 - **You build the shell:** variant structure, the MCP read/diff/draft flow, branding, header matching, localization, the `trigger_selector` and `placement_selector`, and all **tile-interactivity JS** (add-to-cart, swatches, reviews, wishlist) in `search.js`. Plus assembly: dropping the tile into the `{{ TILE_BODY }}` slot and pushing the result.
 - **The `tile-extractor` skill builds the tile body** — the `{{ TILE_BODY }}` markup: the verbatim customer product card with feed variables bound in, sale/stock/price logic, swatches, hover image, and the interactive form/button **markup**. You invoke it (Step 6); you do not re-implement tile logic here.
 
-> **Scope boundary:** HR **Search** only. HR **Recommendations** live in `recom-developer` — redirect recom requests. The `hello-retail` MCP is Search-only.
+> **Scope boundary:** HR **Search** only. HR **Recommendations** live in `recom-developer` — redirect recom requests.
+
+> **You own the shell, not the ranking.** "Wrong products come back", "this brand should rank higher", "hide this product from search", "add a synonym", "searching X returns nothing" are **relevance**, not design. That lives on the website's **product search engine** (search steps, boosts, elevates, excludes, query rules, personalization) plus website-level synonyms and stop words — a different set of MCP tools and a different change model. **Do not touch them while building a design.** Engine edits have **no draft and no publish step**: they serve immediately, and one engine normally serves every search config on the website (check `usedByConfigKeys`). Say that the request is relevance work, hand the operator `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/search/search-relevance.md`, and carry on with the design.
 
 ## Foundation rule — extend the base, never rewrite it
 

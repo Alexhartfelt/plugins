@@ -39,6 +39,31 @@ Pages has a dedicated article ("Pages & Search Engine Optimization") on how to k
 
 Pages output is themable to match the shop. See "Pages Design Customizations".
 
+## Designs vs page configs
+
+Pages splits into two objects, and it is worth keeping them apart when discussing a change:
+
+- A **page design** is the template — HTML/Liquid, CSS, JS — plus the filters and sortings the
+  visitor sees. One design normally renders many pages.
+- A **page config** is one page: the product **filters** that select what appears on it, the
+  **boosts** that order it, whether out-of-stock products show, how strongly a product's
+  performance score counts, and which design it renders with.
+
+Both are editable through the MCP and both stay in **draft**: editing a live page config creates
+a draft beside it, editing a design creates drafts for the live configs using it and reports
+which ones, and publishing is a dashboard step in either case. A config can also be created from
+scratch or copied — including to another website of the same company — and the copy starts in
+draft.
+
+Filters take a field, an operator (`EQ`, `NE`, `LT`, `LTE`, `GT`, `GTE`, `ANY`, `ALL`, `NONE`)
+and a value type: `LITERAL` compares against a value stored in the config, while `INPUT`
+compares against a value the page's embed script supplies at render time, keyed by the field
+name — that is how one config serves a whole set of category pages. Boosts come in two kinds:
+product boosts (products whose field matches a value are boosted) and personalized boosts
+(products matching the visitor's affinity for a field are boosted).
+
+Filters and boosts are each replaced in full when written, so read the current state first.
+
 ## D&TS notes
 
 - For SEO-sensitive customers, **default to API integration (HTML response)** so crawlers see real markup, not JS-rendered placeholders.

@@ -54,6 +54,27 @@ See also [integrations/klaviyo.md](../../integrations/klaviyo.md) for the three 
 
 Customers can pick a preset tone or create their own. Agents adhere to it in subject + body generation.
 
+## What is configurable per agent
+
+Each of the seven agents is configured on its own, and all of it is reachable through the MCP as
+well as the dashboard:
+
+- **On or off**, per agent. Turning one on requires at least one ACTIVE channel that has that
+  agent's flow wired up — otherwise the change is refused, which is the usual explanation for
+  "I enabled it and nothing happened".
+- **Which channels it sends through.**
+- **A custom prompt** for that agent, overriding the shared tone of voice.
+- **Whether it may send follow-ups.**
+- **Price-drop thresholds**, on the price-drop agents: a minimum drop as an absolute amount in
+  the website's currency, and as a percentage.
+- **Global product filters** for the agent, built from the keys the agent reports as available.
+
+Shared across agents: the tone of voice used to generate copy, and the addresses test messages
+go to.
+
+These changes are **live on save** — there is no draft or review step. Every list you send
+replaces the stored one, so read the current settings before changing one item.
+
 ## Dashboard
 
 Shows scheduled, sent, and skipped messages. Preview tab lets you inspect any sent email's content.

@@ -6,9 +6,13 @@ description: >
   pages_getDesign, pages_updateDesign, pages_updateDesignFilters,
   pages_updateDesignSorting, pages_createDesign, pages_copyDesign). Use when someone
   wants to create, customize, splice a product tile into, or configure filters/sorting
-  on a Hello Retail Pages design. Draft-only: publishing is a My Hello Retail dashboard
-  step. Sibling of search-developer / recom-developer; the tile body comes from
-  tile-extractor.
+  on a Hello Retail Pages design. Also owns the PAGE CONFIGS — the individual pages:
+  which products a page selects (product filters), how they are ordered (product and
+  personalized boosts), out-of-stock handling, and which design a page renders with. So
+  also "which products show on this category page", "pin/boost products on a Pages
+  category", "create a brand page", "copy this page to another website". Draft-only:
+  publishing is a My Hello Retail dashboard step. Sibling of search-developer /
+  recom-developer; the tile body comes from tile-extractor.
 ---
 
 # Hello Retail — Pages Design Development
@@ -52,6 +56,35 @@ settings from memory or from this file.
   disabled). Name it with the site domain so future runs can find it.
 - `pages_copyDesign` — independent copy; the ONLY route to customize an archived design.
   The copy gets its own key and no page references it until explicitly configured.
+
+### Page configs — the individual pages
+
+A design is the template; a **page config** is one page built on it. Same draft rules:
+every write lands in DRAFT and a human publishes in My Hello Retail.
+
+- `pages_listConfigs` / `pages_getConfig` — the website's pages and one page's core
+  settings (name, design key, `showOutOfStockProducts`, `productScoreBoost`). ALWAYS
+  read before writing.
+- `pages_getConfigProductFilters` / `pages_updateConfigProductFilters` — which products
+  the page selects. Each filter is `field` + `operator` (EQ, NE, LT, LTE, GT, GTE, ANY,
+  ALL, NONE) + `valueType`: `LITERAL` compares against a `value` stored in the config;
+  `INPUT` compares against a value the page's embed script supplies at render time,
+  keyed by the field name — that is how one config serves a whole set of categories, so
+  do NOT convert an INPUT filter to LITERAL to "fix" a page.
+- `pages_getConfigProductBoosts` / `pages_updateConfigProductBoosts` — ordering.
+  `productBoosts` are field+value+boost; `personalizedBoosts` are field+boost against
+  the visitor's affinity. Pass only the list you are changing; each list given is
+  replaced in full.
+- `pages_updateConfig` — name, design key, out-of-stock, product score boost. Partial.
+- `pages_createConfig` — a page from scratch; needs a `designKey`. Starts in DRAFT.
+- `pages_copyConfig` — copy a page, optionally onto another website of the same company
+  and onto a different design. Starts in DRAFT.
+
+**Both filter and boost writes replace the whole list** — read the facet first and send
+back the complete set, or you silently drop what you omitted. Field names must be real
+product fields (`dataFields_getProductFields`) and filter/boost values must be the exact
+indexed value — read them with `productData_getFieldValues` rather than guessing;
+hierarchies use the `$`-separated encoding (`kids$shoes` = Kids > Shoes).
 
 ## Workflow
 

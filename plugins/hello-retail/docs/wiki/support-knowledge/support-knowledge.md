@@ -149,6 +149,12 @@ Often referenced during onboarding for compliance-conscious customers.
 
 ---
 
+## Reading the logs instead of guessing
+
+Before escalating a "it changed by itself" or "the integration is broken" ticket, check the two
+per-website logs: [diagnostics — audit log and API log](./diagnostics.md). They answer who
+changed a config and what the shop's integration is actually sending, without a screen-share.
+
 ## D&TS notes
 
 - **Recently popular articles** (per the support homepage) — Product Agents, Banners, Retail Media, Product Lookup. Worth being fluent in.

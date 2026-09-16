@@ -44,6 +44,29 @@ PI is exposed via a **single GraphQL endpoint** for builders. Developers can int
 
 Developer docs: [Product Intelligence GraphQL API](https://developer.helloretail.com/api/graphQL/product-intelligence/) — endpoint `https://core.helloretail.com/pi/graphql`, queries `productInsight` and `topProducts`, API-key or dashboard-session auth ([authentication](https://developer.helloretail.com/api/graphQL/authentication/)). Currently a free beta; fields may change. Also exposed through the MCP tools ([product-intelligence](https://developer.helloretail.com/mcp/tools/product-intelligence/)).
 
+## Ranking products on a PI dimension
+
+PI can rank a website's products on a performance dimension, best first, which turns it into a
+merchandising tool rather than only an engine under the features. The dimensions answer
+questions merchandisers actually ask:
+
+| Dimension | Answers |
+| --- | --- |
+| `DAY_OF_WEEK` | What to promote on a given weekday. |
+| `TIME_OF_DAY` / `DAY_AND_TIME_OF_DAY` | What sells in the evening, or on Saturday mornings. |
+| `DISCOUNT` | What is worth discounting, within a discount band. The range 0-0 ranks full-price purchases instead. |
+| `PRODUCT_LIFETIME_VALUE` | Which products are worth the most over a customer's life. |
+| `RETENTION_RATE` | Which products bring customers back. |
+| `RECURRENCE_RATE` | What gets repurchased. |
+
+Each result carries a 0-1 score for how well the product matches the dimension, plus the raw
+value behind it, and threshold filters on the same metrics (and on price) can be combined to
+narrow a list. Products with too little purchase history are left out silently, so an empty
+result means nothing qualified, not that the call failed.
+
+It is a free beta, and the result carries that notice — say so when a figure from it goes in
+front of a customer.
+
 ## What PI powers in the platform
 
 | Module | What PI contributes |

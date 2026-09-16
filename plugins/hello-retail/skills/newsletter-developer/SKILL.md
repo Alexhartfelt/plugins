@@ -85,7 +85,9 @@ is copy-pasted into the dashboard anymore.
 | `newsletterContent_getDesign` | Full Liquid/HTML of one design. **Always read before overwriting** — check whether the target is the untouched shared default or someone's real work (a colleague may have created/edited it the same day). |
 | `newsletterContent_getRenderingInfo` | **Read this before writing a single line.** Authoritative per-website renderer facts: the render engine (Flying Saucer/Java2D, XHTML + CSS 2.1 + border-radius), the installed-font list, min/max dimensions, retina multiplier, available Liquid filters, the design-marker syntax rules, and `product.*` variables sampled from a real product on THIS website (incl. its extraData keys). |
 | `newsletterContent_renderDesign` | Render to real JPEG tiles **without persisting** — the canonical verification, because it IS the production pipeline. Pass `template`+`width`+`height` for an unsaved draft, or `designId`+`template` to preview an edit against a saved design before writing it. Pass `productUrls` (max 4) to test specific title lengths / sale states; omit to get top products, on-sale first. Returns the images, any Liquid parse error (line/char), and per-tile image-load failures. |
-| `newsletterContent_updateDesign` / `createDesign` / `copyDesign` | Save. Partial updates (template/name/width/height). |
+| `newsletterContent_listStarterTemplates` | The built-in starters the dashboard's "New design" page offers: name plus the width×height each was authored for. The names are the newsletter layouts they suit — the Mailchimp ones are sized for 2, 3 or 4 tiles per row. Use it to pick the **canvas** when the operator hasn't given one. |
+| `newsletterContent_getStarterTemplate` | Full Liquid/HTML of one starter. A worked example of the idiom that actually renders — table/float/absolute layout, fixed-height overflow-hidden text boxes, marker syntax, sale/full-price branch. Read one when a construct you need isn't in the shared default. |
+| `newsletterContent_updateDesign` / `createDesign` / `copyDesign` | Save. Partial updates (template/name/width/height). `copyDesign` is the SAFE route when live campaigns render the target — see below. |
 
 **Hard cautions for the write path:**
 
@@ -103,6 +105,13 @@ is copy-pasted into the dashboard anymore.
   recipient OPENS the mail, an adopted edit also changes pictures in mail
   already sitting in inboxes (trailing up to ~30 s of cache). Say this out loud
   to the operator when editing a design that live campaigns use.
+- **When live campaigns render the target, offer `copyDesign` first.** Copy the
+  design, edit and render the copy, and let the operator point the campaign at
+  the copy in the dashboard — the switch then happens at a moment a person
+  chose, instead of an edit landing on live sends. The copy carries the uploaded
+  image assets across, so `asset://` references keep resolving, and it is
+  created LIVE and pickable in the campaign editor. Editing in place is still
+  fine for a design no campaign uses yet.
 - **Fonts are the render host's, not the web's.** No `@font-face`; a font not in
   `getRenderingInfo.availableFonts` silently falls back. E.g. a shop using Inter
   gets **Roboto** as the closest installed stand-in — check the list every time.
@@ -164,6 +173,14 @@ In the same breath, pull the website's ground truth via the MCP:
   Note its id, state, and **canvas width×height** (build for that canvas, not an
   assumed one), and whether its template is the untouched default (safe to
   replace) or someone's live work (stop and surface it before overwriting).
+- `newsletterContent_listStarterTemplates` — only when there is **no existing
+  design and no canvas was given**. The starters are named for the newsletter
+  layout they suit and carry the width×height they were authored for; pick the
+  one matching the customer's ESP layout (e.g. 3 tiles per row in Mailchimp) and
+  build the shared default onto that canvas. If a construct you need isn't in
+  the shared default — a layout the renderer accepts, a marker form — read that
+  starter with `getStarterTemplate` and copy the idiom from it rather than
+  inventing one. The shared default stays the base for parameter conventions.
 
 ### 3. Inspect the live tile (don't guess)
 
