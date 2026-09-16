@@ -87,18 +87,21 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(release): ${SUMMARY:-roll changelog} [skip ci]"
 
-          # A ruleset on main rejects this push unless the pusher may bypass it. GITHUB_TOKEN
-          # cannot; a RELEASE_TOKEN with bypass, or an Actions bypass actor on the ruleset, can.
-          # Without one the release stalls here every time: no bump, no tag, no release — so say
-          # which of the two is missing rather than leaving a bare GH013 in the log.
+          # A ruleset on main rejects this push unless the *pusher* is covered by its bypass
+          # list. This is not an authentication failure — the job always has a token — and
+          # saying "add a token" sends people looking for the wrong thing.
           if ! git push origin HEAD:main; then
-            echo "::error title=Release cannot push to main::\
-          The version bump and rolled changelog could not be pushed, so nothing was tagged or \
-          released. main is protected and this job pushed as \
-          ${RELEASE_TOKEN_SET:+RELEASE_TOKEN}${RELEASE_TOKEN_SET:-GITHUB_TOKEN}. Fix either one: \
-          add a fine-grained PAT or GitHub App token with contents:write as the RELEASE_TOKEN \
-          secret and allow it to bypass the ruleset, or add the repository's GitHub Actions as a \
-          bypass actor on the ruleset protecting main. Re-run this workflow afterwards."
+            echo "::error title=Release blocked by branch protection::\
+          Nothing was tagged or released: the version bump and rolled changelog could not be \
+          pushed to main. This is NOT a missing token — the job authenticated fine as \
+          ${RELEASE_TOKEN_SET:+RELEASE_TOKEN}${RELEASE_TOKEN_SET:-GITHUB_TOKEN}. A ruleset on \
+          main requires every change to arrive via a pull request, and whoever pushed is not \
+          covered by that ruleset's bypass list. The fix is to push as someone who is. If the \
+          bypass list contains a repository role, a fine-grained PAT or App token belonging to \
+          somebody holding that role, stored as the RELEASE_TOKEN secret, is the quickest route \
+          and needs no change to the ruleset. Otherwise an organization owner can add GitHub \
+          Actions itself to the bypass list — a repository admin cannot, the API rejects it. \
+          Check the list at GitHub → Settings → Rules. Then re-run this workflow."
             exit 1
           fi
 
