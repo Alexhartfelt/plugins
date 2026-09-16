@@ -54,6 +54,35 @@ Price filters accept static thresholds or dynamic values: `$price` (the viewed p
 
 There is no account-wide filter — a rule such as "never show products under €5" has to be set on every box.
 
+## When a box shows the wrong products
+
+The first suspect is the **strategy on the box, not the data behind it**. A box shows what its
+strategy steps select, and the usual finding on these tickets is that it is selecting exactly what
+it was configured to select — the configuration just isn't what the customer assumed.
+
+**"Popular" is not a strategy.** Top products, Most bought and Most viewed are three separate steps
+in the fifteen above, and a box's title is free text set independently of them — a box titled
+"Popular products" / "Populære produkter" tells you nothing about which step it runs. A customer who
+says popular *must* mean the items they sell most of is describing **Most bought**; a box that
+disappoints them is often on Top products or Most viewed. Read "Recommendation Strategies" for what
+each step actually selects rather than inferring it from the box name.
+
+Work it in this order:
+
+1. **Strategy steps** — which steps, in what order, with what caps. This is the answer most of the time.
+2. **Filters, fixed and pinned products** — a global or per-step filter narrowing the pool (brand,
+   hierarchy, price), or fixed/pinned products occupying slots before the strategy fills the rest.
+3. **Feed** — a product missing, out of stock or mis-categorised in the catalogue cannot be
+   recommended whatever the strategy says.
+4. **Design** — only once the *right* products are being selected. A tile bound to the wrong field is
+   a design problem; the wrong products in the box is not.
+
+**Steps 1 and 2 are not reachable through the MCP.** `recoms_listBoxes` returns a box's key, name,
+page type, state, design and placement — never its strategy, filters, product count or category
+scope, and no tool writes them. So a "wrong products" ticket is confirmed as far as the box, then
+handed to an operator to change in the dashboard (the `support-debugging` skill's MCP capability
+matrix, §4). Treat `name` and `type` as labels, not as a read of the setting.
+
 ## Integrations specific to Recommendations
 
 - **Sleeknote integration** — show Hello Retail recommendations inside Sleeknote popups.

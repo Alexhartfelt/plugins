@@ -171,6 +171,7 @@ The recurring false positives. Each has produced real "nothing was actually brok
 | "Our brands/categories/blog don't appear in search" | **The content type is not enabled on the search config.** Configuration, not indexing |
 | "It worked last week" | **Someone changed it.** `auditLog_getEntries` names the change and when — check this before reproducing anything |
 | "The box is gone on one page" | **Placement, not data.** A selector that no longer matches after a theme change — `recoms_listBoxes` shows `selector`, `selectorMode`, `insertMode` |
+| "The recom box shows the wrong products" | **The strategy, not the data.** The box is almost always selecting exactly what it was set to; "popular" is not a strategy, and Top products / Most bought / Most viewed are three different steps. See `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/product-recommendations/product-recommendations.md` → *When a box shows the wrong products* |
 
 ### 4 · Is the scope in the mail the real scope?
 
@@ -318,6 +319,7 @@ Always **plumbing → payload → presentation**. Most failed tickets inverted t
 | **Search UI** broken or unstyled | `search_listConfigs` → `search_getDesign` → reproduce on the storefront |
 | **Recommendation** box missing or misplaced | `recoms_listBoxes` (`selector`, `selectorMode`, `insertMode`) → `recoms_getDesign` → reproduce on the storefront |
 | **Recommendation** box present but empty or not converting | `recoms_getAnalyticsForKey` (impressions at all?) → `recoms_getAnalyticsDailyForKey` (when did it stop?) → `recoms_listBoxes` |
+| **Recommendation** box shows the *wrong* products | **Check the capability first — this is usually a hand-back.** A box's algorithm (most-bought, most-viewed, retargeted…), its category scope, product count and filters are neither readable nor writable via MCP — matrix §4. Confirm the box exists and which page it sits on with `recoms_listBoxes`, check `auditLog_getEntries` for a recent change, then hand the setting itself to the operator. Order of suspicion — strategy → filters → feed → design — is in `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/product-recommendations/product-recommendations.md` |
 | **Pages** wrong products, filters or sorting | `pages_listConfigs` → `pages_getConfig` → `pages_getConfigProductFilters` / `ProductBoosts` → `pages_getDesignFilters` / `DesignSorting` → `pages_getUrlBreakdown` |
 | **"It worked last week"**, any feature | `auditLog_getEntries` **first** → `internal_auditLog_getEntrySnapshots` for the before/after → then the feature's row above |
 | **Integration / API** calls not landing | `apiLog_getStats` → `apiLog_getEntries`. Recording is off by default; **get the customer's agreement before switching it on** — see *Hard rules* |

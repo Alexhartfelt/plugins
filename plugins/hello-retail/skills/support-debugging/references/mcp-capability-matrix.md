@@ -33,7 +33,7 @@ What the MCP can and cannot reach, for the triage gate's check 2.
 | **Search engines** | `search_listProductEngines`, `search_getProductEngine`, `search_getProductEngineBoosts` / `Elevates` / `Excludes`, `search_listContentEngines`, `search_getContentEngine`, `internal_search_listEngines` | Read `usedByConfigKeys` first — one engine normally serves **every** search surface on the website |
 | **Search vocabulary** | `search_listSynonyms`, `search_listStopWords`, `search_listQueryRules`, `search_getQueryRule` | Writable too — see §2 |
 | **Search analytics** | `search_getAnalyticsOverview`, `search_getTopSearches`, `search_getTopSearchesWithoutResults`, `search_getFilterUsage`, `search_getSortingUsage` | The overview breaks down by feature — product, **category, brand**, suggested products, zero-result content. Zero-result lookback is capped at 92 days |
-| **Recommendations** | `recoms_listBoxes`, `recoms_listDesigns`, `recoms_getDesign` | Boxes carry `designKey`, `selector`, `selectorMode`, `insertMode`. Archived and standard designs are read-only — `recoms_copyDesign` makes an editable copy |
+| **Recommendations** | `recoms_listBoxes`, `recoms_listDesigns`, `recoms_getDesign` | Boxes carry `key`, `name`, `type` (the page context — `Front page`, `Category page`, `Product page`, `Cart page`, `404 page`, `Upsell step`), `state`, `designKey`, `selector`, `selectorMode`, `insertMode`. **Never the algorithm** — nothing returns which products a box picks or on what basis; see §4 and §5. Archived and standard designs are read-only — `recoms_copyDesign` makes an editable copy |
 | **Recom analytics** | `recoms_getAnalyticsForKey`, `recoms_getAnalyticsDailyForKey`, `recoms_getAnalyticsGrouped`, `recoms_getAnalyticsTotals` | |
 | **Pages configs** | `pages_listConfigs`, `pages_getConfig`, `pages_getConfigProductFilters`, `pages_getConfigProductBoosts` | The DRAFT version is returned when it exists; `liveVersionExists` flags a serving LIVE. Core settings, product filters and boosts are **separate facet reads** |
 | **Pages designs** | `pages_listDesigns`, `pages_getDesign`, `pages_getDesignFilters`, `pages_getDesignSorting` | Templates (HTML/Liquid, JS, CSS); visitor-facing filter and sorting settings are separate facets |
@@ -136,6 +136,7 @@ No tool exists. Say so in the **first line** of the reply and do not investigate
 | **Tracking and visitor state** — logged-in status, user bias, tracking-script health, IP filtering | No tool, and a frequent *false* bug: a logged-in staff member sees stale, bias-influenced results. Verify in a clean session before diagnosing anything |
 | **Running a search query** | No tool. Query `core.helloretail.com/serve/search` with the config `key` — and **only a LIVE config is queryable**, so a draft cannot be tested this way |
 | **Queuing a feed run ("re-sync now")** | No tool. Operator triggers it, or the customer uses the queue-run API |
+| **What a recommendation box actually recommends** — its algorithm / product source (most-bought vs most-viewed vs retargeted…), the category or brand it is scoped to, the product count, and any filters on it | **No tool reads it and none writes it.** The recom writes cover placement (`recoms_updateBoxPlacement`), which design a box renders with (`recoms_updateBoxesDesign`) and that design's template and styles (`recoms_updateDesign`) — nothing else. Operator changes the box in the dashboard. "Show best-sellers instead of most-viewed" is a hand-back, not a SOLVE |
 | **Creating, deleting or archiving recommendation boxes** | Only placement and design of *existing* boxes can be edited. New boxes are made in the dashboard |
 | **Editing or re-running a V1 feed** | Read-only (§3). Forward path is a V2 migration |
 | **Site selectors / crawler extraction** outside a V2 feed's `crawlConfig` | Operator, in the dashboard |
@@ -169,6 +170,13 @@ theory, but generate at least one alternative before committing to it.
 **Answer the request, not the sentence.** If a mail names one feature but the change obviously spans
 others — a site-wide update mentioning only recommendations, a sister domain on the same design —
 say so and cover it, or ask. Partial-scope delivery is the most common cause of "partially worked".
+
+**A recom box's `name` and `type` do not tell you its algorithm.** `recoms_listBoxes` returns a
+human label ("Top products in category - Box 1") and a page context (`Category page`) — neither is
+the recommendation source, and a label set when the box was created is not a live read of what the
+box is set to today. No MCP call settles it; the operator reads the box in the dashboard. Do not let
+the `MOST_BOUGHT` / `MOST_VIEWED` vocabulary in §2.A mislead you either — those are **search
+initial-content** sources, and nothing equivalent is exposed for recommendations.
 
 **Some causes are legitimately not ours.** Third-party platform behaviour, customer infrastructure
 (a WAF rule blocking the feed reader), and internal platform mechanics all arrive as support
