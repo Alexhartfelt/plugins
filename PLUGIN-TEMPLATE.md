@@ -42,10 +42,11 @@ plugins/                          one directory per plugin                      
 plugins/README.md                 one-table index of the plugins in this repo              (adapt)
 scripts/validate.mjs              structural checks + `claude plugin validate --strict`    (copy; review FORBIDDEN_TRACKED)
 scripts/bump-version.mjs          bumps changed plugins' versions after merge              (copy)
-scripts/changelog.mjs             rolls `## Unreleased` → `## <version>`, reads it back    (copy)
+scripts/changelog.mjs             collects `changelog.d/` fragments, rolls them to `## <version>`  (copy)
+scripts/changelog-lint.mjs        release-note gate: fragment format, `## Unreleased` left alone   (copy)
 scripts/wiki-lint.mjs             docs/wiki gate: provenance frontmatter, links, orphans, customer data  (copy)
 .github/workflows/ci.yml          validate · markdown lint · wiki lint · shellcheck · secret scan · version preview  (copy)
-.github/workflows/release.yml     on main: bump → roll changelog → commit → tag → GitHub Release        (copy; adapt the marketplace name in the release body)
+.github/workflows/release.yml     on main: bump → collect+roll changelog → commit → tag → GitHub Release  (copy; adapt the marketplace name in the release body)
 .github/CODEOWNERS                who reviews what                                         (adapt)
 .github/dependabot.yml            monthly grouped updates for actions and npm tooling      (copy)
 .github/pull_request_template.md  the PR checklist                                         (copy)
@@ -76,7 +77,8 @@ plugins/<plugin-name>/
 ├── .claude-plugin/
 │   └── plugin.json          REQUIRED  name (== directory), semver version, description ≥ 20 chars   CI
 ├── README.md                REQUIRED  what the plugin is for, install, the skill table, what it needs   CI (warning)
-├── CHANGELOG.md             REQUIRED  release notes, written per PR under `## Unreleased`           (release.yml reads it)
+├── CHANGELOG.md             REQUIRED  released history; written by release.yml, never by hand      (release.yml owns it)
+├── changelog.d/             REQUIRED  release notes, one new .md file per PR + a README on the format
 ├── AUTHORING.md             recommended  the skill playbook for this plugin
 ├── skills/
 │   └── <skill-name>/
@@ -97,7 +99,8 @@ What each piece is for, and the rule attached to it:
 |---|---|---|
 | `.claude-plugin/plugin.json` | The manifest Claude Code reads. The `version` is what gets tagged and released. | `name` equals the directory and is kebab-case. `version` is semver. Do not bump it by hand unless you want a specific version — the Release workflow bumps it after merge. **CI** |
 | `README.md` | For the colleague who installs the plugin: what it does, how to install, one table of skills, what it needs (MCPs, browsers, runtimes), the rules the skills follow, a short layout block. | Keep the skill table current — adding a skill adds a row. |
-| `CHANGELOG.md` | The release notes. `## Unreleased` becomes the GitHub Release body verbatim. | Only `### Added / Changed / Fixed / Removed`, one bullet per user-visible change, skill name first, no paths, no PR numbers, no customer data. Never write the version heading or edit a released section. Format in `CLAUDE.md` → "Release notes". |
+| `CHANGELOG.md` | The released history. The Release workflow writes it and nobody else — a PR never touches it. | Hand-editing it is what makes every second open PR conflict, and after a release the edit lands in the published section instead. **CI** |
+| `changelog.d/` | The release notes for the next version: one new `.md` file per PR, named after the branch, plus a `README.md` explaining the format. A new file per PR is why concurrent PRs never conflict here. | Only `### Added / Changed / Fixed / Removed`, one bullet per user-visible change, skill name first, no paths, no PR numbers, no customer data. Format in `CLAUDE.md` → "Release notes". **CI** |
 | `AUTHORING.md` | The team standard for writing a skill in this plugin, usable by a person or by Claude. | Ship it inside the plugin so it travels with the skills it describes. |
 | `skills/<skill>/SKILL.md` | The skill: a repeatable, multi-step procedure. | One `SKILL.md` per directory, exactly one level deep — a nested `skills/<a>/…/SKILL.md` is never discovered. **CI** |
 | `skills/<skill>/references/` | Anything long or platform-specific: per-platform quirks, snippet libraries, templates, harness scripts (`.py`, `.rb`, `.js` are fine here). | Loaded only when the body says "read `references/<x>.md` before …". Keeps `SKILL.md` cheap. |
@@ -199,21 +202,33 @@ of plugins that already existed on `main`.
 
 ### `plugins/<plugin-name>/CHANGELOG.md` — initial file
 
+Written by the Release workflow from then on. Leave `## Unreleased` empty; notes go in
+`changelog.d/`.
+
 ```markdown
 # Changelog — <plugin-name>
 
 What changed in each released version of the plugin, written for the person who installs it.
 Update with `/plugin marketplace update <marketplace-name>`, then `/reload-plugins`.
 
-Entries are added under **Unreleased** in the PR that makes the change; the Release workflow
-renames that section to the version it publishes.
+**Do not edit this file.** The Release workflow writes it. Entries are added in the PR that
+makes the change, as a new file under `changelog.d/`.
 
 ## Unreleased
+```
 
+### `plugins/<plugin-name>/changelog.d/<branch-name>.md` — one per PR
+
+A new file per PR is the whole point: two PRs open at once never touch the same lines, and the
+workflow deletes the fragments once it has folded them into the release.
+
+```markdown
 ### Added
 
 - `<skill-name>` is a new skill: <what it does for the person using it>.
 ```
+
+Copy `changelog.d/README.md` alongside it — it is the format note contributors actually read.
 
 ### `plugins/<plugin-name>/.mcp.json`
 

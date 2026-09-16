@@ -4,18 +4,22 @@ name: Release
 #   1. bumps the version of each plugin whose files changed, unless the PR already bumped
 #      it by hand (scripts/bump-version.mjs — level from the squash-merge title:
 #      "feat:" → minor, "feat!:" / "BREAKING CHANGE" → major, anything else → patch);
-#   2. rolls each plugin's CHANGELOG.md "## Unreleased" section into a "## <version>" one
-#      (scripts/changelog.mjs) — the notes themselves are written in the PR, see CLAUDE.md
-#      → "Release notes";
+#   2. folds each plugin's changelog.d/*.md release-note fragments into "## Unreleased", then
+#      rolls that section into a "## <version>" one and deletes the fragments
+#      (scripts/changelog.mjs) — the notes themselves are written in the PR, one fragment file
+#      per PR so two open PRs never conflict over them, see CLAUDE.md → "Release notes";
 #   3. commits the bump and the rolled changelog back to main with [skip ci] so it does not
 #      trigger itself;
 #   4. tags every plugin whose version is new as <plugin>-v<version> and publishes a
 #      GitHub Release whose body is that version's changelog section.
 #
-# Pushing to a protected main needs a token that may bypass the protection. Add a
-# fine-grained PAT (contents: write) or GitHub App token as the RELEASE_TOKEN secret;
-# without it the workflow falls back to GITHUB_TOKEN, which works only while main is
-# unprotected.
+# Step 3 pushes to main, and a ruleset protecting main will reject that push unless the
+# pusher may bypass it. GITHUB_TOKEN cannot. Do one of:
+#   - add a fine-grained PAT (contents: write) or GitHub App token as the RELEASE_TOKEN
+#     secret, and list it as a bypass actor on the ruleset; or
+#   - add the repository's GitHub Actions as a bypass actor on the ruleset.
+# With neither, every merge stalls at the push: no version bump, no tag, no release. The
+# step fails loudly and names the missing piece rather than leaving a bare GH013 behind.
 on:
   push:
     branches: [main]
@@ -52,9 +56,10 @@ jobs:
           BASE: ${{ github.event.before }}
         run: node scripts/bump-version.mjs
 
-      # Moves "## Unreleased" to "## <version> — <date>" in each plugin's CHANGELOG.md. Safe to
-      # re-run: a changelog that already has a section for the version is left alone.
-      - name: Roll changelogs to the released version
+      # Fold this release's fragments into "## Unreleased" and delete them, then move that
+      # section to "## <version> — <date>". Safe to re-run: with no fragments collect changes
+      # nothing, and a changelog that already has a section for the version is left alone.
+      - name: Collect release-note fragments and roll the changelog
         run: |
           set -euo pipefail
           for m in plugins/*/.claude-plugin/plugin.json; do
@@ -62,6 +67,7 @@ jobs:
             name=$(jq -r .name "$m")
             version=$(jq -r '.version // empty' "$m")
             [ -n "$version" ] || continue
+            node scripts/changelog.mjs collect "$name"
             node scripts/changelog.mjs roll "$name" "$version"
           done
 
@@ -69,6 +75,7 @@ jobs:
       - name: Commit the bump and the rolled changelog
         env:
           SUMMARY: ${{ steps.bump.outputs.summary }}
+          RELEASE_TOKEN_SET: ${{ secrets.RELEASE_TOKEN && '1' || '' }}
         run: |
           set -euo pipefail
           git add -A plugins/
@@ -79,7 +86,21 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(release): ${SUMMARY:-roll changelog} [skip ci]"
-          git push origin HEAD:main
+
+          # A ruleset on main rejects this push unless the pusher may bypass it. GITHUB_TOKEN
+          # cannot; a RELEASE_TOKEN with bypass, or an Actions bypass actor on the ruleset, can.
+          # Without one the release stalls here every time: no bump, no tag, no release — so say
+          # which of the two is missing rather than leaving a bare GH013 in the log.
+          if ! git push origin HEAD:main; then
+            echo "::error title=Release cannot push to main::\
+          The version bump and rolled changelog could not be pushed, so nothing was tagged or \
+          released. main is protected and this job pushed as \
+          ${RELEASE_TOKEN_SET:+RELEASE_TOKEN}${RELEASE_TOKEN_SET:-GITHUB_TOKEN}. Fix either one: \
+          add a fine-grained PAT or GitHub App token with contents:write as the RELEASE_TOKEN \
+          secret and allow it to bypass the ruleset, or add the repository's GitHub Actions as a \
+          bypass actor on the ruleset protecting main. Re-run this workflow afterwards."
+            exit 1
+          fi
 
       - name: Tag and release plugins with a new version
         env:

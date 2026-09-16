@@ -8,7 +8,9 @@
 
 ## Checklist
 
-- [ ] `npm run check` passes locally (validate + markdown lint)
+- [ ] `npm run check` passes locally (validate + markdown, wiki and release-note lint)
+- [ ] Changed something under `plugins/<plugin>/`? Added a release note as a **new file** in
+      `plugins/<plugin>/changelog.d/` — not an edit to `CHANGELOG.md`
 - [ ] PR title is Conventional Commits (`fix:` patch · `feat:` minor · `feat!:` major) — it sets the version bump on merge
 - [ ] No customer-identifiable data (names, domains, UUIDs, screenshots, QA reports) in the diff
 - [ ] No secrets, tokens, or auth state in the diff

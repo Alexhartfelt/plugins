@@ -58,6 +58,45 @@ jobs:
       # plugins/*/docs/wiki. markdownlint skips the wiki on purpose; this is its gate.
       - run: npm run lint:wiki
 
+  lint-changelog:
+    name: Lint release notes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # Fragment format, and that nobody hand-edited CHANGELOG.md -> "## Unreleased". Editing
+      # that section conflicts with every other open PR, and after a release the edit lands in
+      # the already-published section where no release will ever read it.
+      - run: npm run lint:changelog
+
+      # Informational: a PR that changes a plugin usually owes a release note. Pure refactors,
+      # typo fixes and lint changes legitimately owe nothing, so this never fails the build.
+      - name: Remind about a missing release note
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only "$(git merge-base "$BASE" HEAD)"..HEAD)
+          missing=0
+          for dir in plugins/*/; do
+            name=${dir#plugins/}; name=${name%/}
+            touched=$(echo "$changed" | grep -E "^plugins/$name/" | grep -vE "^plugins/$name/(CHANGELOG\.md|changelog\.d/)" || true)
+            [ -n "$touched" ] || continue
+            note=$(echo "$changed" | grep -E "^plugins/$name/changelog\.d/[^/]+\.md$" | grep -v "/README\.md$" || true)
+            if [ -z "$note" ]; then
+              echo "::warning title=No release note for $name::This PR changes plugins/$name/ but adds no file under plugins/$name/changelog.d/. Add one unless the change is invisible to whoever installs the plugin (a refactor, a typo, a lint fix)."
+              missing=1
+            else
+              echo "Release note for $name: $note"
+            fi
+          done
+          [ "$missing" -eq 1 ] || echo "Every changed plugin has a release note."
+
   shellcheck:
     name: ShellCheck
     runs-on: ubuntu-latest

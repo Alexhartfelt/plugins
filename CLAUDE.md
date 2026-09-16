@@ -17,8 +17,10 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
   are still warnings while the wiki cleanup is in progress.
 - `PLUGIN-TEMPLATE.md` — the canonical plugin layout, file templates and conventions. Scaffold
   a new plugin from it, and keep it current when a structural convention changes.
-- `scripts/changelog.mjs` — rolls and reads `CHANGELOG.md` for the Release workflow. Never
-  edit a released section by hand.
+- `scripts/changelog.mjs` — collects `changelog.d/` fragments into `CHANGELOG.md`, rolls and
+  reads it for the Release workflow. Never edit `CHANGELOG.md` by hand.
+- `scripts/changelog-lint.mjs` — gate on the release notes: fragment format, and that
+  `## Unreleased` was left alone. Part of `npm run check`.
 
 ## Rules to apply when editing
 
@@ -47,18 +49,24 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 
 ## Release notes
 
-Every PR that changes anything under `plugins/<plugin>/` also adds its entry to
-`plugins/<plugin>/CHANGELOG.md`, under `## Unreleased`. That section becomes the GitHub
-Release body verbatim: the Release workflow renames it to `## <version> — <date>` and passes it
-to `gh release create`. A PR that touches only root files (README, CI, scripts) needs no entry.
+Every PR that changes anything under `plugins/<plugin>/` also adds its entry as **a new file**
+under `plugins/<plugin>/changelog.d/`, named after the branch: `changelog.d/wiki-provenance.md`.
+A PR that touches only root files (README, CI, scripts) needs no entry.
+
+**Never edit `CHANGELOG.md`.** The Release workflow owns that file: on merge it folds every
+fragment into the version it publishes, deletes the fragments, and passes the assembled section
+to `gh release create`. A fragment is a new file, so two PRs open at the same time never conflict
+over it — and it cannot land in an already-released section, which an edit to `## Unreleased`
+did silently once the workflow had rolled that section. `npm run check` fails on a hand-edited
+`## Unreleased`.
 
 Write the entry in the same session as the change, while the reason for it is still in context.
+`npm run changelog` prints what the next release will say.
 
-**Structure.** Only these four `###` headings, in this order, and only the ones that apply:
+**Structure.** A fragment is nothing but these four `###` headings, in this order, and only the
+ones that apply — no `##` heading, no title, no prose outside a bullet:
 
 ```markdown
-## Unreleased
-
 ### Added      — a skill, reference file, or capability that did not exist before
 ### Changed    — different behaviour or output from something that already worked
 ### Fixed      — it was wrong or broken and now is not
@@ -106,8 +114,8 @@ Bad — reviewer-facing, path-shaped, or no behaviour stated:
 - Added handling for store-actualcustomer.com
 ```
 
-**Never write the `## <version>` heading or the date by hand**, and never edit a released
-section — the workflow owns both. Leave `## Unreleased` in place with nothing under it.
+**Never write a `##` heading or a date by hand**, and never edit `CHANGELOG.md` — the workflow
+owns the whole file. Your PR only ever adds one file under `changelog.d/`.
 
 ## Current state
 

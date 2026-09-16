@@ -85,9 +85,12 @@ the plugin.
 
 - Branch from `main`, one plugin per PR where practical.
 - `npm run check` locally before pushing.
-- Changed something under `plugins/<plugin>/`? Add the entry to that plugin's `CHANGELOG.md`
-  under `## Unreleased`. It becomes the GitHub Release body, so write it for whoever installs
-  the plugin — the structure is in `CLAUDE.md` → "Release notes".
+- Changed something under `plugins/<plugin>/`? Add a **new file** under that plugin's
+  `changelog.d/`, named after your branch — never edit `CHANGELOG.md`, the Release workflow
+  writes it. One file per PR means two open PRs never conflict over the release notes. It
+  becomes the GitHub Release body, so write it for whoever installs the plugin: the format is
+  in `changelog.d/README.md`, the house style in `CLAUDE.md` → "Release notes". Preview the
+  next release with `npm run changelog`.
 - Fill the PR template; CODEOWNERS get requested automatically.
 - CI must be green: validate, markdown lint, shellcheck, secret scan. The version preview is
   informational.
