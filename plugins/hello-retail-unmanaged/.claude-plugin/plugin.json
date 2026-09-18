@@ -1,0 +1,26 @@
+{
+  "name": "hello-retail-unmanaged",
+  "displayName": "Hello Retail (unmanaged)",
+  "version": "1.0.0",
+  "description": "Skills and reference docs that teach AI coding assistants the intricacies and edge cases of Hello Retail's public REST APIs, for building custom frontend solutions.",
+  "author": {
+    "name": "Hello Retail",
+    "email": "mk@helloretail.com"
+  },
+  "homepage": "https://developer.helloretail.com",
+  "repository": "https://github.com/helloretail/plugins",
+  "license": "UNLICENSED",
+  "keywords": [
+    "skills",
+    "hello-retail",
+    "rest-api",
+    "search",
+    "recommendations",
+    "pages",
+    "click-tracking",
+    "view-tracking",
+    "cart-tracking",
+    "conversion-tracking",
+    "frontend"
+  ]
+}

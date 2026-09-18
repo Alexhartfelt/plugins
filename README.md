@@ -1,17 +1,24 @@
 # Hello Retail — Claude Code plugins
 
-The Claude Code plugin marketplace for Hello Retail. It holds the `hello-retail` plugin: the
-skills that build and QA Hello Retail Search, Recommendations, Pages, newsletter and
-triggered-email designs as drafts, the feed-setup skills, the Hello Retail knowledge base, and
-the MCP server configs those skills depend on. Merging to `main` is publishing: Claude Code
-installs straight from this repository over git.
+The Claude Code plugin marketplace for Hello Retail. It holds two plugins, one per integration
+model:
+
+- **`hello-retail`** — the *managed* path: the skills that build and QA Hello Retail Search,
+  Recommendations, Pages, newsletter and triggered-email designs as drafts, the feed-setup
+  skills, the Hello Retail knowledge base, and the MCP server configs those skills depend on.
+- **`hello-retail-unmanaged`** — the *unmanaged* path: the skills that document Hello Retail's
+  public REST APIs, so a customer's own frontend calls them correctly. It builds no Hello Retail
+  design and writes no configuration.
+
+Merging to `main` is publishing: Claude Code installs straight from this repository over git.
 
 ## Layout
 
 ```
 .claude-plugin/marketplace.json   # the marketplace: name + list of plugins (source paths)
-plugins/hello-retail/             # the plugin (see plugins/hello-retail/README.md)
-plugins/hello-retail/CHANGELOG.md # release notes, written per PR under `## Unreleased`
+plugins/hello-retail/             # the managed plugin (see plugins/hello-retail/README.md)
+plugins/hello-retail-unmanaged/   # the REST API plugin (see plugins/hello-retail-unmanaged/README.md)
+plugins/<plugin>/CHANGELOG.md     # release notes, written per PR under `## Unreleased`
 PLUGIN-TEMPLATE.md                # the plugin layout, file templates and conventions — start a new plugin from it
 scripts/validate.mjs              # structural checks + `claude plugin validate --strict`
 scripts/bump-version.mjs          # bumps changed plugins' versions (level from the merge commit title)

@@ -5,7 +5,7 @@
     "email": "pa@helloretail.com"
   },
   "metadata": {
-    "description": "Hello Retail Claude Code plugins — skills that build and QA Hello Retail designs and feeds, and the Hello Retail knowledge base.",
+    "description": "Hello Retail Claude Code plugins — skills that build and QA managed Hello Retail designs and feeds, skills that build custom frontends against the public REST APIs, and the Hello Retail knowledge base.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -24,6 +24,24 @@
         "liquid",
         "qa",
         "knowledge-base"
+      ]
+    },
+    {
+      "name": "hello-retail-unmanaged",
+      "displayName": "Hello Retail (unmanaged)",
+      "source": "./plugins/hello-retail-unmanaged",
+      "description": "Hello Retail's public REST APIs for AI agents: the intricacies and edge cases of Search, Recommendations, Pages and the four tracking endpoints, so a customer's own frontend calls them correctly. The unmanaged counterpart to the hello-retail plugin — it builds no Hello Retail design and writes no configuration.",
+      "category": "ecommerce",
+      "keywords": [
+        "hello-retail",
+        "ecommerce",
+        "rest-api",
+        "site-search",
+        "product-recommendations",
+        "click-tracking",
+        "conversion-tracking",
+        "frontend",
+        "unmanaged"
       ]
     }
   ]
