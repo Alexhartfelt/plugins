@@ -1,7 +1,7 @@
 {
   "name": "hello-retail-unmanaged",
   "displayName": "Hello Retail (unmanaged)",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Skills and reference docs that teach AI coding assistants the intricacies and edge cases of Hello Retail's public REST APIs, for building custom frontend solutions.",
   "author": {
     "name": "Hello Retail",
