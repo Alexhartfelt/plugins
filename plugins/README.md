@@ -23,4 +23,5 @@ Plugins here:
 
 | Plugin | What it holds |
 |---|---|
-| [`hello-retail/`](./hello-retail/) | The skills that build and QA Hello Retail designs and feeds, the knowledge skill, the wiki they read (`docs/wiki/`), the `hello-retail` + `playwright` MCP servers, and the dashboard-guard hook. |
+| [`hello-retail/`](./hello-retail/) | **Managed.** The skills that build and QA Hello Retail designs and feeds, the knowledge skill, the wiki they read (`docs/wiki/`), the `hello-retail` + `playwright` MCP servers, and the dashboard-guard hook. |
+| [`hello-retail-unmanaged/`](./hello-retail-unmanaged/) | **Unmanaged.** The skills that document Hello Retail's public REST APIs — Search, Recommendations, Pages and the four tracking endpoints — so a customer's own frontend calls them correctly. Builds no design and writes no configuration. |
