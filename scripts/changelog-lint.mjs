@@ -13,7 +13,7 @@
  * Run from `npm run lint:changelog`, and as part of `npm run check`.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
@@ -28,7 +28,9 @@ const fail = (file, msg) => {
 };
 
 function lintFragment(file) {
-  const name = file.slice(file.lastIndexOf("/") + 1);
+  // basename, not a "/" split: on Windows the separator is "\" and the whole path
+  // ended up being matched against the kebab-case rule, failing every valid fragment.
+  const name = basename(file);
   if (!/^[a-z0-9]+(-[a-z0-9]+)*\.md$/.test(name)) {
     fail(file, `name it in kebab-case after your branch, e.g. "script-loading-triage.md"`);
   }
