@@ -33,7 +33,8 @@ Node.js is used only for `scripts/validate.mjs` and markdownlint.
 
 - Edit `plugins/hello-retail/…` directly; nothing here is a generated mirror.
 - Do not bump `plugin.json` → `version` by hand unless a specific version is wanted: the
-  Release workflow bumps it after merge, with the level taken from the squash-merge title
+  Release workflow bumps it after merge, in a release PR for you to merge, with the level
+  taken from the squash-merge title
   (`fix:` patch, `feat:` minor, `feat!:` / `BREAKING CHANGE` major). Write PR titles and commit
   subjects in that Conventional Commits form.
 - Skills are self-contained: a skill reads only files inside the plugin. Paths into the wiki
@@ -61,11 +62,11 @@ under `plugins/<plugin>/changelog.d/`, named after the branch: `changelog.d/wiki
 A PR that touches only root files (README, CI, scripts) needs no entry.
 
 **Never edit `CHANGELOG.md`.** The Release workflow owns that file: on merge it folds every
-fragment into the version it publishes, deletes the fragments, and passes the assembled section
-to `gh release create`. A fragment is a new file, so two PRs open at the same time never conflict
-over it — and it cannot land in an already-released section, which an edit to `## Unreleased`
-did silently once the workflow had rolled that section. `npm run check` fails on a hand-edited
-`## Unreleased`.
+fragment into the version it publishes, deletes the fragments, puts the result in the release
+PR, and passes the assembled section to `gh release create` once that PR lands. A fragment is a
+new file, so two PRs open at the same time never conflict over it — and it cannot land in an
+already-released section, which an edit to `## Unreleased` did silently once the workflow had
+rolled that section. `npm run check` fails on a hand-edited `## Unreleased`.
 
 Write the entry in the same session as the change, while the reason for it is still in context.
 `npm run changelog` prints what the next release will say.
@@ -127,6 +128,13 @@ owns the whole file. Your PR only ever adds one file under `changelog.d/`.
 ## Current state
 
 The repository is private, so the marketplace must be registered over SSH for background
-auto-update to work (see `README.md` → Installing). Merging to `main` publishes: the Release
-workflow bumps the version, rolls the changelog, tags and cuts a GitHub Release carrying that
-version's notes.
+auto-update to work (see `README.md` → Installing).
+
+Publishing takes two merges. A ruleset protects `main` — pull request required, one approving
+review, no force-push, no deletion — and repository admins are the only bypass. GitHub Actions
+is **not** bypassed and a repository admin cannot make it so; only an organization owner may add
+the Actions integration to a ruleset's bypass list. So merging to `main` no longer publishes by
+itself: the Release workflow bumps the version, rolls the changelog and opens a release PR
+(`chore(release): …` on `release/next`). Merging *that* tags and cuts the GitHub Release. Admins
+can merge it without an approval. If an organization owner ever adds GitHub Actions (app id
+15368) to the bypass list, the workflow can go back to committing straight to `main`.

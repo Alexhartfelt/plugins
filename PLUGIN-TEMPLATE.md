@@ -46,7 +46,7 @@ scripts/changelog.mjs             collects `changelog.d/` fragments, rolls them 
 scripts/changelog-lint.mjs        release-note gate: fragment format, `## Unreleased` left alone   (copy)
 scripts/wiki-lint.mjs             docs/wiki gate: provenance frontmatter, links, orphans, customer data  (copy)
 .github/workflows/ci.yml          validate · markdown lint · wiki lint · shellcheck · secret scan · version preview  (copy)
-.github/workflows/release.yml     on main: bump → collect+roll changelog → commit → tag → GitHub Release  (copy; adapt the marketplace name in the release body)
+.github/workflows/release.yml     on main: bump → collect+roll changelog → release PR; on its merge: tag → GitHub Release  (copy; adapt the marketplace name in the release body)
 .github/CODEOWNERS                who reviews what                                         (adapt)
 .github/dependabot.yml            monthly grouped updates for actions and npm tooling      (copy)
 .github/pull_request_template.md  the PR checklist                                         (copy)
@@ -387,8 +387,9 @@ git, so nothing may land on `main` that fails CI.
 | Squash-merge | reviewer | The merge commit title is what the bump script reads. |
 | Bump | `release.yml` | `bump-version.mjs` raises `plugin.json` → `version` for each plugin the range touched, unless the PR already changed it by hand (a manual bump wins). |
 | Roll | `release.yml` | `changelog.mjs roll` renames `## Unreleased` to `## <version> — <date>` and leaves a fresh empty `## Unreleased` above it. An empty section releases as "Maintenance release — no user-visible changes." |
-| Commit | `release.yml` | Bump and rolled changelog are committed to `main` with `[skip ci]`. |
-| Tag + release | `release.yml` | Tag `<plugin>-v<version>`, GitHub Release whose body is that version's changelog section plus the install reminder. |
+| Release PR | `release.yml` | Bump and rolled changelog are force-pushed to the `release/next` branch and opened as a `chore(release): …` pull request. One branch, one PR, always rebuilt from the current `main`. It shows no checks — GitHub does not run workflows for a PR opened by `GITHUB_TOKEN`. |
+| Merge the release PR | you | The publish trigger. A ruleset protects `main` and the Actions bot has no bypass, so nothing reaches `main` except through a PR. Repository admins can merge this one without an approval. |
+| Tag + release | `release.yml` | On that merge: tag `<plugin>-v<version>`, GitHub Release whose body is that version's changelog section plus the install reminder. |
 
 Changelog entries are written for whoever installs the plugin: skill name in backticks first,
 then what is different in behaviour, two sentences at most. Not paths, not diffs, not process.
@@ -426,8 +427,9 @@ mkdir -p "plugins/$name/.claude-plugin" "plugins/$name/skills" "plugins/$name/do
    Remove it afterwards (`claude plugin marketplace remove <marketplace-name>`) and restore the
    git-sourced marketplace, or you will quietly stop receiving releases.
 10. Open a PR titled `feat: add <plugin-name> plugin`, with the changelog entry under
-    `## Unreleased`. Squash-merge when CI is green; the Release workflow tags
-    `<plugin-name>-v<version>` and publishes it.
+    `## Unreleased`. Squash-merge when CI is green; the Release workflow then opens a
+    `chore(release): …` pull request, and merging that tags `<plugin-name>-v<version>`
+    and publishes it.
 
 ## 10. Checklist — starting a new marketplace repository from this root
 

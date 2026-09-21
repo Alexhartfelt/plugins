@@ -24,7 +24,7 @@ scripts/validate.mjs              # structural checks + `claude plugin validate 
 scripts/bump-version.mjs          # bumps changed plugins' versions (level from the merge commit title)
 scripts/changelog.mjs             # rolls `## Unreleased` into `## <version>`, reads it back for the Release
 .github/workflows/ci.yml          # validate · markdown lint · shellcheck · secret scan · version preview
-.github/workflows/release.yml     # on main: auto-bump → commit → tag <plugin>-v<version> → GitHub Release
+.github/workflows/release.yml     # on main: auto-bump → release PR; on its merge: tag <plugin>-v<version> → GitHub Release
 ```
 
 The only language in the repo is the plugins' own content: Markdown, JSON, Liquid, a few
@@ -119,9 +119,11 @@ npm run check      # validate + lint — the same checks CI runs
    becomes the GitHub Release body. `CLAUDE.md` → "Release notes" has the structure; skip it only
    for root-only changes (README, CI, scripts).
 4. Squash-merge when CI is green. The Release workflow bumps `plugin.json` → `version` for every
-   plugin the PR touched, rolls `## Unreleased` into `## <version>`, commits both to `main`, tags
-   `hello-retail-v<version>` and publishes a GitHub Release carrying those notes. It is live for
-   everyone on their next marketplace update.
+   plugin the PR touched, rolls `## Unreleased` into `## <version>`, and opens a **release pull
+   request** (`chore(release): …` on the `release/next` branch) carrying both. Merging that PR
+   tags `hello-retail-v<version>` and publishes a GitHub Release with those notes, live for
+   everyone on their next marketplace update. A ruleset protects `main`, so the release goes
+   through a PR like everything else; repository admins can merge it without an approval.
 5. To choose the version yourself, bump `plugin.json` in the PR; a version that already changed
    is left alone. `[bump minor]` / `[bump major]` in the title also override the level.
 

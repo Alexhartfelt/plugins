@@ -1,25 +1,41 @@
 name: Release
 
-# Merging to main is the release. On every push to main this workflow:
-#   1. bumps the version of each plugin whose files changed, unless the PR already bumped
-#      it by hand (scripts/bump-version.mjs — level from the squash-merge title:
-#      "feat:" → minor, "feat!:" / "BREAKING CHANGE" → major, anything else → patch);
-#   2. folds each plugin's changelog.d/*.md release-note fragments into "## Unreleased", then
-#      rolls that section into a "## <version>" one and deletes the fragments
-#      (scripts/changelog.mjs) — the notes themselves are written in the PR, one fragment file
-#      per PR so two open PRs never conflict over them, see CLAUDE.md → "Release notes";
-#   3. commits the bump and the rolled changelog back to main with [skip ci] so it does not
-#      trigger itself;
-#   4. tags every plugin whose version is new as <plugin>-v<version> and publishes a
-#      GitHub Release whose body is that version's changelog section.
+# Merging to main is still the release, but it now takes two steps, because a ruleset
+# protects main and the GitHub Actions bot cannot be excused from it: only an organization
+# owner may add the Actions integration to a ruleset's bypass list, and a repository admin
+# asking for it gets "422 — Actor GitHub Actions integration must be part of the ruleset
+# source or owner organization". So this workflow never pushes to main. Instead:
 #
-# Step 3 pushes to main, and a ruleset protecting main will reject that push unless the
-# pusher may bypass it. GITHUB_TOKEN cannot. Do one of:
-#   - add a fine-grained PAT (contents: write) or GitHub App token as the RELEASE_TOKEN
-#     secret, and list it as a bypass actor on the ruleset; or
-#   - add the repository's GitHub Actions as a bypass actor on the ruleset.
-# With neither, every merge stalls at the push: no version bump, no tag, no release. The
-# step fails loudly and names the missing piece rather than leaving a bare GH013 behind.
+#   PREPARE — on an ordinary merge to main:
+#     1. bump the version of each plugin whose files changed, unless the PR already bumped
+#        it by hand (scripts/bump-version.mjs — level from the squash-merge title:
+#        "feat:" → minor, "feat!:" / "BREAKING CHANGE" → major, anything else → patch);
+#     2. fold each plugin's changelog.d/*.md release-note fragments into "## Unreleased",
+#        then roll that section into a "## <version>" one and delete the fragments
+#        (scripts/changelog.mjs) — the notes themselves are written in the PR that makes
+#        the change, see CLAUDE.md → "Release notes";
+#     3. force-update the release/next branch with the result and open — or refresh — a
+#        pull request titled "chore(release): …". One branch and one pull request, always
+#        rebuilt from the current main, so several merges in a row never queue up several
+#        competing release PRs.
+#
+#   PUBLISH — when that release PR lands (head commit subject starts with "chore(release):"):
+#     4. tag every plugin whose version is new as <plugin>-v<version> and publish a GitHub
+#        Release whose body is that version's changelog section.
+#
+# A release therefore costs one extra click: merge the release PR. Repository admins bypass
+# the ruleset, so they can merge it without waiting for an approving review. A
+# workflow_dispatch run does both halves, which is how to recover an interrupted release.
+#
+# Two things worth knowing before you go looking for a bug:
+#   - The release PR is opened by GITHUB_TOKEN, and GitHub deliberately does not start
+#     workflow runs for a PR opened that way, so it shows no checks. Its contents are
+#     generated from a main that CI has already validated.
+#   - The release commit carries no [skip ci]. It must not: the publish half is triggered
+#     by that very commit landing on main.
+#
+# If an organization owner later adds GitHub Actions (app id 15368) to the ruleset's bypass
+# list, this can go back to committing straight to main — see the repository history.
 on:
   push:
     branches: [main]
@@ -27,85 +43,55 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: release
   cancel-in-progress: false
 
+env:
+  RELEASE_BRANCH: release/next
+
 jobs:
   release:
-    name: Bump, tag, release
+    name: Prepare or publish
     runs-on: ubuntu-latest
-    # The bump commit itself carries [skip ci]; this guard covers manual re-runs of it.
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
 
-      - name: Bump versions of changed plugins
-        id: bump
+      # Which half runs. A push whose head commit is the release PR landing publishes;
+      # any other push prepares. A manual dispatch does both, publishing whatever is
+      # already on main before preparing whatever is not yet released.
+      - name: Decide which half to run
+        id: mode
         env:
-          # github.event.before is the previous tip of main for a normal push. On a
-          # force-push or manual dispatch it may be unusable; the script falls back to HEAD~1.
-          BASE: ${{ github.event.before }}
-        run: node scripts/bump-version.mjs
-
-      # Fold this release's fragments into "## Unreleased" and delete them, then move that
-      # section to "## <version> — <date>". Safe to re-run: with no fragments collect changes
-      # nothing, and a changelog that already has a section for the version is left alone.
-      - name: Collect release-note fragments and roll the changelog
+          MSG: ${{ github.event.head_commit.message }}
+          EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          for m in plugins/*/.claude-plugin/plugin.json; do
-            [ -f "$m" ] || continue
-            name=$(jq -r .name "$m")
-            version=$(jq -r '.version // empty' "$m")
-            [ -n "$version" ] || continue
-            node scripts/changelog.mjs collect "$name"
-            node scripts/changelog.mjs roll "$name" "$version"
-          done
-
-      # Not gated on the bump: a PR that set the version by hand still needs its changelog rolled.
-      - name: Commit the bump and the rolled changelog
-        env:
-          SUMMARY: ${{ steps.bump.outputs.summary }}
-          RELEASE_TOKEN_SET: ${{ secrets.RELEASE_TOKEN && '1' || '' }}
-        run: |
-          set -euo pipefail
-          git add -A plugins/
-          if git diff --cached --quiet; then
-            echo "Nothing to commit."
-            exit 0
+          subject=$(printf '%s\n' "$MSG" | head -n 1)
+          case "$subject" in
+            'chore(release):'*) publish=true;  prepare=false ;;
+            *)                  publish=false; prepare=true  ;;
+          esac
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            publish=true
+            prepare=true
           fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore(release): ${SUMMARY:-roll changelog} [skip ci]"
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+          echo "prepare=$prepare" >> "$GITHUB_OUTPUT"
+          echo "subject: ${subject:-<none>}"
+          echo "publish=$publish prepare=$prepare"
 
-          # A ruleset on main rejects this push unless the *pusher* is covered by its bypass
-          # list. This is not an authentication failure — the job always has a token — and
-          # saying "add a token" sends people looking for the wrong thing.
-          if ! git push origin HEAD:main; then
-            echo "::error title=Release blocked by branch protection::\
-          Nothing was tagged or released: the version bump and rolled changelog could not be \
-          pushed to main. This is NOT a missing token — the job authenticated fine as \
-          ${RELEASE_TOKEN_SET:+RELEASE_TOKEN}${RELEASE_TOKEN_SET:-GITHUB_TOKEN}. A ruleset on \
-          main requires every change to arrive via a pull request, and whoever pushed is not \
-          covered by that ruleset's bypass list. The fix is to push as someone who is. If the \
-          bypass list contains a repository role, a fine-grained PAT or App token belonging to \
-          somebody holding that role, stored as the RELEASE_TOKEN secret, is the quickest route \
-          and needs no change to the ruleset. Otherwise an organization owner can add GitHub \
-          Actions itself to the bypass list — a repository admin cannot, the API rejects it. \
-          Check the list at GitHub → Settings → Rules. Then re-run this workflow."
-            exit 1
-          fi
-
+      # ---------------------------------------------------------------- publish
       - name: Tag and release plugins with a new version
+        if: steps.mode.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -138,3 +124,76 @@ jobs:
               --generate-notes \
               --notes-file "$notes"
           done
+
+      # ---------------------------------------------------------------- prepare
+      - name: Bump versions of changed plugins
+        id: bump
+        if: steps.mode.outputs.prepare == 'true'
+        env:
+          # github.event.before is the previous tip of main for a normal push. On a
+          # force-push or manual dispatch it may be unusable; the script falls back to HEAD~1.
+          BASE: ${{ github.event.before }}
+        run: node scripts/bump-version.mjs
+
+      # Not gated on the bump: a PR that set the version by hand still needs its changelog rolled.
+      - name: Collect release-note fragments and roll the changelog
+        if: steps.mode.outputs.prepare == 'true'
+        run: |
+          set -euo pipefail
+          for m in plugins/*/.claude-plugin/plugin.json; do
+            [ -f "$m" ] || continue
+            name=$(jq -r .name "$m")
+            version=$(jq -r '.version // empty' "$m")
+            [ -n "$version" ] || continue
+            node scripts/changelog.mjs collect "$name"
+            node scripts/changelog.mjs roll "$name" "$version"
+          done
+
+      - name: Open or refresh the release pull request
+        if: steps.mode.outputs.prepare == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUMMARY: ${{ steps.bump.outputs.summary }}
+        run: |
+          set -euo pipefail
+          git add -A plugins/
+          if git diff --cached --quiet; then
+            echo "Nothing to release — no version bump and no release notes to roll."
+            exit 0
+          fi
+
+          title="chore(release): ${SUMMARY:-roll changelog}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$RELEASE_BRANCH"
+          git commit -m "$title"
+          # The branch is disposable and always rebuilt from the current main, so it is
+          # force-pushed. The ruleset's non-fast-forward rule covers main only.
+          git push --force origin "HEAD:refs/heads/$RELEASE_BRANCH"
+
+          body=$(mktemp)
+          {
+            echo "Generated by the Release workflow. **Merge this to publish.**"
+            echo
+            echo "On merge, the workflow tags each plugin whose version is new as"
+            echo "\`<plugin>-v<version>\` and cuts a GitHub Release carrying that version's"
+            echo "changelog section."
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Versions | ${SUMMARY:-none — changelog roll only} |"
+            echo "| Built from | \`$(git rev-parse --short "origin/main")\` on main |"
+            echo
+            echo "This PR shows no checks: GitHub does not start workflow runs for a pull"
+            echo "request opened by \`GITHUB_TOKEN\`. Its contents are generated from a main"
+            echo "that CI has already validated. Do not hand-edit the branch — the next merge"
+            echo "to main rebuilds it from scratch."
+          } > "$body"
+
+          pr=$(gh pr list --head "$RELEASE_BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --title "$title" --body-file "$body"
+            echo "Refreshed release PR #$pr"
+          else
+            gh pr create --base main --head "$RELEASE_BRANCH" --title "$title" --body-file "$body"
+          fi

@@ -14,8 +14,9 @@
 4. **One source of truth.** Edit `plugins/<plugin>/…` directly. There are no generated mirrors
    in this repo. If a job copies content in from elsewhere, its header must say so.
 5. **Every shipped change gets a new plugin version — CI does the bump.** After a squash-merge
-   the Release workflow raises `plugin.json` → `version` for each plugin the PR touched and tags
-   it. The level comes from the PR title (Conventional Commits):
+   the Release workflow raises `plugin.json` → `version` for each plugin the PR touched and opens
+   a release pull request with the result; merging that PR tags it. The level comes from the PR
+   title (Conventional Commits):
    - `fix:`, `docs:`, `chore:`, … → patch: wording, reference fixes, small template tweaks
    - `feat:` → minor: a new skill, a new reference file, new MCP server
    - `feat!:` / `BREAKING CHANGE` → major: a skill renamed/removed, behaviour users must re-learn
