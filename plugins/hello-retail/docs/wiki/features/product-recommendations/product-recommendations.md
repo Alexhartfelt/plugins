@@ -44,7 +44,33 @@ Each has its own "Review …" article in the General Setup → Review and Testin
 | **Pinned products** | Pin a product to a position globally. |
 | **Titles** | Customizable per-box title. |
 | **Load order** | Control the order recommendation boxes load on a page. |
+| **Page-level de-duplication** | A product URL appears in at most one box per page — see [One product per page](#one-product-per-page-across-all-boxes). |
 | **CLS / "jumping recs"** | Specific guides exist for fixing layout shift issues caused by recommendations loading in. |
+
+## One product per page, across all boxes
+
+*(Field knowledge — not in the public docs.)*
+
+In a standard JS setup, de-duplication of recommended products is **global to the page, not per
+box**. If a page carries several recommendation boxes, any given product URL is placed in only one of
+them — it will not be repeated by another box on that same page. **The first box that renders wins**;
+the boxes that render after it skip any product the earlier ones already used.
+
+The consequence customers run into: **a box cannot be duplicated to show the same content twice on
+one page.** A request such as "put the same 'Bought together' row both above and below the fold, with
+the same products" cannot be satisfied by adding a second Hello Retail box — the second box will not
+return the products the first one already used, and there is no per-box setting that opts out.
+
+What to do instead:
+
+- Keep one box and solve the second placement in the theme — clone or move the rendered markup with
+  CSS/JS, or make the existing box `position: sticky` — rather than configuring a second box.
+- If the second placement is allowed to differ, give it its own strategy and set the expectation that
+  the two rows will not match.
+
+This is also worth checking when a box renders short or empty **only on pages that carry several
+boxes**: the products it would have shown may already be taken by a box that rendered before it.
+Check **Load order** and rule this out before digging into the strategy or the feed.
 
 ## Filters on a box
 
