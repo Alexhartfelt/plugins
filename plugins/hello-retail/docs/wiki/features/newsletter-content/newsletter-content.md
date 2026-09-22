@@ -24,10 +24,46 @@ The tile is built from [base-templates/newsletters/newsletter-tile-default.liqui
 Newsletter Content supports several campaign archetypes:
 
 - **Manual Campaign** — one-off send, you compose around the recommendation block.
-- **Auto Campaign Configuration** — set up once; the snippet goes into the ESP's recurring template and every newsletter the customer sends becomes a new campaign with fresh per-recipient content. Needs a unique campaign name/ID per send (Klaviyo, Omnisend: at most one newsletter a day); fixed products apply to the first send only.
+- **Auto Campaign Configuration** — set up once; the snippet goes into the ESP's recurring template and every newsletter the customer sends becomes a new campaign with fresh per-recipient content. Needs a unique campaign name/ID per send (Klaviyo, Omnisend: at most one newsletter a day); fixed products go out with the first send after they are set and with no later one — until the campaign is saved again, which re-arms them.
 - **Rolling Campaign** — a single template that continuously updates content based on the latest data and the recipient's profile.
 
 Each campaign type's article explains the trade-offs: see ["Understanding the Different Campaign Types"](https://support.helloretail.com/newsletter-content/understanding-the-different-campaign-types/).
+
+The dashboard's names and the API's differ, which matters as soon as a support answer or a tool
+result names one: **Auto = `TEMPLATE`**, **Rolling = `AUTORESET`**, **Manual = `NORMAL`**. They are
+three separate pages in the dashboard and are listed separately everywhere else too, so "the
+customer's campaigns" is always three lookups, not one.
+
+**A campaign's type cannot be changed after it is created.** A campaign set up as the wrong type has
+to be created again — worth getting right in the kickoff rather than after the first send.
+
+## How a campaign picks products
+
+A campaign fills its slots from an ordered list of strategy steps drawn through a global filter
+list — the same step format Recommendations use. Two things make a newsletter campaign behave
+unlike an on-site recommendation box.
+
+**The algorithm runs for a recipient, not a page visitor.** There is no product or category in
+context, so a step that recommends "things like the product in context" has nothing to start from
+unless an earlier step deliberately puts products there. That is the usual reason a step returns
+nothing at all.
+
+**Known and unknown recipients take different paths.** A recipient Hello Retail has behaviour on
+drives the personalised steps; one it does not gets the campaign's default products and whatever
+the catalogue-wide steps return. An algorithm that works for only one of the two is the common
+defect, and it is invisible in the step list — it shows up only when the campaign is previewed once
+as each.
+
+**Fixed products are three asymmetric lists**, and mixing them up is the usual mistake:
+
+| List | Who sees them | Behaviour |
+| --- | --- | --- |
+| Pinned (include) | every recipient | Placed in order before the algorithm runs, **ignoring the campaign's filters** — so a pinned product shows even when it is out of stock |
+| Default | **only** recipients Hello Retail has no behaviour on | A fallback, not a second pinned list — a known recipient never sees them |
+| Exclude | nobody | A veto, and it takes no slot |
+
+Pinning more products than the campaign shows leaves the algorithm nothing to fill. That is valid,
+but it is a fully manual campaign — say so rather than debugging why personalisation "stopped".
 
 ## ESP integrations (Newsletter Content)
 
@@ -50,6 +86,12 @@ Each campaign type's article explains the trade-offs: see ["Understanding the Di
 ## Analytics
 
 Newsletter Content has its own analytics (Emails → Newsletter Content → Analytics): opens, clicks and orders per campaign; CTR split between personalised content (recipient identified) and default content (not identified); per-product views, clicks and direct/indirect conversions. UTM parameters are added automatically (source `helloretail`, medium `email`, campaign = campaign ID); medium and campaign can be overridden in the Code snippet step — never on Auto campaigns, or all auto-created campaigns collapse into one GA campaign.
+
+**An Auto campaign configuration never serves anything itself — its sends do.** Each newsletter it
+sends is its own record with its own opens and clicks, so the configuration has no figures of its
+own and a zero against it is a misread, not a campaign that is failing. Read the sends, or the sum
+across them. A configuration with no sends at all has never served a tile, which usually means the
+snippet is not in a newsletter yet, or the newsletter went out and nobody opened it.
 
 ## Locate Template ID for Auto Campaigns
 

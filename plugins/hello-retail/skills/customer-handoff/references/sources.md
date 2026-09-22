@@ -163,11 +163,11 @@ paste; roles and dates then carry `operator`. No card at all (operator confirmed
 | Feature | Tools (read-only) | Record |
 |---|---|---|
 | Search | `search_listConfigs`; per config `search_getDesign` (type, selectors from `initializationCode`: `trigger_selector`, `placement_selector`), `search_getFilters`, `search_getSorting`, `search_listSynonyms`, `search_listStopWords`, `search_getProductEngineBoosts` / `Elevates` / `Excludes` | key, type, state, selectors, filter and sort fields, language; counts of synonyms / boosts / redirects — never the template code |
-| Recommendations | `recoms_list`, `recoms_listDesigns`, `recoms_getDesign` (placement mode + selector) | box key, page, algorithm, design key, placement mode, selector, state |
+| Recommendations | `recoms_list`, `recoms_getAlgorithm`, `recoms_getGeneralSettings`, `recoms_getPlacement`, `recoms_listDesigns` | key, page type, strategy (the ordered step names and whether they are still a stock best-practice set — not the full step definitions), product count, design key, placement mode, selector, state |
 | Pages | `pages_listConfigs`, `pages_listDesigns`, `pages_getConfigProductFilters`, `pages_getDesignSorting` | config ID, design, scope, filters, sorting, state |
 | Feeds | `feeds_list`, `feeds_get`, `feeds_getLatestRun` | ID, kind, source type, schedule, state, notable transforms (names only), last run status |
 | Product Agents | `productAgents_getChannels`, `productAgents_getSettings` | channels and state |
-| Newsletter Content | `newsletterContent_listDesigns` | design keys and state |
+| Newsletter Content | `newsletterContent_listDesigns`; `newsletterContent_listCampaigns` **once per type** (`TEMPLATE` = Auto, `AUTORESET` = Rolling, `NORMAL` = Manual), then `newsletterContent_getCampaign` | design keys and state; per campaign: name, type, product count, the design it renders from, ESP platform, state. A rolling or manual campaign reading back as design `"custom"` is normal — it carries its own copy — not a misconfiguration to record as an open item |
 | Triggered Emails | no list tool — from `session` / operator | base + flows delivered |
 
 ### §5 Unique cases

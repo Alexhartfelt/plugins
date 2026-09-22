@@ -207,3 +207,8 @@ tickets. Name the owner and stop; that is a correct outcome, not a failure.
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/support-knowledge/support-knowledge.md` — curated
   support.helloretail.com index
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/onboarding/data-requirements.md` — what the customer must supply
+- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/newsletter-content/newsletter-content.md` — campaign
+  types and their API names, how a campaign picks products, and why an Auto campaign
+  configuration has no figures of its own
+- `${CLAUDE_PLUGIN_ROOT}/docs/wiki/features/product-recommendations/product-recommendations.md` —
+  the order of suspicion on a "wrong products" ticket
