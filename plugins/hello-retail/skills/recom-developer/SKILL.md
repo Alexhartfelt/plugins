@@ -43,7 +43,7 @@ A Recommendations design is a **product tile** sitting inside a **swiper-slider 
 | Input | Example | Notes |
 |---|---|---|
 | `website-uuid` *(required for MCP)* | `8f3c…` | Unique per site/domain; drives every MCP call. If missing and you intend to use the MCP, **ask**. Without it, fall back to inline copy-paste (see Step 7). |
-| `design-key` *(required for MCP)* | `others-also-bought` | The recom **design** to read/edit. Unsure which? `recoms_listDesigns(website-uuid)` (company customs + shared standards) or `recoms_listBoxes(website-uuid)` (each box's `designKey`). **Never edit a standard/shared or archived design — those are read-only.** If missing, **ask.** → `references/mcp-flow.md` |
+| `design-key` *(required for MCP)* | `others-also-bought` | The recom **design** to read/edit. Unsure which? `recoms_listDesigns(website-uuid)` (company customs + shared standards) or `recoms_list(website-uuid)` (each box's `designKey`). **Never edit a standard/shared or archived design — those are read-only.** If missing, **ask.** → `references/mcp-flow.md` |
 | `category-url` *(required)* | `https://example-shop.com/collections/all` | The product grid to survey. You fetch it yourself — don't ask for pasted DOM. |
 | `banner-size-name` *(optional)* | `recom-banner-300` | Replaces `BANNER_SIZE_NAME_PLACEHOLDER`. If absent, leave the placeholder and note it in MISSING DATA. |
 | `locale` *(infer)* | `da`, `de`, `es` | Infer from `<html lang>` / visible copy; confirm via `website_getInfo`. Pass it to the tile skill — it localizes the tile copy. |
@@ -75,7 +75,7 @@ State which source you reused and what the adaptation changed.
 
 ### Step 1 — Read the live design
 
-Confirm `website-uuid` + `design-key`. Call `recoms_listDesigns` (or `recoms_listBoxes`) to confirm the design key and that it's an **editable company design** (not standard/archived), `website_getInfo` for locale/currency, then `recoms_getDesign(website-uuid, design-key)` **regardless of state** to get your modify-in-place base. The payload can be large and **spills to a file — never read it whole**; extract only the regions you edit. Full rules: **`references/mcp-flow.md`**.
+Confirm `website-uuid` + `design-key`. Call `recoms_listDesigns` (or `recoms_list`) to confirm the design key and that it's an **editable company design** (not standard/archived), `website_getInfo` for locale/currency, then `recoms_getDesign(website-uuid, design-key)` **regardless of state** to get your modify-in-place base. The payload can be large and **spills to a file — never read it whole**; extract only the regions you edit. Full rules: **`references/mcp-flow.md`**.
 
 ### Step 2 — Survey the storefront (use a real browser)
 
@@ -244,7 +244,7 @@ Then **wait for explicit approval** → push (Step 7) → remind the operator to
 ## References (read on demand)
 
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/base-templates/foundation-rules.md` — **the foundation rule**: extend with higher specificity, never rewrite the base CSS/Liquid/JS; how to ask for approval when the foundation must change
-- `references/mcp-flow.md` — `recoms_getDesign`/`recoms_updateDesign`, design-key resolution, shared-design caution, payload-spill handling, REVIEW-draft governance, verify-after-push, `recoms_copyDesign` title rule, box placement (`recoms_updateBoxPlacement`, volatile-selector guidance, and the hide-on-filter/sort pattern for category recom boxes — two generic options, placement selector vs JS guard; **ask the operator which to use**)
+- `references/mcp-flow.md` — `recoms_getDesign`/`recoms_updateDesign`, design-key resolution, shared-design caution, payload-spill handling, REVIEW-draft governance, verify-after-push, `recoms_copyDesign` title rule, box placement (`recoms_updatePlacement`, volatile-selector guidance, and the hide-on-filter/sort pattern for category recom boxes — two generic options, placement selector vs JS guard; **ask the operator which to use**)
 - `references/slider-structure.md` — the slider variant, edit scope (banner branch, slot, empty CUSTOM_STYLING_BLOCK), swiper init tuning, the `afterInit` hook, the `loop: true` clone delegation gotcha, box-shell parity (container width, headline, mobile arrows), and the theme-CSS-scoping exception
 - `references/add-to-cart-js.md` — platform inference + in-slider ATC JS wiring (Shopify / Magento / Shopware / Starweb)
 - `tile-extractor` skill — produces the `{{ TILE_BODY }}` (invoked in Step 3)

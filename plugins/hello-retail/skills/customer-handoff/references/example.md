@@ -126,7 +126,7 @@ Search data configured by hand: 14 synonyms, 2 redirects (`gavekort` → gift-ca
 
 | Box key | Name / page | Algorithm | Design key | Placement mode | Placement selector | State | Source |
 |---|---|---|---|---|---|---|---|
-| `rb-3301` | Frontpage — "Populære lige nu" | Most popular | `rd-9a` | LIVE_MULTI | `#shopify-section-featured-collection` (before) | REVIEW | MCP recoms_listBoxes |
+| `rb-3301` | Frontpage — "Populære lige nu" | Most popular | `rd-9a` | LIVE_MULTI | `#shopify-section-featured-collection` (before) | REVIEW | MCP recoms_list |
 | `rb-3302` | PDP — "Andre købte også" | Bought together | `rd-9a` | LIVE_MULTI | `product-recommendations` (replace) | REVIEW | MCP |
 | `rb-3303` | Cart drawer — "Glemte du noget?" | Cart-based | `rd-9b` | LIVE_MULTI | `#hr-cart-recoms` — **div not yet in theme** (§8 #2) | DRAFT | MCP / session |
 

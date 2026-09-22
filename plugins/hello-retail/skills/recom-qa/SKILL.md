@@ -23,7 +23,7 @@ implementation. Run **two passes** and fold both into one report:
   box, compare HR tiles against the native category-page tiles, then walk the master checklist
   catalogue (the bulk of this skill).
 - **Code pass** — read the design via the `hello-retail` MCP (`recoms_getDesign`,
-  `recoms_listBoxes`, `recoms_listDesigns`) and check what the rendered UI can't
+  `recoms_list`, `recoms_listDesigns`) and check what the rendered UI can't
   show: click tracking, load order, placement/hierarchies/urls selectors, leftover placeholders,
   swiper config, and known Liquid gotchas.
 
@@ -63,7 +63,7 @@ first; create the folder only if that search comes back empty.
 - A customer URL (homepage or category page) **or** a `website-uuid` — **or several** (see
   Multi-domain mode below)
 - `website-uuid` — **ask for it up front if not supplied**: it unlocks the box/design inventory
-  (`recoms_listBoxes` / `recoms_listDesigns` — design keys are discovered, never
+  (`recoms_list` / `recoms_listDesigns` — design keys are discovered, never
   asked for), the code pass (`recoms_getDesign`), and `website_getInfo`
   (domain/language/currency). If the operator genuinely can't provide one, proceed
   **rendered-only** and mark the code pass "Not run".
@@ -137,7 +137,7 @@ everything dashboard-side goes through the `hello-retail` MCP.
 **With a `website-uuid`, also load the inventory via MCP** (this powers the code pass and several
 Supervisor-adjacent checks without touching the Supervisor UI):
 
-- `recoms_listBoxes(websiteUuid)` — every box with its state (LIVE/DRAFT) and `designKey`
+- `recoms_list(websiteUuid)` — every box with its state (LIVE/DRAFT) and `designKey`
 - `recoms_listDesigns(websiteUuid)` — every design with `title`, `archived`/`standard` flags
 - `recoms_getDesign(websiteUuid, key)` — the `templateCode`/`templateStyles` for each design
   under QA. The payload is large and **spills to a file — never read it whole**; extract only the
@@ -154,7 +154,7 @@ setup is a pre-launch onboarding, not API-based.
 **Determine the QA target — Draft / Internal Review first.** This QA normally runs *before*
 publish, so unpublished work is the primary target:
 
-- From `recoms_listBoxes`, classify each box: **DRAFT** (not yet published), **LIVE with
+- From `recoms_list`, classify each box: **DRAFT** (not yet published), **LIVE with
   pending changes** (a draft sits on top of the published version), or **LIVE (clean)**.
 - **Default target:** the Draft / Internal Review version wherever one exists.
   `recoms_getDesign` returns the design's current code **regardless of state** — including
@@ -256,7 +256,7 @@ not-visible diagnostic from `../qa-checklists/SKILL.md` Step 3 before recording 
 
 **Card cross-check:** every recom the ticket brief orders (Step 1.5 — card description +
 comment threads **and checklists**, where the list often evolves) must exist as a box (verify
-via `recoms_listBoxes` if you have the uuid). Whether it must also render depends on its
+via `recoms_list` if you have the uuid). Whether it must also render depends on its
 state: a **LIVE** box that never renders is a finding; a **DRAFT** box doesn't render by
 default — enable it via the HR widget (Show toggle) and QA it like any other box; it's a defect
 only if it still fails to render *after* enabling. A box that renders but was never ordered is
@@ -264,7 +264,7 @@ also a finding. **Before concluding "0 boxes render here, expected because they'
 check whether the card's own checklist claims the placement work (divs, script) was already
 done** — a DRAFT box rendering nothing is normal; a customer-inserted placement div that was
 supposedly added but is genuinely absent from the page is a different, reportable fact, and the
-two look identical from `recoms_listBoxes`/`recoms_getDesign` alone (see the
+two look identical from `recoms_list`/`recoms_getDesign` alone (see the
 `../qa-checklists/SKILL.md` Step 1.5 checklist-reading rule).
 
 **Placement selectors:** confirm each box mounts on a **unique ID div** the customer inserted for
@@ -298,7 +298,7 @@ to insert dedicated divs.
 > a specific box key is a guess unless you also read the inner element's `id` attribute — two
 > independent checks on the same account attributed the same rendered heading to two different
 > boxes this way (real case, store-IT recom-qa, 2026-08: one check read the box `selector` fields
-> from `recoms_listBoxes`, concluded box A fires on template type 1 / box B on type 2, and
+> from `recoms_list`, concluded box A fires on template type 1 / box B on type 2, and
 > attributed a live page's rendering to whichever box matched by headline text alone rather than
 > checking the inner id; a separate check that read the inner id got the opposite attribution).
 > When two boxes can plausibly share a headline, always confirm by id before writing "box X
@@ -545,7 +545,7 @@ confidently sourced, flag it "translation uncertain — check with CSM".
 ### 8. Code QA — read the design via MCP
 
 Run this whenever you have a `website-uuid` (resolve design keys per box via
-`recoms_listBoxes`). Read each design with `recoms_getDesign` — it returns the
+`recoms_list`). Read each design with `recoms_getDesign` — it returns the
 design's **current code including unpublished drafted changes**, so when a Draft / Internal
 Review version exists this pass QAs the draft (the intended default target), and it is the *only*
 pass available for drafts you can't preview in the browser. Check the **Code QA** checklist below
@@ -578,12 +578,12 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
 ### Placement & Visibility
 
 - [ ] **Card ↔ box parity** — every recom mentioned in the ClickUp card exists as a box
-      (`recoms_listBoxes`); LIVE boxes also render on the site; DRAFT boxes QA'd via the
+      (`recoms_list`); LIVE boxes also render on the site; DRAFT boxes QA'd via the
       widget (defect only if they fail to render *after* enabling). **Reconcile in both
       directions and count**: a page type rendering fewer boxes than the card orders ("should
       be 3 PDP recoms, I see one") is a finding even when every rendered box individually
       passes — and so are **duplicates**: two same-name/same-purpose boxes on one page type
-      (attribute by inner `.addwish-recom` id, then confirm in `recoms_listBoxes` whether
+      (attribute by inner `.addwish-recom` id, then confirm in `recoms_list` whether
       they're genuinely two boxes or one box double-mounted; real case: duplicate same-name
       PDP boxes, store-NO-1)
 - [ ] **All published boxes render** — `visible: true` and slide count > 0 on every placement of
@@ -859,7 +859,7 @@ workflow, before starting the next domain (naming per **Multi-domain mode**).
       load-order contradiction; the visual order was the customer's own Figma spec). It's a
       per-box Supervisor/dashboard field, not a template setting — field-verified twice
       (store-IT, 2026-07-29 and 2026-08-10): nothing resembling an order/priority field in
-      `templateCode`/`templateStyles`, and `recoms_listBoxes` doesn't expose one either —
+      `templateCode`/`templateStyles`, and `recoms_list` doesn't expose one either —
       so the check itself is **OPERATOR** (dashboard: Alternatives carries the lowest
       load-order value).
 - [ ] **Visual box order on the PDP** — a separate, customer-owned decision: "Alternatives
@@ -978,7 +978,7 @@ Never automate the Supervisor UI (the no-dashboard-automation rule) or the my.he
 Where the MCP exposes the same fact, verify it there; otherwise flag for a manual check.
 
 - [ ] **Nothing 'live with pending changes' or 'locked'** when sent to QA — check box states
-      (`recoms_listBoxes` shows LIVE/DRAFT; lock state is a manual check)
+      (`recoms_list` shows LIVE/DRAFT; lock state is a manual check)
 - [ ] **Internal naming removed** — no `[NOTE]`-style internal tags left in design names
       (`recoms_listDesigns` returns titles — scan them)
 - [ ] **No duplicate recom engines** for this domain
@@ -1003,7 +1003,7 @@ Checks against `templateCode` / `templateStyles` that the rendered pass can't se
       receives the **first batch of products** — not visual stacking, so the rendered order
       (which box's `top` is smaller) is evidence about placement, never about load order (see
       the PDP item above; a rendered-order "load order" finding was retired 2026-08-19).
-      Confirmed absent from `templateCode`/`templateStyles` and `recoms_listBoxes`
+      Confirmed absent from `templateCode`/`templateStyles` and `recoms_list`
       (store-IT, 2026-07-29 and 2026-08-10) — the whole item goes to the operator list.
 - [ ] **Category visibility logic** — the <12-products rule is implemented **without** the nested
       `:has(eq:)` selector; the filters-active rule is present if the site has filters.
@@ -1278,7 +1278,7 @@ Decisions / Declined / Known-open land in the customer's living hand-off documen
 - `${CLAUDE_PLUGIN_ROOT}/docs/wiki/onboarding/review-and-testing.md` — high-level review playbook (KB article pointers per surface)
 - `../recom-developer/SKILL.md` — sibling skill that generates the design this skill QAs
 - `../recom-developer/references/mcp-flow.md` — `recoms_getDesign` /
-  `recoms_listBoxes` / `recoms_listDesigns` read rules + payload-spill handling
+  `recoms_list` / `recoms_listDesigns` read rules + payload-spill handling
   (used by the code pass)
 - `../recom-developer/references/slider-structure.md` — swiper shell anatomy the Code QA
   checks against

@@ -77,11 +77,13 @@ Work it in this order:
 4. **Design** — only once the *right* products are being selected. A tile bound to the wrong field is
    a design problem; the wrong products in the box is not.
 
-**Steps 1 and 2 are not reachable through the MCP.** `recoms_listBoxes` returns a box's key, name,
-page type, state, design and placement — never its strategy, filters, product count or category
-scope, and no tool writes them. So a "wrong products" ticket is confirmed as far as the box, then
-handed to an operator to change in the dashboard (the `support-debugging` skill's MCP capability
-matrix, §4). Treat `name` and `type` as labels, not as a read of the setting.
+**Steps 1 and 2 are reachable through the MCP.** `recoms_getAlgorithm` returns the ordered strategy
+steps, the global filters, the product count and whether the steps are still a stock best-practice
+algorithm; `recoms_updateAlgorithm` writes them back, auto-drafting the box for an operator to
+publish. `recoms_list` gives the key, name, page type, state and design — so treat `name` and `type`
+as labels, not as a read of the setting, and read the algorithm instead of inferring it from the
+box's title. (The `support-debugging` skill's MCP capability matrix carries the current tool
+surface.)
 
 ## Integrations specific to Recommendations
 

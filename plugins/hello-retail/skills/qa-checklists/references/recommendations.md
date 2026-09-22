@@ -6,13 +6,13 @@ The recom box around the product tile. For tile-level items (price, labels, CTA,
 ## Supervisor
 
 > Mixed channels — tagged per item. Naming and inventory are **MCP-verifiable** via
-> `recoms_listDesigns` / `recoms_listBoxes` (given a `website-uuid`); the skill
+> `recoms_listDesigns` / `recoms_list` (given a `website-uuid`); the skill
 > can FAIL them directly. The operator is only needed for the two Supervisor-UI states the MCP
 > doesn't expose — and, as always, for the *fix* (renaming/archiving happens in Supervisor).
 
 - [ ] Remove internal naming [NOTE] *(MCP: design/box names)*
 - [ ] Clean up the recom name (e.g. 'DK' or 'TEST') *(MCP: design/box names)*
-- [ ] Setup differs from the card, e.g. missing recoms (mentioned in the description) *(MCP: `recoms_listBoxes` inventory, compared against the ClickUp card description — via the ClickUp MCP or pasted by the user; without the card, OPERATOR)*
+- [ ] Setup differs from the card, e.g. missing recoms (mentioned in the description) *(MCP: `recoms_list` inventory, compared against the ClickUp card description — via the ClickUp MCP or pasted by the user; without the card, OPERATOR)*
 - [ ] Pending changes *(OPERATOR — Supervisor state, not exposed via MCP)*
 - [ ] Locked (internal review only) *(OPERATOR — Supervisor state, not exposed via MCP)*
 
@@ -29,7 +29,7 @@ The recom box around the product tile. For tile-level items (price, labels, CTA,
 - [ ] Recom not visible/shown on the site (shown in the panel but not on the shop)
 - [ ] Recom not visible/shown because it finds 0 products
 - [ ] Placement unclear…
-- [ ] Set up as Draft (might archive) *(MCP: `recoms_listBoxes` shows box state; otherwise operator)*
+- [ ] Set up as Draft (might archive) *(MCP: `recoms_list` shows box state; otherwise operator)*
 
 ## Placement
 

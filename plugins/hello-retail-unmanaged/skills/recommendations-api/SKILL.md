@@ -52,7 +52,7 @@ whether it has `key` or `trackingKey`/`sources`, not a whole-call mode.
 
 If it's unclear which a customer wants, default to assuming **Managed**
 unless told otherwise or unless no recommendation box exists for this
-website in My Hello Retail (check with `recoms_listBoxes` if you have MCP
+website in My Hello Retail (check with `recoms_list` if you have MCP
 access) - in that case there's nothing to reference by `key`, so Unmanaged is
 the only option unless a box gets configured first.
 

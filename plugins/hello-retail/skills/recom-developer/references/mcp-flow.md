@@ -10,12 +10,12 @@ This is the default flow. It needs a `website-uuid` **and** a `design-key`. The 
 |---|---|
 | `website_getInfo(websiteUuid)` | Language + currency — confirm locale / price-format expectations instead of guessing from `<html lang>`. |
 | `recoms_listDesigns(websiteUuid)` | List every design available to the website: the company's **custom** designs (incl. archived) **and** the shared **standard** designs. Returns `key`, `title`, `archived`/`standard` flags and last-modified. **Archived and standard designs are read-only — never target them with `recoms_updateDesign`.** |
-| `recoms_listBoxes(websiteUuid[, includeArchived])` | List recom **boxes** (LIVE + DRAFT by default). Each box exposes a `designKey` — the design it renders with. Use this when the operator knows the box but not the design key. |
+| `recoms_list(websiteUuid[, includeArchived])` | List recom **boxes** (LIVE + DRAFT by default). Each box exposes a `designKey` — the design it renders with. Use this when the operator knows the box but not the design key. |
 | `recoms_getDesign(websiteUuid, key)` | Read the current design fields (`templateCode` + `templateStyles`) for the named design **regardless of state**. Read before editing so you modify the customer's real design in place. The payload can be large and **spills to a file — never ingest it whole** (see Payload spill below). |
 | `recoms_updateDesign(websiteUuid, key, templateCode?, templateStyles?)` | Write design fields. **Partial** — omit a field to leave it unchanged, but at least one of `templateCode` / `templateStyles` must be provided. Saving **auto-creates a DRAFT of every LIVE box using this design**, leaving them in DRAFT for review. **Publishing is not possible through this tool.** |
 | `recoms_copyDesign(websiteUuid, sourceKey[, title])` | Copy a design (incl. a read-only standard one) into a new editable company design. **The title is set here and only here** — see "Confirm the title first" below. |
-| `recoms_updateBoxesDesign(websiteUuid, designKey, boxKeys[])` | Point one or more boxes at a design. Boxes already on it report UNCHANGED. |
-| `recoms_updateBoxPlacement(websiteUuid, key, selector?, selectorMode?, insertMode?)` | Set where/how a box attaches to the page — see "Box placement" below. Empty-string `selector` resets to the default `#hr-recom-<key>`. |
+| `recoms_updateSelectedDesign(websiteUuid, designKey, keys[])` | Point one or more boxes at a design. Boxes already on it report UNCHANGED. |
+| `recoms_updatePlacement(websiteUuid, key, selector?, selectorMode?, insertMode?)` | Set where/how a box attaches to the page — see "Box placement" below. Empty-string `selector` resets to the default `#hr-recom-<key>`. |
 
 ## Field mapping — MCP fields to this skill's two files
 
@@ -27,16 +27,16 @@ This is the default flow. It needs a `website-uuid` **and** a `design-key`. The 
 ## Resolving the `design-key`
 
 1. If the operator gave a `design-key`, confirm it with `recoms_listDesigns` and check the `archived`/`standard` flags — **bail if it's standard or archived** (read-only) and ask for the editable company design instead.
-2. If the operator only knows the **box**, call `recoms_listBoxes` and read the box's `designKey`.
+2. If the operator only knows the **box**, call `recoms_list` and read the box's `designKey`.
 3. If neither is known, list designs/boxes and ask the operator which one to edit. Don't guess.
 
 > **Shared-design caution.** One design can back several boxes. Because `recoms_updateDesign` drafts **every** LIVE box using the design, confirm the key is the intended one before pushing — you may be drafting more boxes than you think. If the customer wants the change on one box only, they need a dedicated design; flag that rather than editing a shared one.
 
 ## Copying a design — confirm the title FIRST
 
-`recoms_copyDesign` is the route to an editable design when the box sits on a read-only standard one. **The title can only be set at copy time**: there is no MCP rename, and no MCP delete — a mis-titled copy means either a manual dashboard rename by the operator, or an orphaned design cluttering the list forever. So before calling it, confirm the intended design title with the operator (they often have a naming convention — "Main Design", per-page names, per-brand names). After copying, point the target box(es) at the new key with `recoms_updateBoxesDesign`.
+`recoms_copyDesign` is the route to an editable design when the box sits on a read-only standard one. **The title can only be set at copy time**: there is no MCP rename, and no MCP delete — a mis-titled copy means either a manual dashboard rename by the operator, or an orphaned design cluttering the list forever. So before calling it, confirm the intended design title with the operator (they often have a naming convention — "Main Design", per-page names, per-brand names). After copying, point the target box(es) at the new key with `recoms_updateSelectedDesign`.
 
-## Box placement — `recoms_updateBoxPlacement`
+## Box placement — `recoms_updatePlacement`
 
 A design renders nothing until its **box** attaches somewhere. Placement has three parts: `selector` (CSS selector for the anchor element), `insertMode` (`REPLACE` / `PREPEND` / `APPEND` / `BEFORE` / `AFTER`), and `selectorMode` (`NORMAL` = evaluated on script load; `LIVE_ONCE` / `LIVE_MULTI` = re-evaluated as the DOM changes — for SPA-ish or late-rendered anchors).
 

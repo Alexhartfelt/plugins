@@ -163,7 +163,7 @@ paste; roles and dates then carry `operator`. No card at all (operator confirmed
 | Feature | Tools (read-only) | Record |
 |---|---|---|
 | Search | `search_listConfigs`; per config `search_getDesign` (type, selectors from `initializationCode`: `trigger_selector`, `placement_selector`), `search_getFilters`, `search_getSorting`, `search_listSynonyms`, `search_listStopWords`, `search_getProductEngineBoosts` / `Elevates` / `Excludes` | key, type, state, selectors, filter and sort fields, language; counts of synonyms / boosts / redirects — never the template code |
-| Recommendations | `recoms_listBoxes`, `recoms_listDesigns`, `recoms_getDesign` (placement mode + selector) | box key, page, algorithm, design key, placement mode, selector, state |
+| Recommendations | `recoms_list`, `recoms_listDesigns`, `recoms_getDesign` (placement mode + selector) | box key, page, algorithm, design key, placement mode, selector, state |
 | Pages | `pages_listConfigs`, `pages_listDesigns`, `pages_getConfigProductFilters`, `pages_getDesignSorting` | config ID, design, scope, filters, sorting, state |
 | Feeds | `feeds_list`, `feeds_get`, `feeds_getLatestRun` | ID, kind, source type, schedule, state, notable transforms (names only), last run status |
 | Product Agents | `productAgents_getChannels`, `productAgents_getSettings` | channels and state |
