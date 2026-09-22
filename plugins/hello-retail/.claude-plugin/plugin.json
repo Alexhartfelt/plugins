@@ -1,7 +1,7 @@
 {
   "name": "hello-retail",
   "displayName": "Hello Retail",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "description": "Hello Retail for AI agents: skills that build and QA Search, Recommendations, Pages, newsletter and triggered-email designs as REVIEW drafts and set up product feeds via the hello-retail MCP, plus the Hello Retail knowledge base and the browser/MCP configuration the skills need.",
   "author": {
     "name": "Hello Retail D&TS",
